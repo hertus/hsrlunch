@@ -1,7 +1,7 @@
 <resources>
 
-    <string name="app_name">TEST -  HSR Lunch App</string>
+    <string name="app_name">HSRlunch</string>
     <string name="hello_world">Hello HSR Lunch App</string>
-    <string name="title_activity_main">TEST HSR-Lunch</string>
+    <string name="title_activity_main">HSRlunch</string>
 
 </resources>
