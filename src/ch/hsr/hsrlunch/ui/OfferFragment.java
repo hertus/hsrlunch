@@ -45,7 +45,7 @@ public class OfferFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		final View v = inflater.inflate(R.layout.frag_offer, container, false);
+		final View v = inflater.inflate(R.layout.offer, container, false);
 
 		if (v != null) {
 			title = (TextView) v.findViewById(R.id.title);

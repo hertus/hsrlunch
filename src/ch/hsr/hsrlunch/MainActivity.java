@@ -12,6 +12,8 @@ import ch.hsr.hsrlunch.model.Offer;
 import ch.hsr.hsrlunch.util.TabPageAdapter;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.coboltforge.slidemenu.SlideMenu;
 import com.coboltforge.slidemenu.SlideMenuInterface.OnSlideMenuItemClickListener;
 import com.viewpagerindicator.TabPageIndicator;
@@ -91,4 +93,11 @@ public class MainActivity extends SherlockFragmentActivity implements OnSlideMen
         offerList.add(m2);
         offerList.add(m3);
 	} 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+      
+        menu.add("refresh").setIcon(R.drawable.ic_menu_refresh).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        menu.add("share").setIcon(R.drawable.ic_menu_share).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        return true;
+    }
 }
