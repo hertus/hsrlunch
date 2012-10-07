@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -5,15 +6,55 @@
     
         <com.coboltforge.slidemenu.SlideMenu
         android:id="@+id/slideMenu"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+        
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+    
+    <com.viewpagerindicator.TabPageIndicator
+        android:id="@+id/indicator"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
 
-    <TextView
-        android:layout_width="wrap_content"
+    <!-- das viewPager Element bekommt mehr gewicht, als TabPageIndicator und textView, durch layout_weight="1" -->
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:id="@+id/badge"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/hello_world"
-        tools:context=".MainActivity" />
+        android:orientation="horizontal"
+        android:paddingBottom="10dp" >
 
+        <TextView
+            android:id="@+id/kontoStand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/kontoStand" 
+            android:paddingLeft="10dp" />
+
+        <TextView
+            android:id="@+id/amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="999.99 CHF" 
+            android:paddingLeft="10dp"/>
+
+        <TextView
+            android:id="@+id/lastUpdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="01.10.12"
+            android:paddingLeft="10dp" />
+    </LinearLayout>
+
+</LinearLayout>
 </RelativeLayout>

@@ -3,5 +3,6 @@
     <string name="app_name">HSRlunch</string>
     <string name="hello_world">Hello HSR Lunch App</string>
     <string name="title_activity_main">HSRlunch</string>
+    <string name="kontoStand">HSR Badge-Kontostand:</string>
 
 </resources>
