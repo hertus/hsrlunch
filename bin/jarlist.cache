@@ -1,6 +1,7 @@
 # cache for current jar dependecy. DO NOT EDIT.
 # format is <lastModified> <length> <SHA-1> <path>
 # Encoding is UTF-8
-1349170862000 349252 612846c9857077a039b533718f72db3bc041d389 C:\home\HSR\Works\eclipse_adt\viewpagerindicator_library\libs\android-support-v4.jar
-1349299200000 349252 612846c9857077a039b533718f72db3bc041d389 C:\home\HSR\Works\eclipse_adt\hsrlunch\libs\android-support-v4.jar
-1349432938000 349252 612846c9857077a039b533718f72db3bc041d389 C:\home\HSR\Works\eclipse_adt\actionbarsherlock_library\libs\android-support-v4.jar
+1349692864000 349252 612846c9857077a039b533718f72db3bc041d389 /home/christof/Dokumente/androiddev/workspace/hsrlunch/libs/android-support-v4.jar
+1349692819000 349252 612846c9857077a039b533718f72db3bc041d389 /home/christof/Dokumente/androiddev/workspace/actionbarsherlock_library/libs/android-support-v4.jar
+1349692903000 349252 612846c9857077a039b533718f72db3bc041d389 /home/christof/Dokumente/androiddev/workspace/LibSlideMenu/libs/android-support-v4.jar
+1349692883000 349252 612846c9857077a039b533718f72db3bc041d389 /home/christof/Dokumente/androiddev/Android-ViewPagerIndicator/library/libs/android-support-v4.jar

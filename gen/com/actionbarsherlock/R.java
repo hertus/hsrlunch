@@ -1107,15 +1107,16 @@ containing a value of this type.
         public static final int abs__tab_selected_pressed_holo=0x7f020053;
         public static final int abs__tab_unselected_pressed_holo=0x7f020054;
         public static final int hsrlunch=0x7f020055;
-        public static final int ic_action_search=0x7f020056;
-        public static final int ic_launcher=0x7f020057;
-        public static final int vpi__tab_indicator=0x7f020058;
-        public static final int vpi__tab_selected_focused_holo=0x7f020059;
-        public static final int vpi__tab_selected_holo=0x7f02005a;
-        public static final int vpi__tab_selected_pressed_holo=0x7f02005b;
-        public static final int vpi__tab_unselected_focused_holo=0x7f02005c;
-        public static final int vpi__tab_unselected_holo=0x7f02005d;
-        public static final int vpi__tab_unselected_pressed_holo=0x7f02005e;
+        public static final int ic_launcher=0x7f020056;
+        public static final int ic_menu_refresh=0x7f020057;
+        public static final int ic_menu_share=0x7f020058;
+        public static final int vpi__tab_indicator=0x7f020059;
+        public static final int vpi__tab_selected_focused_holo=0x7f02005a;
+        public static final int vpi__tab_selected_holo=0x7f02005b;
+        public static final int vpi__tab_selected_pressed_holo=0x7f02005c;
+        public static final int vpi__tab_unselected_focused_holo=0x7f02005d;
+        public static final int vpi__tab_unselected_holo=0x7f02005e;
+        public static final int vpi__tab_unselected_pressed_holo=0x7f02005f;
     }
     public static final class id {
         public static final int abs__action_bar=0x7f040027;
@@ -1147,31 +1148,42 @@ containing a value of this type.
         public static final int abs__title=0x7f040020;
         public static final int abs__titleDivider=0x7f040021;
         public static final int abs__up=0x7f040010;
+        public static final int amount=0x7f040031;
+        public static final int badge=0x7f04002f;
         public static final int bottom=0x7f040003;
+        public static final int content=0x7f040036;
+        public static final int date=0x7f040035;
         public static final int disableHome=0x7f04000e;
+        public static final int frameLayout=0x7f040033;
         public static final int homeAsUp=0x7f04000b;
-        public static final int item_five=0x7f040036;
-        public static final int item_four=0x7f040035;
-        public static final int item_one=0x7f040032;
-        public static final int item_three=0x7f040034;
-        public static final int item_two=0x7f040033;
+        public static final int indicator=0x7f04002d;
+        public static final int item_five=0x7f040041;
+        public static final int item_four=0x7f040040;
+        public static final int item_one=0x7f04003d;
+        public static final int item_three=0x7f04003f;
+        public static final int item_two=0x7f04003e;
+        public static final int kontoStand=0x7f040030;
+        public static final int lastUpdate=0x7f040032;
         public static final int listMode=0x7f040007;
-        public static final int menu_header=0x7f04002d;
-        public static final int menu_icon=0x7f040030;
-        public static final int menu_label=0x7f040031;
-        public static final int menu_listview=0x7f04002e;
+        public static final int menu_header=0x7f040038;
+        public static final int menu_icon=0x7f04003b;
+        public static final int menu_label=0x7f04003c;
+        public static final int menu_listview=0x7f040039;
         public static final int none=0x7f040000;
         public static final int normal=0x7f040006;
-        public static final int overlay=0x7f04002f;
+        public static final int overlay=0x7f04003a;
+        public static final int price=0x7f040037;
         public static final int showCustom=0x7f04000d;
         public static final int showHome=0x7f04000a;
         public static final int showTitle=0x7f04000c;
         public static final int slideMenu=0x7f04002c;
         public static final int tabMode=0x7f040008;
+        public static final int title=0x7f040034;
         public static final int top=0x7f040004;
         public static final int triangle=0x7f040001;
         public static final int underline=0x7f040002;
         public static final int useLogo=0x7f040009;
+        public static final int viewpager=0x7f04002e;
         public static final int wrap_content=0x7f040005;
     }
     public static final class integer {
@@ -1204,10 +1216,12 @@ containing a value of this type.
         public static final int abs__screen_simple=0x7f030012;
         public static final int abs__screen_simple_overlay_action_mode=0x7f030013;
         public static final int activity_main=0x7f030014;
-        public static final int sherlock_spinner_dropdown_item=0x7f030015;
-        public static final int sherlock_spinner_item=0x7f030016;
-        public static final int slidemenu=0x7f030017;
-        public static final int slidemenu_listitem=0x7f030018;
+        public static final int badge=0x7f030015;
+        public static final int offer=0x7f030016;
+        public static final int sherlock_spinner_dropdown_item=0x7f030017;
+        public static final int sherlock_spinner_item=0x7f030018;
+        public static final int slidemenu=0x7f030019;
+        public static final int slidemenu_listitem=0x7f03001a;
     }
     public static final class menu {
         public static final int slide=0x7f0b0000;
@@ -1245,6 +1259,7 @@ containing a value of this type.
         public static final int abs__shareactionprovider_share_with_application=0x7f0a0009;
         public static final int app_name=0x7f0a000a;
         public static final int hello_world=0x7f0a000b;
+        public static final int kontoStand=0x7f0a000d;
         public static final int title_activity_main=0x7f0a000c;
     }
     public static final class style {
@@ -1341,6 +1356,8 @@ containing a value of this type.
         public static final int Widget_Sherlock_Spinner_DropDown_ActionBar=0x7f090028;
         public static final int Widget_Sherlock_TextView_SpinnerItem=0x7f090036;
         public static final int Widget_TabPageIndicator=0x7f090002;
+        public static final int myTheme=0x7f09005d;
+        public static final int myTitle=0x7f09005e;
     }
     public static final class styleable {
         /** Attributes that can be used with a CirclePageIndicator.
