@@ -3,22 +3,27 @@
 
     <item
         android:id="@+id/item_one"
+        android:icon="@drawable/hsrlunch"
         android:title="Montag">
     </item>
     <item
         android:id="@+id/item_two"
+        android:icon="@drawable/hsrlunch"
         android:title="Dienstag">
     </item>
     <item
         android:id="@+id/item_three"
+        android:icon="@drawable/hsrlunch"
         android:title="Mittwoch">
     </item>
     <item
         android:id="@+id/item_four"
+        android:icon="@drawable/hsrlunch"
         android:title="Donnerstag">
     </item>
     <item
         android:id="@+id/item_five"
+        android:icon="@drawable/hsrlunch"
         android:title="Freitag">
     </item>
 </menu>
