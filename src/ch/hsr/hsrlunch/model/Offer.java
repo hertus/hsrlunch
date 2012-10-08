@@ -24,6 +24,9 @@ public class Offer {
 	public String getMenuText(){
 		return content;
 	}
+//	public String getMenuText(){
+//		return title +"\n" + date + "\n" + content+ "\n"+price;
+//	}
 	public String getTitle() {
 		return title;
 	}

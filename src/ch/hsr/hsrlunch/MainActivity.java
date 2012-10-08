@@ -83,11 +83,11 @@ public class MainActivity extends SherlockFragmentActivity implements OnSlideMen
 	}
 	private void init() {
 		Offer m1 = new Offer("Tages", "Tagesmenü",
-        		"Fischtäbli \nSauce Tatar \nBlattspinat \nSalzkartoffeln", 8.00, "Montag 1. Oktober");
+        		"Fischtäbli\nSauce Tatar\nBlattspinat\nSalzkartoffeln", 8.00, "Montag 1. Oktober");
         Offer m2 = new Offer("Vegi", "Vegimenü",
-        		"Gemüseteigtaschen \nTomatensauce \nSalzkartoffeln \nBuntersalat", 8.00, "Montag 1. Oktober");
+        		"Gemüseteigtaschen\nTomatensauce\nSalzkartoffeln\nBuntersalat", 8.00, "Montag 1. Oktober");
         Offer m3 = new Offer("Woche", "Wochenhit",
-        		"Schweinefilet im Speckmantel \nTomatensauce \nBuntersalat", 14.50, "Montag 1. Oktober");
+        		"Schweinefilet im Speckmantel\nTomatensauce\nBuntersalat", 14.50, "Montag 1. Oktober");
         offerList = new ArrayList<Offer>();
         offerList.add(m1);
         offerList.add(m2);
