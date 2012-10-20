@@ -31,7 +31,9 @@ public class WeekDataSource implements DBConstants {
 				new String[] { COLUMN_WEEK_LASTUPDATE }, where, null, null,
 				null, null);
 		cursor.moveToFirst();
-		return cursor.getLong(cursor.getColumnIndex(COLUMN_WEEK_LASTUPDATE));
+		long lastupdate = cursor.getLong(cursor.getColumnIndex(COLUMN_WEEK_LASTUPDATE));
+		cursor.close();
+		return lastupdate;
 	}
 
 	/**

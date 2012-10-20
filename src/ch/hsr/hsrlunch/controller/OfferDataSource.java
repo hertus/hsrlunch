@@ -36,7 +36,10 @@ public class OfferDataSource implements DBConstants {
 				new String[] { COLUMN_OFFER_CONTENT }, where, null, null, null,
 				null);
 		cursor.moveToFirst();
-		return cursor.getString(cursor.getColumnIndex(COLUMN_OFFER_CONTENT));
+		String content = cursor.getString(cursor
+				.getColumnIndex(COLUMN_OFFER_CONTENT));
+		cursor.close();
+		return content;
 	}
 
 	/**
@@ -53,7 +56,10 @@ public class OfferDataSource implements DBConstants {
 				new String[] { COLUMN_OFFER_PRICE }, where, null, null, null,
 				null);
 		cursor.moveToFirst();
-		return cursor.getString(cursor.getColumnIndex(COLUMN_OFFER_PRICE));
+		String price = cursor.getString(cursor
+				.getColumnIndex(COLUMN_OFFER_PRICE));
+		cursor.close();
+		return price;
 	}
 
 	/**

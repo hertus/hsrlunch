@@ -32,7 +32,9 @@ public class WorkDayDataSource implements DBConstants {
 				new String[] { COLUMN_WORKDAY_DATE }, where, null, null, null,
 				null);
 		cursor.moveToFirst();
-		return cursor.getLong(cursor.getColumnIndex(COLUMN_WORKDAY_DATE));
+		long date = cursor.getLong(cursor.getColumnIndex(COLUMN_WORKDAY_DATE));
+		cursor.close();
+		return date;
 	}
 
 	/**
