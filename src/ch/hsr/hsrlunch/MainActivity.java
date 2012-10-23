@@ -10,12 +10,13 @@ import android.widget.Toast;
 
 import ch.hsr.hsrlunch.model.Offer;
 import ch.hsr.hsrlunch.util.TabPageAdapter;
+import ch.hsr.hsrlunch.util.SlideMenuInterface.OnSlideMenuItemClickListener;
+import ch.hsr.hsrlunch.ui.SlideMenuHSR;
+
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.coboltforge.slidemenu.SlideMenu;
-import com.coboltforge.slidemenu.SlideMenuInterface.OnSlideMenuItemClickListener;
 import com.viewpagerindicator.TabPageIndicator;
 
 public class MainActivity extends SherlockFragmentActivity implements OnSlideMenuItemClickListener {
@@ -25,7 +26,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnSlideMen
     ViewPager mViewPager;
     TabPageAdapter mAdapter;
 	
-	private SlideMenu slidemenu;
+	private SlideMenuHSR slidemenu;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,8 +44,8 @@ public class MainActivity extends SherlockFragmentActivity implements OnSlideMen
         TabPageIndicator indicator = (TabPageIndicator)findViewById(R.id.indicator);
         indicator.setViewPager(mViewPager);
         
-		slidemenu = (SlideMenu) findViewById(R.id.slideMenu);
-		slidemenu.init(this, R.menu.slide, this, 333);
+		slidemenu = (SlideMenuHSR) findViewById(R.id.slideMenu);
+		slidemenu.init(this, R.menu.slide, this, 1000);
 		
 //		slidemenu.setAsShown(); 		
 //		slidemenu.setHeaderImage(getResources().getDrawable(R.drawable.hsrlunch));
