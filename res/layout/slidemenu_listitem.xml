@@ -3,15 +3,7 @@
     android:layout_height="wrap_content"
     android:background="#AEEEEE" >
 
-    <ImageView
-        android:id="@+id/menu_icon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginBottom="10dip"
-        android:layout_marginLeft="10dip"
-        android:layout_marginRight="5dip"
-        android:layout_marginTop="10dip"
-        android:contentDescription="TODO" />
+
 
     <TextView
         android:id="@+id/menu_label"

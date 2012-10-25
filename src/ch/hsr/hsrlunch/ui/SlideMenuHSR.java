@@ -314,12 +314,12 @@ public class SlideMenuHSR extends LinearLayout {
 											
 						
 						String textId = xpp.getAttributeValue("http://schemas.android.com/apk/res/android", "title");
-						String iconId = xpp.getAttributeValue("http://schemas.android.com/apk/res/android", "icon");
+//						String iconId = xpp.getAttributeValue("http://schemas.android.com/apk/res/android", "icon");
 						String resId = xpp.getAttributeValue("http://schemas.android.com/apk/res/android", "id");
 						
 						SlideMenuItem item = new SlideMenuItem();
 						item.id = Integer.valueOf(resId.replace("@", ""));
-						item.icon = act.getResources().getDrawable(Integer.valueOf(iconId.replace("@", "")));
+//						item.icon = act.getResources().getDrawable(Integer.valueOf(iconId.replace("@", "")));
 						item.label = resourceIdToString(textId);
 						
 						menuItemList.add(item);
@@ -394,7 +394,7 @@ public class SlideMenuHSR extends LinearLayout {
 	
 	public static class SlideMenuItem {
 		public int id;
-		public Drawable icon;
+//		public Drawable icon;
 		public String label;
 	}
 	
@@ -420,14 +420,14 @@ public class SlideMenuHSR extends LinearLayout {
 				rowView = inflater.inflate(R.layout.slidemenu_listitem, null);
 				MenuItemHolder viewHolder = new MenuItemHolder();
 				viewHolder.label = (TextView) rowView.findViewById(R.id.menu_label);
-				viewHolder.icon = (ImageView) rowView.findViewById(R.id.menu_icon);
+//				viewHolder.icon = (ImageView) rowView.findViewById(R.id.menu_icon);
 				rowView.setTag(viewHolder);
 			}
 
 			MenuItemHolder holder = (MenuItemHolder) rowView.getTag();
 			String s = items[position].label;
 			holder.label.setText(s);
-			holder.icon.setImageDrawable(items[position].icon);
+//			holder.icon.setImageDrawable(items[position].icon);
 
 			return rowView;
 		}
