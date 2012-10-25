@@ -4,7 +4,6 @@ public class Offer {
 	
 	String title;
 	String content;
-	String tabName;
 	String date;
 
 	double price;
@@ -12,11 +11,10 @@ public class Offer {
 	
 
 	
-	public Offer(String tabName, String title, String content, double price, String date) {
+	public Offer(String title, String content, double price, String date) {
 		super();
 		this.title = title;
 		this.content = content;
-		this.tabName = tabName;
 		this.price = price;
 		this.date = date;
 	}
@@ -44,12 +42,6 @@ public class Offer {
 	}
 	public void setPrice(double price) {
 		this.price = price;
-	}
-	public String getTabName() {
-		return tabName;
-	}
-	public void setTabName(String tabName) {
-		this.tabName = tabName;
 	}
 	public String getDate() {
 		return date;

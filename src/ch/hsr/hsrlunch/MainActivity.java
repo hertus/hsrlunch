@@ -21,6 +21,7 @@ import com.viewpagerindicator.TabPageIndicator;
 public class MainActivity extends SherlockFragmentActivity implements OnSlideMenuItemClickListener {
 	
     public static List<Offer> offerList;
+    public static List<String> tabTitleList;
 	
     ViewPager mViewPager;
     TabPageAdapter mAdapter;
@@ -82,16 +83,21 @@ public class MainActivity extends SherlockFragmentActivity implements OnSlideMen
 		return super.onOptionsItemSelected(item);
 	}
 	private void init() {
-		Offer m1 = new Offer("Tages", "Tagesmenü",
+		Offer m1 = new Offer("Tagesmenü",
         		"Fischtäbli\nSauce Tatar\nBlattspinat\nSalzkartoffeln", 8.00, "Montag 1. Oktober");
-        Offer m2 = new Offer("Vegi", "Vegimenü",
+        Offer m2 = new Offer("Vegimenü",
         		"Gemüseteigtaschen\nTomatensauce\nSalzkartoffeln\nBuntersalat", 8.00, "Montag 1. Oktober");
-        Offer m3 = new Offer("Woche", "Wochenhit",
+        Offer m3 = new Offer( "Wochenhit",
         		"Schweinefilet im Speckmantel\nTomatensauce\nBuntersalat", 14.50, "Montag 1. Oktober");
         offerList = new ArrayList<Offer>();
         offerList.add(m1);
         offerList.add(m2);
         offerList.add(m3);
+        
+        tabTitleList = new ArrayList<String>(3);
+        tabTitleList.add("tages");
+        tabTitleList.add("vegi");
+        tabTitleList.add("woche");
 	} 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

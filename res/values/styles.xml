@@ -1,7 +1,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="AppTheme" parent="android:Theme.Light" />
-
     <style name="myTheme" parent="@style/Theme.Sherlock">
 
         <!-- default ViewPagerTab Style from viewpagerindicator -->
@@ -9,8 +8,27 @@
     </style>
     <style name="myTitle">
           <item name="android:textSize">22sp</item>
-             <item name="android:textStyle">bold</item>
+          <item name="android:textStyle">bold</item>
+          <item name="android:textColor">@color/title</item>
+          <item name="android:padding">10dp</item>
     </style>
+    <style name="menuTxt">
+        <item name="android:textColor">@color/black</item>
+    </style>
+    <style name="dateTxt" parent="menuTxt">
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:textColor">@color/date</item>
+    </style>
+    <!-- Style von Viewpager-Lib überschreiben, damit Tabs mit schwarzer schrift erscheinen -->
+    <style name="TextAppearance.TabPageIndicator" parent="Widget">
+        <item name="android:textColor">@color/tab</item>
+    </style>
+    
+    <color name="grey">#dddddd</color>
+    <color name="black">#000000</color>
+    <color name="title">#db1313</color>
+    <color name="date">#4e4949</color>
+    <color name="tab">#b0b0b0</color>
 
 
 </resources>

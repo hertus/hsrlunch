@@ -24,7 +24,7 @@ public class TabPageAdapter extends FragmentPagerAdapter {
     }
     @Override
 	public CharSequence getPageTitle(int position) {
-    	return MainActivity.offerList.get(position).getTabName().toUpperCase();
+    	return MainActivity.tabTitleList.get(position).toUpperCase();
     }
 
 }
