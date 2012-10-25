@@ -45,7 +45,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnSlideMen
         indicator.setViewPager(mViewPager);
         
 		slidemenu = (SlideMenuHSR) findViewById(R.id.slideMenu);
-		slidemenu.init(this, R.menu.slide, this, 1000);
+		slidemenu.init(this, R.menu.slide, this, 500);
 		
 //		slidemenu.setAsShown(); 		
 //		slidemenu.setHeaderImage(getResources().getDrawable(R.drawable.hsrlunch));

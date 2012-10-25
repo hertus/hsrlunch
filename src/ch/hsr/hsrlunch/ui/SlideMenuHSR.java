@@ -218,6 +218,7 @@ public class SlideMenuHSR extends LinearLayout {
 		parent.addView(menu);
 		
 		// set header
+		if (headerImage!=null)
 		try {
 			ImageView header = (ImageView) act.findViewById(R.id.menu_header); 
 			header.setImageDrawable(headerImage);
