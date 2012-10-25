@@ -1,7 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
     android:background="#AEEEEE" >
 
     <ImageView
@@ -11,7 +10,8 @@
         android:layout_marginBottom="10dip"
         android:layout_marginLeft="10dip"
         android:layout_marginRight="5dip"
-        android:layout_marginTop="10dip" android:contentDescription="TODO"/>
+        android:layout_marginTop="10dip"
+        android:contentDescription="TODO" />
 
     <TextView
         android:id="@+id/menu_label"
@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dip"
         android:layout_marginTop="10dip"
+        android:gravity="center_horizontal"
         android:textSize="24dp" />
 
 </LinearLayout>

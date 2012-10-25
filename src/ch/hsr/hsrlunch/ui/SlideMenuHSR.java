@@ -46,7 +46,6 @@ public class SlideMenuHSR extends LinearLayout {
 	private static FrameLayout parent;
 	private static int menuSize;
 	private Activity act;
-	private Drawable headerImage;
 	private TranslateAnimation slideRightAnim;
 	private TranslateAnimation slideMenuLeftAnim;
 	private TranslateAnimation slideContentLeftAnim;
@@ -123,14 +122,6 @@ public class SlideMenuHSR extends LinearLayout {
 
 		// and get our menu
 		parseXml(menuResource);
-	}
-	
-	/**
-	 * Sets an optional image to be displayed on top of the menu.
-	 * @param d
-	 */
-	public void setHeaderImage(Drawable d) {
-		headerImage = d;
 	}
 	
 	
@@ -216,16 +207,6 @@ public class SlideMenuHSR extends LinearLayout {
 		lays.setMargins(0, statusHeight, 0, 0);
 		menu.setLayoutParams(lays);
 		parent.addView(menu);
-		
-		// set header
-		if (headerImage!=null)
-		try {
-			ImageView header = (ImageView) act.findViewById(R.id.menu_header); 
-			header.setImageDrawable(headerImage);
-		}
-		catch(Exception e) {
-			// not found
-		}
 		
 		// connect the menu's listview
 		ListView list = (ListView) act.findViewById(R.id.menu_listview);

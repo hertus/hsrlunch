@@ -2,19 +2,11 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-
-
     <LinearLayout
         android:layout_width="250dip"
         android:layout_height="fill_parent"
+        android:background="#00688B"
         android:orientation="vertical" >
-        
-            <ImageView
-        android:id="@+id/menu_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_launcher" />
-
 
         <TextView
             android:id="@+id/textView1"
@@ -22,6 +14,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center_horizontal"
+                android:layout_marginBottom="10dip"
+    android:layout_marginTop="10dip"
             android:text="@string/SlideHead"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -29,28 +23,34 @@
             android:layout_width="100dp"
             android:layout_height="2dip"
             android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dip"
+    android:layout_marginTop="10dip"
             android:background="#FF00FF00" />
 
         <ListView
             android:id="@+id/menu_listview"
             android:layout_width="fill_parent"
+            android:layout_margin="10.0sp"
             android:layout_height="wrap_content"
-            android:divider="@android:color/darker_gray"
-            android:dividerHeight="1dip" />
+            android:divider="@android:color/transparent"
+  android:dividerHeight="10.0sp" />
 
         <View
             android:layout_width="100dp"
             android:layout_height="2dip"
             android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dip"
+    android:layout_marginTop="10dip"
             android:background="#FF00FF00" />
 
         <ImageButton
             android:id="@+id/settingsbtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+                android:layout_marginBottom="10dip"
+    android:layout_marginTop="10dip"
             android:layout_gravity="right"
             android:src="@android:drawable/ic_menu_preferences" />
-
     </LinearLayout>
 
     <FrameLayout
