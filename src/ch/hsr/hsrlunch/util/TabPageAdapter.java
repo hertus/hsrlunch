@@ -14,7 +14,7 @@ public class TabPageAdapter extends FragmentPagerAdapter {
 
 	@Override
     public int getCount() {
-        return MainActivity.offerList.size();
+        return MainActivity.tabTitleList.size();
     }
 
     @Override

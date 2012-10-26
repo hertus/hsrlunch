@@ -4,5 +4,8 @@
     <string name="hello_world">Hello HSR Lunch App</string>
     <string name="title_activity_main">HSRlunch</string>
     <string name="kontoStand">HSR Badge-Kontostand:</string>
+    <string name="OFFER_DAILY_TITLE">Tagesteller</string>
+    <string name="OFFER_VEGI_TITLE">Vegetarisch</string>
+    <string name="OFFEr_WEEK_TITLE">Wochen-Hit</string>
 
 </resources>

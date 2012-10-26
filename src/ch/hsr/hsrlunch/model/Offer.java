@@ -1,30 +1,45 @@
 package ch.hsr.hsrlunch.model;
 
+import ch.hsr.hsrlunch.MainActivity;
+import ch.hsr.hsrlunch.controller.OfferConstants;
+
 public class Offer {
 	
+	int offerType;	
 	String title;
 	String content;
-	String date;
-
-	double price;
+	String price;
 	
-	
-
-	
-	public Offer(String title, String content, double price, String date) {
+	public Offer(int offerType, String content,
+			String price) {
 		super();
-		this.title = title;
+		this.offerType = offerType;
 		this.content = content;
 		this.price = price;
-		this.date = date;
+		switch(this.offerType){
+		case 0:
+			title = MainActivity.OFFER_DAILY_TITLE;
+		case 1:
+			title = MainActivity.OFFER_VEGI_TITLE;
+		case 2:
+			title = MainActivity.OFFER_WEEK_TITLE;
+		}
 	}
-	
+	public int getOfferType() {
+		return offerType;
+	}
+	public void setOfferType(int offerType) {
+		this.offerType = offerType;
+	}
+	public void setPrice(String price) {
+		this.price = price;
+	}
+	public String getPrice(){
+		return price;
+	}
 	public String getMenuText(){
 		return content;
 	}
-//	public String getMenuText(){
-//		return title +"\n" + date + "\n" + content+ "\n"+price;
-//	}
 	public String getTitle() {
 		return title;
 	}
@@ -37,19 +52,5 @@ public class Offer {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public double getPrice() {
-		return price;
-	}
-	public void setPrice(double price) {
-		this.price = price;
-	}
-	public String getDate() {
-		return date;
-	}
-
-	public void setDate(String date) {
-		this.date = date;
-	}
-	
 
 }

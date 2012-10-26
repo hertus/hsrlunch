@@ -61,11 +61,10 @@ public class OfferFragment extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		if (menuNum >= 0) {
-			title.setText(MainActivity.offerList.get(menuNum).getTitle());
-			date.setText(MainActivity.offerList.get(menuNum).getDate());
-			content.setText(MainActivity.offerList.get(menuNum).getMenuText());
-			price.setText(""+MainActivity.offerList.get(menuNum).getPrice());
-			
+			title.setText(MainActivity.selectedDay.getOfferList().get(menuNum).getTitle());
+			date.setText(MainActivity.selectedDay.getDate().toString());
+			content.setText(MainActivity.selectedDay.getOfferList().get(menuNum).getMenuText());
+			price.setText(MainActivity.selectedDay.getOfferList().get(menuNum).getPrice());
 		}
 
 	}
