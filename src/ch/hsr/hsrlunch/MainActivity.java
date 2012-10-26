@@ -1,6 +1,7 @@
 package ch.hsr.hsrlunch;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.os.Bundle;
@@ -8,7 +9,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.widget.Toast;
 
+import ch.hsr.hsrlunch.controller.WeekDataSource;
 import ch.hsr.hsrlunch.model.Offer;
+import ch.hsr.hsrlunch.util.DBOpenHelper;
 import ch.hsr.hsrlunch.util.TabPageAdapter;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -25,6 +28,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnSlideMen
 	
     ViewPager mViewPager;
     TabPageAdapter mAdapter;
+    long WEEK_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 	
 	private SlideMenu slidemenu;
 
@@ -106,4 +110,17 @@ public class MainActivity extends SherlockFragmentActivity implements OnSlideMen
         menu.add("share").setIcon(R.drawable.ic_menu_share).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         return true;
     }
+    
+    public boolean DBUpdateNeeded() {
+    	long dbage = new WeekDataSource(new DBOpenHelper(this)).getWeekLastUpdate();
+    	long actday = new Date().getTime();
+    	long difference = 4 * 24 * 60 * 60 * 1000; // Weil der 1.1.1970 ein Donnerstag war
+    	
+    	
+    	if (actday - ((actday+difference)%WEEK_IN_MILLISECONDS) > dbage)
+    		return true; // dbage ist aus letzer Woche
+    	return false; // dbage ist neuer als der letzte Montag
+    		
+    }
+    
 }
