@@ -2,6 +2,7 @@ package ch.hsr.hsrlunch;
 
 import java.util.ArrayList;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import ch.hsr.hsrlunch.controller.WeekDataSource;
 import ch.hsr.hsrlunch.model.Offer;
+import ch.hsr.hsrlunch.model.WorkDay;
 import ch.hsr.hsrlunch.util.DBOpenHelper;
 import ch.hsr.hsrlunch.util.TabPageAdapter;
 
