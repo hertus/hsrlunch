@@ -21,6 +21,7 @@ import ch.hsr.hsrlunch.util.TabPageAdapter;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.ShareActionProvider;
 import com.coboltforge.slidemenu.SlideMenu;
 import com.coboltforge.slidemenu.SlideMenuInterface.OnSlideMenuItemClickListener;
 import com.viewpagerindicator.TabPageIndicator;
@@ -62,7 +63,6 @@ public class MainActivity extends SherlockFragmentActivity implements OnSlideMen
 		slidemenu = (SlideMenu) findViewById(R.id.slideMenu);
 		slidemenu.init(this, R.menu.slide, this, 333);
 		
-		
 //		slidemenu.setAsShown(); 		
 //		slidemenu.setHeaderImage(getResources().getDrawable(R.drawable.hsrlunch));
     }
@@ -101,8 +101,14 @@ public class MainActivity extends SherlockFragmentActivity implements OnSlideMen
 			slidemenu.show();
 			break;
 		}
+		System.out.println(selectedDay.getDate());
+		System.out.println(mAdapter);
+		if( mAdapter!= null) mAdapter.notifyDataSetChanged();
 		return super.onOptionsItemSelected(item);
 	}
+	/*
+	 * statisches Füllen der Daten solange zugriff auch DB noch nicht implementiert ist
+	 */
 	private void init() {
 		
 		Offer m1 = new Offer(0,	"Fischtäbli\nSauce Tatar\nBlattspinat\nSalzkartoffeln", "INT 8.00 EXT 10.60");
@@ -113,11 +119,12 @@ public class MainActivity extends SherlockFragmentActivity implements OnSlideMen
         offerList.add(m2);
         offerList.add(m3);
         
-        GregorianCalendar cal1 = new GregorianCalendar(2012, 10,22);
-        GregorianCalendar cal2 = new GregorianCalendar(2012, 10,23);
-        GregorianCalendar cal3 = new GregorianCalendar(2012, 10,24);
-        GregorianCalendar cal4 = new GregorianCalendar(2012, 10,25);
-        GregorianCalendar cal5 = new GregorianCalendar(2012, 10,26);
+        // achtung monat bei GregorianCalendar liegt zwischen 0 und 11!
+        GregorianCalendar cal1 = new GregorianCalendar(2012,9,22);
+        GregorianCalendar cal2 = new GregorianCalendar(2012,9,23);
+        GregorianCalendar cal3 = new GregorianCalendar(2012,9,24);
+        GregorianCalendar cal4 = new GregorianCalendar(2012,9,25);
+        GregorianCalendar cal5 = new GregorianCalendar(2012,9,26);
         
 		dayList = new ArrayList<WorkDay>();
 		dayList.add(new WorkDay(0,new Date(cal1.getTimeInMillis()), offerList));
@@ -132,8 +139,30 @@ public class MainActivity extends SherlockFragmentActivity implements OnSlideMen
         tabTitleList.add("woche");
         
         GregorianCalendar cal = new GregorianCalendar();   
-        System.out.println("dayselection: "+dayList.get( (cal.get(Calendar.DAY_OF_WEEK)+5) % 7));
-        selectedDay = dayList.get(0);
+        int selectedDayIndex = 0;
+        
+        /* hier wird der aktuelle wochentag gesetzt, Calender.DAY_OF_WEEK gibt für den Sontag 1 zurück
+         * am wochenende wird der Freitag gesetzt
+         */
+        switch(cal.get(Calendar.DAY_OF_WEEK)){
+        	case 1: case 6: case 7:
+        		selectedDayIndex = 4;
+        		break;
+        	case 2: 
+        		selectedDayIndex = 0;
+        		break;
+        	case 3:
+        		selectedDayIndex = 1;
+        		break;
+        	case 4: 
+        		selectedDayIndex = 2;
+        		break;
+        	case 5: 
+        		selectedDayIndex = 3;
+        		break;
+        }        
+//        selectedDayIndex = (+5) % 7 > 4 ? 4: cal.get(Calendar.DAY_OF_WEEK)+5 % 7;
+        selectedDay = dayList.get(selectedDayIndex);
 	} 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
