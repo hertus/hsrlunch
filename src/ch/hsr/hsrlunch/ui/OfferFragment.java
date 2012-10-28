@@ -68,5 +68,14 @@ public class OfferFragment extends Fragment {
 		}
 
 	}
+	public void updateValues(){
+		if (menuNum >= 0) {
+			title.setText(MainActivity.selectedDay.getOfferList().get(menuNum).getTitle());
+			date.setText(MainActivity.selectedDay.getDate().toString());
+			content.setText(MainActivity.selectedDay.getOfferList().get(menuNum).getMenuText());
+			price.setText(MainActivity.selectedDay.getOfferList().get(menuNum).getPrice());
+		}
+		
+	}
 
 }
