@@ -21,8 +21,7 @@ public class TabPageAdapter extends FragmentPagerAdapter {
     }
 
     @Override
-    public Fragment getItem(int position) {
-    	
+    public Fragment getItem(int position) {    	
     	if(fragmentList.get(position) == null){
     	
     	OfferFragment frag = OfferFragment.newInstance(position);
@@ -42,7 +41,6 @@ public class TabPageAdapter extends FragmentPagerAdapter {
     	for(int i= 0; 1<= 3; i++){
     		fragmentList.get(i).updateValues();
     	}
-    	
     }
 
 }

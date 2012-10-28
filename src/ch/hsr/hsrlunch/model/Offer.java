@@ -53,5 +53,8 @@ public class Offer {
 	public void setContent(String content) {
 		this.content = content;
 	}
+	public String getOfferTxt() {
+		return content + "\n" + price;
+	}
 
 }

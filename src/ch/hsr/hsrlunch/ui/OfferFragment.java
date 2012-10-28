@@ -24,7 +24,6 @@ public class OfferFragment extends Fragment {
 		final Bundle args = new Bundle();
 		args.putInt(MENU_DATA_EXTRA, menuNum);
 		f.setArguments(args);
-
 		return f;
 	}
 
