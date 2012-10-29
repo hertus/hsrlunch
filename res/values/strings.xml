@@ -1,11 +1,18 @@
 <resources>
 
     <string name="app_name">HSRlunch</string>
-    <string name="hello_world">Hello HSR Lunch App</string>
     <string name="title_activity_main">HSRlunch</string>
     <string name="kontoStand">HSR Badge-Kontostand:</string>
     <string name="OFFER_DAILY_TITLE">Tagesteller</string>
     <string name="OFFER_VEGI_TITLE">Vegetarisch</string>
     <string name="OFFEr_WEEK_TITLE">Wochen-Hit</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+  	<string name="pref_fav_menu">bevorzugtes Menu</string>
+  	<string name="pref_badge">Badge-Konto akutalisieren</string>
+  	<string name="pref_badge_long">Aktualisierung des Badge-Konto Stand aktivieren</string>
+  	<string name="pref_lang">Sprache wählen</string>
+  	<string name="pref_menu_default">Tagesteller</string>
+  	<string name="pref_lang_default">System-Language</string>
 
 </resources>
