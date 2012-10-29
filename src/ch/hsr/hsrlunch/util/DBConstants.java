@@ -16,4 +16,10 @@ public interface DBConstants {
 	final String COLUMN_OFFER_CONTENT = "Content";
 	final String COLUMN_OFFER_PRICE = "Price";
 	final String COLUMN_OFFER_WORKDAYID = "WorkdayID";
+	
+	final String TABLE_BADGE = "Badge";
+	final String COLUMN_BADGE_ID = "BadgeID";
+	final String COLUMN_BADGE_AMOUNT= "Amount";
+	final String COLUMN_BADGE_LASTUPDATE = "LastUpdate";
+	
 }

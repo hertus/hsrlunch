@@ -9,7 +9,7 @@ import android.util.Log;
 
 public class DBOpenHelper extends SQLiteOpenHelper implements DBConstants {
 	private static final String DATABASE_NAME = "hsrlunch.db";
-	private static final int DATABASE_VERSION = 25;
+	private static final int DATABASE_VERSION = 26;
 
 	public DBOpenHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -19,7 +19,7 @@ public class DBOpenHelper extends SQLiteOpenHelper implements DBConstants {
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE " + TABLE_WEEK + " (" + COLUMN_WEEK_ID
 				+ " INTEGER PRIMARY KEY, " + COLUMN_WEEK_LASTUPDATE
-				+ " DATE DEFAULT CURRENT_DATE)");
+				+ " DATE NOT NULL)");
 
 		db.execSQL("CREATE TABLE " + TABLE_WORKDAY + " (" + COLUMN_WORKDAY_ID
 				+ " INTEGER PRIMARY KEY, " + COLUMN_WORKDAY_DATE
@@ -32,6 +32,11 @@ public class DBOpenHelper extends SQLiteOpenHelper implements DBConstants {
 				+ " TEXT NOT NULL, " + COLUMN_OFFER_PRICE + " TEXT NOT NULL, "
 				+ COLUMN_OFFER_WORKDAYID + " INTEGER NOT NULL REFERENCES "
 				+ TABLE_WORKDAY + ")");
+
+		db.execSQL("CREATE TABLE " + TABLE_BADGE + " (" + COLUMN_BADGE_ID
+				+ " INTEGER PRIMARY KEY, " + COLUMN_BADGE_AMOUNT
+				+ " DOUBLE NOT NULL, " + COLUMN_BADGE_LASTUPDATE
+				+ " DATE NOT NULL)");
 
 		initializeData(db);
 	}
@@ -73,6 +78,7 @@ public class DBOpenHelper extends SQLiteOpenHelper implements DBConstants {
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_OFFER + ";");
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_WORKDAY + ";");
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_WEEK + ";");
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_BADGE + ";");
 
 		onCreate(db);
 
