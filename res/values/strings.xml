@@ -14,5 +14,5 @@
   	<string name="pref_lang">Sprache wählen</string>
   	<string name="pref_menu_default">Tagesteller</string>
   	<string name="pref_lang_default">System-Language</string>
-
+        <string name="SlideHead">Tagesauswahl</string>
 </resources>
