@@ -18,14 +18,13 @@ import ch.hsr.hsrlunch.model.Offer;
 import ch.hsr.hsrlunch.model.WorkDay;
 import ch.hsr.hsrlunch.util.DBOpenHelper;
 import ch.hsr.hsrlunch.util.TabPageAdapter;
-import ch.hsr.hsrlunch.util.SlideMenuInterface.OnSlideMenuItemClickListener;
-import ch.hsr.hsrlunch.ui.SlideMenuHSR;
-
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.ShareActionProvider;
+import com.coboltforge.slidemenu.SlideMenu;
+import com.coboltforge.slidemenu.SlideMenuInterface.OnSlideMenuItemClickListener;
 import com.viewpagerindicator.TabPageIndicator;
 
 public class MainActivity extends SherlockFragmentActivity implements
@@ -47,7 +46,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	ShareActionProvider provider;
 	long WEEK_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
-	private SlideMenuHSR slidemenu;
+	private SlideMenu slidemenu;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -66,8 +65,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 		TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);
 		indicator.setViewPager(mViewPager);
 
-		slidemenu = (SlideMenuHSR) findViewById(R.id.slideMenu);
-		slidemenu.init(this, R.menu.slide, this, 500);
+		slidemenu = (SlideMenu) findViewById(R.id.slideMenu);
+		slidemenu.init(this, R.menu.slide, this, 333);
 		
 		/* Defining a listener for pageChange */
         ViewPager.SimpleOnPageChangeListener pageChangeListener = new ViewPager.SimpleOnPageChangeListener(){
