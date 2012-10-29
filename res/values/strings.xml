@@ -7,5 +7,6 @@
     <string name="OFFER_DAILY_TITLE">Tagesteller</string>
     <string name="OFFER_VEGI_TITLE">Vegetarisch</string>
     <string name="OFFEr_WEEK_TITLE">Wochen-Hit</string>
+        <string name="SlideHead">Tagesauswahl</string>
 
 </resources>
