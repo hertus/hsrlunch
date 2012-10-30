@@ -17,10 +17,14 @@ public class OfferUpdater implements OfferConstants {
 		offerData = new OfferDataSource(dbHelper);
 	}
 
+	public void updateSingleOffer(int day) {
+		new MultipleSiteParserTask(day).execute();
+	}
+
 	@SuppressLint("NewApi")
 	public void updateAllOffer() {
 
-		Log.w(DBOpenHelper.class.getName(),
+		Log.w(OfferUpdater.class.getName(),
 				"BEGIN WITH UPDATE ALL OFFER PARSING!");
 
 		// Try Parallel AsyncTask connecting Websites and Parse
@@ -32,9 +36,6 @@ public class OfferUpdater implements OfferConstants {
 				new MultipleSiteParserTask(i).execute();
 			}
 		}
-
-		Log.w(DBOpenHelper.class.getName(),
-				"END WITH UPDATE ALL OFFER PARSING!");
 	}
 
 	private synchronized void setOfferContent(int day) {
@@ -90,6 +91,7 @@ public class OfferUpdater implements OfferConstants {
 		@Override
 		protected void onPostExecute(Void result) {
 			setOfferContent(day);
+			Log.w(OfferUpdater.class.getName(), "END WITH UPDATE OFFER" + day);
 		}
 
 	}

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import org.xmlpull.v1.XmlPullParser;
 
 import ch.hsr.hsrlunch.R;
-import ch.hsr.hsrlunch.util.SlideMenuInterface;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.XmlResourceParser;

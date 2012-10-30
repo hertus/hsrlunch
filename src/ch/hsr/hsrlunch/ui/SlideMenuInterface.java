@@ -19,7 +19,7 @@
  * limitations under the License.
  */
 
-package ch.hsr.hsrlunch.util;
+package ch.hsr.hsrlunch.ui;
 
 public interface SlideMenuInterface {
 	
