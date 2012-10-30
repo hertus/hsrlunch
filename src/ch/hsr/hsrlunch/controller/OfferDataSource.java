@@ -1,10 +1,10 @@
 package ch.hsr.hsrlunch.controller;
 
-import ch.hsr.hsrlunch.util.DBConstants;
-import ch.hsr.hsrlunch.util.DBOpenHelper;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import ch.hsr.hsrlunch.util.DBConstants;
+import ch.hsr.hsrlunch.util.DBOpenHelper;
 
 public class OfferDataSource implements DBConstants {
 	private DBOpenHelper dbHelper;
@@ -70,11 +70,19 @@ public class OfferDataSource implements DBConstants {
 	 *            [1-5] where 1=MO ... 5=FR
 	 */
 	public void setOfferContent(String content, int type, int workday) {
-		ContentValues values = new ContentValues();
-		values.put(COLUMN_OFFER_CONTENT, content);
-		String where = COLUMN_OFFER_TYPE + "=" + type + " AND "
-				+ COLUMN_OFFER_WORKDAYID + "=" + workday;
-		db.update(TABLE_OFFER, values, where, null);
+		if (content != null) {
+			ContentValues values = new ContentValues();
+			values.put(COLUMN_OFFER_CONTENT, content);
+			String where = COLUMN_OFFER_TYPE + "=" + type + " AND "
+					+ COLUMN_OFFER_WORKDAYID + "=" + workday;
+			db.update(TABLE_OFFER, values, where, null);
+		} else {
+			ContentValues values = new ContentValues();
+			values.put(COLUMN_OFFER_CONTENT, "nothing today");
+			String where = COLUMN_OFFER_TYPE + "=" + type + " AND "
+					+ COLUMN_OFFER_WORKDAYID + "=" + workday;
+			db.update(TABLE_OFFER, values, where, null);
+		}
 
 	}
 
@@ -86,11 +94,19 @@ public class OfferDataSource implements DBConstants {
 	 *            [1-5] where 1=MO ... 5=FR
 	 */
 	public void setOfferPrice(String price, int type, int workday) {
-		ContentValues values = new ContentValues();
-		values.put(COLUMN_OFFER_PRICE, price);
-		String where = COLUMN_OFFER_TYPE + "=" + type + " AND "
-				+ COLUMN_OFFER_WORKDAYID + "=" + workday;
-		db.update(TABLE_OFFER, values, where, null);
+		if (price != null) {
+			ContentValues values = new ContentValues();
+			values.put(COLUMN_OFFER_PRICE, price);
+			String where = COLUMN_OFFER_TYPE + "=" + type + " AND "
+					+ COLUMN_OFFER_WORKDAYID + "=" + workday;
+			db.update(TABLE_OFFER, values, where, null);
+		} else {
+			ContentValues values = new ContentValues();
+			values.put(COLUMN_OFFER_PRICE, "-");
+			String where = COLUMN_OFFER_TYPE + "=" + type + " AND "
+					+ COLUMN_OFFER_WORKDAYID + "=" + workday;
+			db.update(TABLE_OFFER, values, where, null);
+		}
 
 	}
 }

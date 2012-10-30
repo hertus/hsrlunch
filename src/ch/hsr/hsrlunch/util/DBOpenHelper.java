@@ -9,7 +9,7 @@ import android.util.Log;
 
 public class DBOpenHelper extends SQLiteOpenHelper implements DBConstants {
 	private static final String DATABASE_NAME = "hsrlunch.db";
-	private static final int DATABASE_VERSION = 26;
+	private static final int DATABASE_VERSION = 27;
 
 	public DBOpenHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);

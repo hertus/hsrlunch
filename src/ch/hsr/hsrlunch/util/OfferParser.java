@@ -51,11 +51,8 @@ public class OfferParser implements OfferConstants {
 						toOfferArray(element, OFFER_WEEK, OFFER_WEEK_PRICE);
 					}
 				}
-
 			}
-
 		}
-
 	}
 
 	private void toOfferArray(Element element, int offer, int price) {
