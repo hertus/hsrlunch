@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import net.simonvt.widget.MenuDrawer;
+import net.simonvt.widget.MenuDrawerManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -15,8 +17,7 @@ import ch.hsr.hsrlunch.controller.OfferUpdater;
 import ch.hsr.hsrlunch.controller.WeekDataSource;
 import ch.hsr.hsrlunch.model.Offer;
 import ch.hsr.hsrlunch.model.WorkDay;
-import ch.hsr.hsrlunch.ui.SlideMenuHSR;
-import ch.hsr.hsrlunch.ui.SlideMenuInterface.OnSlideMenuItemClickListener;
+import ch.hsr.hsrlunch.ui.CustomMenuView;
 import ch.hsr.hsrlunch.util.DBOpenHelper;
 import ch.hsr.hsrlunch.util.TabPageAdapter;
 
@@ -27,8 +28,7 @@ import com.actionbarsherlock.view.MenuItem.OnMenuItemClickListener;
 import com.actionbarsherlock.widget.ShareActionProvider;
 import com.viewpagerindicator.TabPageIndicator;
 
-public class MainActivity extends SherlockFragmentActivity implements
-		OnSlideMenuItemClickListener {
+public class MainActivity extends SherlockFragmentActivity  {
 
 	public final static String OFFER_DAILY_TITLE = "Tagesteller";
 	public final static String OFFER_VEGI_TITLE = "Vegetarisch";
@@ -42,18 +42,21 @@ public class MainActivity extends SherlockFragmentActivity implements
 	public static Offer selectedOffer;
 
 	ViewPager mViewPager;
+	private MenuDrawerManager mMenuDrawer;
 	TabPageAdapter mAdapter;
 	ShareActionProvider provider;
 	long WEEK_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
-	private SlideMenuHSR slidemenu;
 	private DBOpenHelper dbHelper;
 	private OfferUpdater offerUpdater;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		
+		mMenuDrawer = new MenuDrawerManager(this, MenuDrawer.MENU_DRAG_CONTENT);
+		mMenuDrawer.setMenuView(new CustomMenuView(this));
+		mMenuDrawer.setContentView(R.layout.activity_main);
 
 		getSupportActionBar().setHomeButtonEnabled(true);
 
@@ -67,8 +70,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);
 		indicator.setViewPager(mViewPager);
 
-		slidemenu = (SlideMenuHSR) findViewById(R.id.slideMenu);
-		slidemenu.init(this, R.menu.slide, this, 333);
+
 
 		/* Defining a listener for pageChange */
 		ViewPager.SimpleOnPageChangeListener pageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
@@ -89,42 +91,14 @@ public class MainActivity extends SherlockFragmentActivity implements
 		offerUpdater = new OfferUpdater(dbHelper);
 	}
 
-	@Override
-	public void onSlideMenuItemClick(int itemId) {
-		switch (itemId) {
-		case R.id.item_one:
-			Toast.makeText(this, "Montag markiert", Toast.LENGTH_SHORT).show();
-			selectedDay = dayList.get(0);
-			break;
-		case R.id.item_two:
-			Toast.makeText(this, "Dienstag markiert", Toast.LENGTH_SHORT)
-					.show();
-			selectedDay = dayList.get(1);
-			break;
-		case R.id.item_three:
-			Toast.makeText(this, "Mittwoch markiert", Toast.LENGTH_SHORT)
-					.show();
-			selectedDay = dayList.get(2);
-			break;
-		case R.id.item_four:
-			Toast.makeText(this, "Donnerstag markiert", Toast.LENGTH_SHORT)
-					.show();
-			selectedDay = dayList.get(3);
-			break;
-		case R.id.item_five:
-			Toast.makeText(this, "Freitag markiert", Toast.LENGTH_SHORT).show();
-			selectedDay = dayList.get(4);
-			break;
-		}
-	}
+
 
 	@Override
-	public boolean onOptionsItemSelected(
-			com.actionbarsherlock.view.MenuItem item) {
+	public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
 		System.out.println("Option Printed!");
 		switch (item.getItemId()) {
 		case android.R.id.home: // this is the app icon of the actionbar
-			slidemenu.show();
+			mMenuDrawer.toggleMenu();
 			break;
 		}
 		System.out.println(selectedDay.getDate());
