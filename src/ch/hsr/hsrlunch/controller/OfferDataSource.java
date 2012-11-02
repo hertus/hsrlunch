@@ -78,7 +78,7 @@ public class OfferDataSource implements DBConstants {
 			db.update(TABLE_OFFER, values, where, null);
 		} else {
 			ContentValues values = new ContentValues();
-			values.put(COLUMN_OFFER_CONTENT, "nothing today");
+			values.put(COLUMN_OFFER_CONTENT, EMPTY);
 			String where = COLUMN_OFFER_TYPE + "=" + type + " AND "
 					+ COLUMN_OFFER_WORKDAYID + "=" + workday;
 			db.update(TABLE_OFFER, values, where, null);
