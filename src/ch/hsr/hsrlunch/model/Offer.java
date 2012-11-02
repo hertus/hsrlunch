@@ -1,9 +1,9 @@
 package ch.hsr.hsrlunch.model;
 
-import ch.hsr.hsrlunch.MainActivity;
+import ch.hsr.hsrlunch.controller.OfferConstants;
 
 
-public class Offer {
+public class Offer implements OfferConstants{
 	
 	int offerType = 0;
 	String content = "";
@@ -20,11 +20,11 @@ public class Offer {
 	}
 	private void setTitle(int type) {
 		switch(type){
-		case 0: title = MainActivity.OFFER_DAILY_TITLE;
+		case 0: title = OFFER_DAILY_TITLE;
 		break;
-		case 1: title = MainActivity.OFFER_VEGI_TITLE;
+		case 1: title = OFFER_VEGI_TITLE;
 		break;
-		case 2: title = MainActivity.OFFER_WEEK_TITLE;
+		case 2: title = OFFER_WEEK_TITLE;
 		break;
 		}
 	}

@@ -12,7 +12,7 @@ public class Badge {
 		super();
 		this.amount = amount;
 		this.lastUpdate = lastUpdate;
-		df = DateFormat.getDateInstance( DateFormat.FULL );
+		df = DateFormat.getDateInstance( DateFormat.SHORT );
 	}
 	public double getAmount() {
 		return amount;

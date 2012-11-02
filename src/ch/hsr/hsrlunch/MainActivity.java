@@ -12,9 +12,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.widget.TextView;
 import android.widget.Toast;
 import ch.hsr.hsrlunch.controller.OfferUpdater;
 import ch.hsr.hsrlunch.controller.WeekDataSource;
+import ch.hsr.hsrlunch.model.Badge;
 import ch.hsr.hsrlunch.model.Offer;
 import ch.hsr.hsrlunch.model.WorkDay;
 import ch.hsr.hsrlunch.ui.CustomMenuView;
@@ -28,11 +30,7 @@ import com.actionbarsherlock.view.MenuItem.OnMenuItemClickListener;
 import com.actionbarsherlock.widget.ShareActionProvider;
 import com.viewpagerindicator.TabPageIndicator;
 
-public class MainActivity extends SherlockFragmentActivity  {
-
-	public final static String OFFER_DAILY_TITLE = "Tagesteller";
-	public final static String OFFER_VEGI_TITLE = "Vegetarisch";
-	public final static String OFFER_WEEK_TITLE = "Wochen-Hit";
+public class MainActivity extends SherlockFragmentActivity{
 
 	private List<Offer> offerList;
 	public static List<WorkDay> dayList;
@@ -40,6 +38,7 @@ public class MainActivity extends SherlockFragmentActivity  {
 
 	public static WorkDay selectedDay;
 	public static Offer selectedOffer;
+	Badge badge;
 
 	ViewPager mViewPager;
 	private MenuDrawerManager mMenuDrawer;
@@ -89,6 +88,12 @@ public class MainActivity extends SherlockFragmentActivity  {
 
 		dbHelper = new DBOpenHelper(this);
 		offerUpdater = new OfferUpdater(dbHelper);
+		
+		TextView badgeAmount = (TextView) findViewById(R.id.amount);
+		badgeAmount.setText(badge.getAmount()+" CHF");
+		TextView badgeLastUpdate = (TextView) findViewById(R.id.lastUpdate);
+		badgeLastUpdate.setText(badge.getLastUpdate());
+		
 	}
 
 
@@ -109,10 +114,12 @@ public class MainActivity extends SherlockFragmentActivity  {
 	}
 
 	/*
-	 * statisches Füllen der Daten solange zugriff auch DB noch nicht
+	 * statisches Füllen der Daten solange zugriff auf DB noch nicht
 	 * implementiert ist
 	 */
 	private void init() {
+		
+		badge = new Badge(999.99, new Date());
 
 		Offer m1 = new Offer(0,
 				"Fischtäbli\nSauce Tatar\nBlattspinat\nSalzkartoffeln",
