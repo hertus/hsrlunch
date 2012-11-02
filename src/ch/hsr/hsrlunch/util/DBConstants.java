@@ -21,5 +21,6 @@ public interface DBConstants {
 	final String COLUMN_BADGE_ID = "BadgeID";
 	final String COLUMN_BADGE_AMOUNT= "Amount";
 	final String COLUMN_BADGE_LASTUPDATE = "LastUpdate";
-	
+
+	final String EMPTY = "EMPTY";
 }

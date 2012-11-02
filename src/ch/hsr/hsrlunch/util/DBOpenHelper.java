@@ -9,7 +9,7 @@ import android.util.Log;
 
 public class DBOpenHelper extends SQLiteOpenHelper implements DBConstants {
 	private static final String DATABASE_NAME = "hsrlunch.db";
-	private static final int DATABASE_VERSION = 27;
+	private static final int DATABASE_VERSION = 29;
 
 	public DBOpenHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -62,10 +62,16 @@ public class DBOpenHelper extends SQLiteOpenHelper implements DBConstants {
 				db.execSQL("INSERT INTO " + TABLE_OFFER + "("
 						+ COLUMN_OFFER_TYPE + ", " + COLUMN_OFFER_CONTENT
 						+ ", " + COLUMN_OFFER_PRICE + ", "
-						+ COLUMN_OFFER_WORKDAYID + ")VALUES(" + i
-						+ ",'placeholder','placeholder'," + j + ");");
+						+ COLUMN_OFFER_WORKDAYID + ")VALUES(" + i + ",'"
+						+ EMPTY + "','" + EMPTY + "'," + j + ");");
 			}
 		}
+
+		// Badge placeholders
+		double amountInit = 0.0;
+		db.execSQL("INSERT INTO " + TABLE_BADGE + "(" + COLUMN_BADGE_ID + ", "
+				+ COLUMN_BADGE_AMOUNT + ", " + COLUMN_BADGE_LASTUPDATE
+				+ ")VALUES(1," + amountInit + "," + new Date().getTime() + ")");
 	}
 
 	@Override
