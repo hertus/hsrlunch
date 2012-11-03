@@ -15,4 +15,11 @@
   	<string name="pref_menu_default">Tagesteller</string>
   	<string name="pref_lang_default">System-Language</string>
         <string name="SlideHead">Tagesauswahl</string>
+        <string-array name="weekdays">
+            <item >Montag</item>
+            <item >Dienstag</item>
+            <item >Mittwoch</item>
+            <item >Donnerstag</item>
+            <item >Freitag</item>
+        </string-array>
 </resources>

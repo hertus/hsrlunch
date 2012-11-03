@@ -17,6 +17,7 @@ import android.widget.Toast;
 import ch.hsr.hsrlunch.controller.OfferUpdater;
 import ch.hsr.hsrlunch.controller.WeekDataSource;
 import ch.hsr.hsrlunch.model.Badge;
+import ch.hsr.hsrlunch.model.MenuViewAdapter;
 import ch.hsr.hsrlunch.model.Offer;
 import ch.hsr.hsrlunch.model.WorkDay;
 import ch.hsr.hsrlunch.ui.CustomMenuView;
@@ -54,8 +55,16 @@ public class MainActivity extends SherlockFragmentActivity{
 		super.onCreate(savedInstanceState);
 		
 		mMenuDrawer = new MenuDrawerManager(this, MenuDrawer.MENU_DRAG_CONTENT);
-		mMenuDrawer.setMenuView(new CustomMenuView(this));
+		CustomMenuView MenuView = new CustomMenuView(this);
+		MenuViewAdapter mvAdapter = new MenuViewAdapter(this);
+		MenuView.setAdapter(mvAdapter);
+		
 		mMenuDrawer.setContentView(R.layout.activity_main);
+		mMenuDrawer.setMenuView(MenuView);
+		
+		
+		
+		
 
 		getSupportActionBar().setHomeButtonEnabled(true);
 
