@@ -21,11 +21,11 @@ import android.widget.Toast;
 import ch.hsr.hsrlunch.controller.OfferUpdater;
 import ch.hsr.hsrlunch.controller.WeekDataSource;
 import ch.hsr.hsrlunch.model.Badge;
-import ch.hsr.hsrlunch.model.MenuViewAdapter;
 import ch.hsr.hsrlunch.model.Offer;
 import ch.hsr.hsrlunch.model.WorkDay;
 import ch.hsr.hsrlunch.ui.CustomMenuView;
 import ch.hsr.hsrlunch.util.DBOpenHelper;
+import ch.hsr.hsrlunch.util.MenuViewAdapter;
 import ch.hsr.hsrlunch.util.TabPageAdapter;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -53,6 +53,7 @@ public class MainActivity extends SherlockFragmentActivity{
 
 	private DBOpenHelper dbHelper;
 	private OfferUpdater offerUpdater;
+	private MenuViewAdapter mvAdapter;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -60,13 +61,25 @@ public class MainActivity extends SherlockFragmentActivity{
 		
 		mMenuDrawer = new MenuDrawerManager(this, MenuDrawer.MENU_DRAG_CONTENT);
 		CustomMenuView menuView = new CustomMenuView(this);
-		MenuViewAdapter mvAdapter = new MenuViewAdapter(this);
+		mvAdapter = new MenuViewAdapter(this,mMenuDrawer);
 		menuView.setAdapter(mvAdapter);
+		menuView.setOnScrollChangedListener(new CustomMenuView.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                mMenuDrawer.getMenuDrawer().invalidate();
+            }
+        });
 		menuView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-								
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				mvAdapter.setActiveEntry(position);
+				mMenuDrawer.setActiveView(view, position);
+				mMenuDrawer.closeMenu();
+				if (position <= 6) {
+					showDay(position);
+				} else {
+					//starte Settings-Activity
+				}
 			}
 		});
 		
@@ -116,8 +129,7 @@ public class MainActivity extends SherlockFragmentActivity{
 		
 	}
 
-
-
+	
 	@Override
 	public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
 		System.out.println("Option Printed!");
@@ -132,6 +144,11 @@ public class MainActivity extends SherlockFragmentActivity{
 			mAdapter.notifyDataSetChanged();
 		return super.onOptionsItemSelected(item);
 	}
+
+	private void showDay(int position) {
+		// TODO ViewPager soll entsprechenden Tag anzeigen: 1 = Montag, 5 = Freitag
+	}
+
 
 	/*
 	 * statisches Füllen der Daten solange zugriff auf DB noch nicht

@@ -60,6 +60,11 @@
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
     </style>
+    
+	<style name="MenuDrawerStyle" parent="Widget.MenuDrawer">
+        <item name="mdArrowDrawable">@drawable/menu_arrow</item>
+        <item name="mdMenuWidth">250dp</item>
+    </style>
 
 
 </resources>
