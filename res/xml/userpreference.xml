@@ -5,6 +5,7 @@
         android:key="pref_fav_menu"
         android:title="@string/pref_fav_menu"
         android:entries="@array/pref_menu_entries"
+        android:entryValues="@array/pref_menu_entries"
         android:defaultValue="@string/pref_menu_default" />
        <SwitchPreference
         android:key="pref_badge"
