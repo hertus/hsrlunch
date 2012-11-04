@@ -43,4 +43,9 @@ public class TabPageAdapter extends FragmentPagerAdapter {
     	}
     }
 
+	public SparseArray<OfferFragment> getFragmentList() {
+		return fragmentList;
+	}
+  
+
 }

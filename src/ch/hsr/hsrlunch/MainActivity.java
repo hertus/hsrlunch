@@ -8,22 +8,28 @@ import java.util.List;
 
 import net.simonvt.widget.MenuDrawer;
 import net.simonvt.widget.MenuDrawerManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import ch.hsr.hsrlunch.controller.OfferConstants;
 import ch.hsr.hsrlunch.controller.OfferUpdater;
 import ch.hsr.hsrlunch.controller.WeekDataSource;
 import ch.hsr.hsrlunch.model.Badge;
 import ch.hsr.hsrlunch.model.Offer;
 import ch.hsr.hsrlunch.model.WorkDay;
 import ch.hsr.hsrlunch.ui.CustomMenuView;
+import ch.hsr.hsrlunch.ui.SettingsActivity;
 import ch.hsr.hsrlunch.util.DBOpenHelper;
 import ch.hsr.hsrlunch.util.MenuViewAdapter;
 import ch.hsr.hsrlunch.util.TabPageAdapter;
@@ -35,7 +41,8 @@ import com.actionbarsherlock.view.MenuItem.OnMenuItemClickListener;
 import com.actionbarsherlock.widget.ShareActionProvider;
 import com.viewpagerindicator.TabPageIndicator;
 
-public class MainActivity extends SherlockFragmentActivity{
+public class MainActivity extends SherlockFragmentActivity implements OfferConstants,OnSharedPreferenceChangeListener{
+	  private static final int SHOW_PREFERENCES = 1;
 
 	private List<Offer> offerList;
 	public static List<WorkDay> dayList;
@@ -43,6 +50,7 @@ public class MainActivity extends SherlockFragmentActivity{
 
 	public static WorkDay selectedDay;
 	public static Offer selectedOffer;
+	
 	Badge badge;
 
 	ViewPager mViewPager;
@@ -54,6 +62,9 @@ public class MainActivity extends SherlockFragmentActivity{
 	private DBOpenHelper dbHelper;
 	private OfferUpdater offerUpdater;
 	private MenuViewAdapter mvAdapter;
+	private LinearLayout badgeLayout;
+	private boolean showBadgeInfo;
+	private int favouriteMenu;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -79,6 +90,8 @@ public class MainActivity extends SherlockFragmentActivity{
 					showDay(position);
 				} else {
 					//starte Settings-Activity
+					Intent i = new Intent(getApplicationContext(),SettingsActivity.class);
+					startActivityForResult(i, SHOW_PREFERENCES);
 				}
 			}
 		});
@@ -113,7 +126,7 @@ public class MainActivity extends SherlockFragmentActivity{
 				provider.setShareIntent(getDefaultShareIntent());
 			}
 		};
-		/** Setting the pageChange listner to the viewPager */
+		// Setting the pageChange listener to the viewPager */
 		indicator.setOnPageChangeListener(pageChangeListener);
 
 		// slidemenu.setAsShown();
@@ -122,11 +135,21 @@ public class MainActivity extends SherlockFragmentActivity{
 		dbHelper = new DBOpenHelper(this);
 		offerUpdater = new OfferUpdater(dbHelper);
 		
+		badgeLayout = (LinearLayout) findViewById(R.id.badge);
+		if(showBadgeInfo){
+			updateBadgeInfo();
+		}
+		
+	}
+
+
+	private void updateBadgeInfo() {
+		badgeLayout.setVisibility(View.VISIBLE);
+		
 		TextView badgeAmount = (TextView) findViewById(R.id.amount);
 		badgeAmount.setText(badge.getAmount()+" CHF");
 		TextView badgeLastUpdate = (TextView) findViewById(R.id.lastUpdate);
 		badgeLastUpdate.setText(badge.getLastUpdate());
-		
 	}
 
 	
@@ -228,9 +251,6 @@ public class MainActivity extends SherlockFragmentActivity{
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.actionbar_menu, menu);
 
-		// menu.add("refresh").setIcon(R.drawable.ic_menu_refresh).setShowAsAction();
-		// menu.add("share").setIcon(R.drawable.ic_menu_share).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
 		MenuItem item = menu.findItem(R.id.menu_share);
 		provider = (ShareActionProvider) item.getActionProvider();
 		provider.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
@@ -245,6 +265,17 @@ public class MainActivity extends SherlockFragmentActivity{
 						Toast.LENGTH_SHORT).show();
 				offerUpdater.updateAllOffer();
 				return false;
+			}
+		});
+		
+		MenuItem settings = menu.findItem(R.id.menu_settings);
+		settings.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				Intent i = new Intent(getApplicationContext(),SettingsActivity.class);
+				startActivityForResult(i, SHOW_PREFERENCES);
+				return true;
 			}
 		});
 
@@ -271,6 +302,46 @@ public class MainActivity extends SherlockFragmentActivity{
 			return true; // dbage ist aus letzer Woche
 		return false; // dbage ist neuer als der letzte Montag
 
+	}
+	private void updateFromPreferences(){
+		Context context = getApplicationContext();
+		SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(context);
+		
+		showBadgeInfo = prefs.getBoolean(SettingsActivity.PREF_BADGE, false);
+		
+		String temp = prefs.getString(SettingsActivity.PREF_FAV_MENU, OFFER_DAILY_TITLE);
+		if ( temp.equals(OFFER_DAILY_TITLE)){
+			favouriteMenu = 0;
+		}else if(temp.equals(OFFER_VEGI)){
+			favouriteMenu = 1;
+		}else{
+			favouriteMenu = 2;
+		}
+		
+	}
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data){
+		super.onActivityResult(requestCode, resultCode, data);
+		if( requestCode == SHOW_PREFERENCES){
+			updateFromPreferences();
+		}
+		
+	}
+
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+			String key) {
+		updateFromPreferences();
+		
+		if(showBadgeInfo){
+			updateBadgeInfo();
+		}else{
+			badgeLayout.setVisibility(View.GONE);
+		}
+		
+		mAdapter.setPrimaryItem(mViewPager, favouriteMenu, mAdapter.getFragmentList().get(favouriteMenu));
+		
 	}
 
 }

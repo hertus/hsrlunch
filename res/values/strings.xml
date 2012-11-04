@@ -13,7 +13,6 @@
   	<string name="pref_badge_long">Aktualisierung des Badge-Konto Stand aktivieren</string>
   	<string name="pref_lang">Sprache wählen</string>
   	<string name="pref_menu_default">Tagesteller</string>
-  	<string name="pref_lang_default">System-Language</string>
         <string name="SlideHead">Tagesauswahl</string>
         <string name="menu_settings">Einstellungen</string>
         <string-array name="weekdays">

@@ -1,39 +1,36 @@
 package ch.hsr.hsrlunch.ui;
 
+import com.actionbarsherlock.app.SherlockPreferenceActivity;
+
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import ch.hsr.hsrlunch.R;
 
-import com.actionbarsherlock.app.SherlockPreferenceActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 public class SettingsActivity extends SherlockPreferenceActivity {
 
 	public static final String PREF_FAV_MENU = "PREF_FAV_MENU";
 	public static final String PREF_BADGE = "PREF_BADGE";
-	public static final String PREF_LANG = "PREF_LANG";
 	
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.userpreference);
-    	getSupportActionBar().setHomeButtonEnabled(true);
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-    	getSupportMenuInflater().inflate(R.xml.userpreference, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
+        // We use addPreferencesFromResource as we need sdk-9 compatibility
+        // but build with sdk 15
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            // TODO Auto-generated method stub
+            super.onCreate(savedInstanceState);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            addPreferencesFromResource(R.xml.userpreference);
         }
-        return super.onOptionsItemSelected(item);
-    }
+
+        @Override
+        public boolean onOptionsItemSelected(
+                        com.actionbarsherlock.view.MenuItem item) {
+            switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+            }
+        }
 
 }
