@@ -12,6 +12,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 import ch.hsr.hsrlunch.controller.OfferUpdater;
@@ -55,12 +59,19 @@ public class MainActivity extends SherlockFragmentActivity{
 		super.onCreate(savedInstanceState);
 		
 		mMenuDrawer = new MenuDrawerManager(this, MenuDrawer.MENU_DRAG_CONTENT);
-		CustomMenuView MenuView = new CustomMenuView(this);
+		CustomMenuView menuView = new CustomMenuView(this);
 		MenuViewAdapter mvAdapter = new MenuViewAdapter(this);
-		MenuView.setAdapter(mvAdapter);
+		menuView.setAdapter(mvAdapter);
+		menuView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+								
+			}
+		});
 		
 		mMenuDrawer.setContentView(R.layout.activity_main);
-		mMenuDrawer.setMenuView(MenuView);
+		mMenuDrawer.setMenuView(menuView);
 		
 		
 		
