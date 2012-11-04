@@ -211,6 +211,7 @@ public class MainActivity extends SherlockFragmentActivity{
 		MenuItem refresh = menu.findItem(R.id.menu_refresh);
 		refresh.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
+			@Override
 			public boolean onMenuItemClick(MenuItem item) {
 				Toast.makeText(getApplicationContext(), "Update",
 						Toast.LENGTH_SHORT).show();

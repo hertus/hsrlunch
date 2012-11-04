@@ -36,14 +36,12 @@ public class MenuViewAdapter extends  BaseAdapter{
 		
 		List<String> weekdays = Arrays.asList(this.main.getResources().getStringArray(R.array.weekdays));
 		
-		
-		
 		mItems.add(new Category("Tagesauswahl"));
 		for (String str: weekdays) {
 			mItems.add(new Item(str));
 		}
-		mItems.add(new Category("Settings"));
-		mItems.add(new Item("Setting"));
+		mItems.add(new Category(main.getResources().getString(R.string.menu_settings)));
+		mItems.add(new Item(main.getResources().getString(R.string.menu_settings)));
 		
 		
 	}
@@ -52,6 +50,11 @@ public class MenuViewAdapter extends  BaseAdapter{
 	public int getCount() {
 		return mItems.size();
 	}
+	
+    @Override
+    public boolean isEnabled(int position) {
+        return getItem(position) instanceof Item;
+    }
 
 	@Override
 	public Object getItem(int position) {
@@ -72,14 +75,12 @@ public class MenuViewAdapter extends  BaseAdapter{
             if (v == null) {
                 v = main.getLayoutInflater().inflate(R.layout.menu_row_category, parent, false);
             }
-
             ((TextView) v).setText(((Category) item).mTitle);
 
         } else {
             if (v == null) {
                 v = main.getLayoutInflater().inflate(R.layout.menu_row_item, parent, false);
             }
-
             TextView tv = (TextView) v;
             tv.setText(((Item) item).mTitle);
 //            tv.setCompoundDrawablesWithIntrinsicBounds(((Item) item).mIconRes, 0, 0, 0);
