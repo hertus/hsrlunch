@@ -73,7 +73,7 @@ public class MainActivity extends SherlockFragmentActivity{
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				mvAdapter.setActiveEntry(position);
-				mMenuDrawer.setActiveView(view, position);
+				mMenuDrawer.setActiveView(view, position); // falls vorig Zeit ^^
 				mMenuDrawer.closeMenu();
 				if (position <= 6) {
 					showDay(position);
