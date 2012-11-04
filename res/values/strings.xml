@@ -16,4 +16,11 @@
   	<string name="pref_lang_default">System-Language</string>
         <string name="SlideHead">Tagesauswahl</string>
         <string name="menu_settings">Einstellungen</string>
+        <string-array name="weekdays">
+            <item >Montag</item>
+            <item >Dienstag</item>
+            <item >Mittwoch</item>
+            <item >Donnerstag</item>
+            <item >Freitag</item>
+        </string-array>
 </resources>

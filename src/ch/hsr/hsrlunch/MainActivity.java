@@ -12,11 +12,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 import ch.hsr.hsrlunch.controller.OfferUpdater;
 import ch.hsr.hsrlunch.controller.WeekDataSource;
 import ch.hsr.hsrlunch.model.Badge;
+import ch.hsr.hsrlunch.model.MenuViewAdapter;
 import ch.hsr.hsrlunch.model.Offer;
 import ch.hsr.hsrlunch.model.WorkDay;
 import ch.hsr.hsrlunch.ui.CustomMenuView;
@@ -54,8 +59,23 @@ public class MainActivity extends SherlockFragmentActivity{
 		super.onCreate(savedInstanceState);
 		
 		mMenuDrawer = new MenuDrawerManager(this, MenuDrawer.MENU_DRAG_CONTENT);
-		mMenuDrawer.setMenuView(new CustomMenuView(this));
+		CustomMenuView menuView = new CustomMenuView(this);
+		MenuViewAdapter mvAdapter = new MenuViewAdapter(this);
+		menuView.setAdapter(mvAdapter);
+		menuView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+								
+			}
+		});
+		
 		mMenuDrawer.setContentView(R.layout.activity_main);
+		mMenuDrawer.setMenuView(menuView);
+		
+		
+		
+		
 
 		getSupportActionBar().setHomeButtonEnabled(true);
 
@@ -202,6 +222,7 @@ public class MainActivity extends SherlockFragmentActivity{
 		MenuItem refresh = menu.findItem(R.id.menu_refresh);
 		refresh.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
+			@Override
 			public boolean onMenuItemClick(MenuItem item) {
 				Toast.makeText(getApplicationContext(), "Update",
 						Toast.LENGTH_SHORT).show();
