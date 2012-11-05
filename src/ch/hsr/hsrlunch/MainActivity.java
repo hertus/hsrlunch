@@ -50,6 +50,7 @@ public class MainActivity extends SherlockFragmentActivity implements OfferConst
 
 	public static WorkDay selectedDay;
 	public static Offer selectedOffer;
+	private static boolean dataAvailable;
 	
 	Badge badge;
 
@@ -63,8 +64,9 @@ public class MainActivity extends SherlockFragmentActivity implements OfferConst
 	private OfferUpdater offerUpdater;
 	private MenuViewAdapter mvAdapter;
 	private LinearLayout badgeLayout;
-	private boolean showBadgeInfo;
-	private int favouriteMenu;
+	private boolean showBadgeInfo = false;
+	
+	private int favouriteMenu = 0;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -135,6 +137,7 @@ public class MainActivity extends SherlockFragmentActivity implements OfferConst
 		dbHelper = new DBOpenHelper(this);
 		offerUpdater = new OfferUpdater(dbHelper);
 		
+		PreferenceManager.setDefaultValues(this, R.xml.userpreference, false);
 		badgeLayout = (LinearLayout) findViewById(R.id.badge);
 		if(showBadgeInfo){
 			updateBadgeInfo();
@@ -223,22 +226,30 @@ public class MainActivity extends SherlockFragmentActivity implements OfferConst
 		 * für den Sontag 1 zurück am wochenende wird der Freitag gesetzt
 		 */
 		switch (cal.get(Calendar.DAY_OF_WEEK)) {
-		case 1:
-		case 6:
-		case 7:
+		case 1: dataAvailable= false;
+		break;
+		case 6: 
 			selectedDayIndex = 4;
+			dataAvailable= true;
+			break;
+		case 7:
+			dataAvailable= false;
 			break;
 		case 2:
 			selectedDayIndex = 0;
+			dataAvailable= true;
 			break;
 		case 3:
 			selectedDayIndex = 1;
+			dataAvailable= true;
 			break;
 		case 4:
 			selectedDayIndex = 2;
+			dataAvailable= true;
 			break;
 		case 5:
 			selectedDayIndex = 3;
+			dataAvailable= true;
 			break;
 		}
 		// selectedDayIndex = (+5) % 7 > 4 ? 4: cal.get(Calendar.DAY_OF_WEEK)+5
@@ -304,6 +315,7 @@ public class MainActivity extends SherlockFragmentActivity implements OfferConst
 
 	}
 	private void updateFromPreferences(){
+		System.out.println("updateFromPreferences()");
 		Context context = getApplicationContext();
 		SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(context);
 		
@@ -317,7 +329,7 @@ public class MainActivity extends SherlockFragmentActivity implements OfferConst
 		}else{
 			favouriteMenu = 2;
 		}
-		
+		System.out.println("showBadgeInfo:" +showBadgeInfo);
 	}
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -332,6 +344,7 @@ public class MainActivity extends SherlockFragmentActivity implements OfferConst
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
+		
 		updateFromPreferences();
 		
 		if(showBadgeInfo){

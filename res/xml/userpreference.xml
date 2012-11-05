@@ -11,6 +11,6 @@
         android:key="pref_badge"
         android:title="@string/pref_badge"
         android:summary="@string/pref_badge_long"
-        android:defaultValue="true" />       
+        android:defaultValue="false" />       
 </PreferenceScreen>
 

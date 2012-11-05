@@ -7,15 +7,14 @@ import ch.hsr.hsrlunch.R;
 
 public class SettingsActivity extends SherlockPreferenceActivity {
 
-	public static final String PREF_FAV_MENU = "PREF_FAV_MENU";
-	public static final String PREF_BADGE = "PREF_BADGE";
+	public static final String PREF_FAV_MENU = "pref_fav_menu";
+	public static final String PREF_BADGE = "pref_badge";
 	
 
         // We use addPreferencesFromResource as we need sdk-9 compatibility
         // but build with sdk 15
         @Override
         protected void onCreate(Bundle savedInstanceState) {
-            // TODO Auto-generated method stub
             super.onCreate(savedInstanceState);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             addPreferencesFromResource(R.xml.userpreference);
