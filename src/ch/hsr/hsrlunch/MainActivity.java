@@ -42,30 +42,31 @@ import com.actionbarsherlock.widget.ShareActionProvider;
 import com.viewpagerindicator.TabPageIndicator;
 
 public class MainActivity extends SherlockFragmentActivity implements OfferConstants,OnSharedPreferenceChangeListener{
-	  private static final int SHOW_PREFERENCES = 1;
+	private static final int SHOW_PREFERENCES = 1;
+	private static final long WEEK_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
-	private List<Offer> offerList;
+	
 	public static List<WorkDay> dayList;
 	public static List<String> tabTitleList;
-
+	public static boolean dataAvailable;
 	public static WorkDay selectedDay;
 	public static Offer selectedOffer;
-	private static boolean dataAvailable;
 	
-	Badge badge;
+	private List<Offer> offerList;
+	private Badge badge;
 
-	ViewPager mViewPager;
+	private ViewPager mViewPager;
 	private MenuDrawerManager mMenuDrawer;
-	TabPageAdapter mAdapter;
-	ShareActionProvider provider;
-	long WEEK_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
+	private TabPageAdapter mAdapter;
+	private ShareActionProvider provider;
+	private MenuViewAdapter mvAdapter;
+	private LinearLayout badgeLayout;
 
 	private DBOpenHelper dbHelper;
 	private OfferUpdater offerUpdater;
-	private MenuViewAdapter mvAdapter;
-	private LinearLayout badgeLayout;
-	private boolean showBadgeInfo = false;
+
 	
+	private boolean showBadgeInfo = false;
 	private int favouriteMenu = 0;
 
 	@Override
@@ -101,10 +102,6 @@ public class MainActivity extends SherlockFragmentActivity implements OfferConst
 		mMenuDrawer.setContentView(R.layout.activity_main);
 		mMenuDrawer.setMenuView(menuView);
 		
-		
-		
-		
-
 		getSupportActionBar().setHomeButtonEnabled(true);
 
 		init();
@@ -141,6 +138,8 @@ public class MainActivity extends SherlockFragmentActivity implements OfferConst
 		badgeLayout = (LinearLayout) findViewById(R.id.badge);
 		if(showBadgeInfo){
 			updateBadgeInfo();
+		}else{
+			badgeLayout.setVisibility(View.GONE);
 		}
 		
 	}
@@ -164,8 +163,6 @@ public class MainActivity extends SherlockFragmentActivity implements OfferConst
 			mMenuDrawer.toggleMenu();
 			break;
 		}
-		System.out.println(selectedDay.getDate());
-		System.out.println(mAdapter);
 		if (mAdapter != null)
 			mAdapter.notifyDataSetChanged();
 		return super.onOptionsItemSelected(item);
@@ -173,6 +170,11 @@ public class MainActivity extends SherlockFragmentActivity implements OfferConst
 
 	private void showDay(int position) {
 		// TODO ViewPager soll entsprechenden Tag anzeigen: 1 = Montag, 5 = Freitag
+		selectedDay = dayList.get(position-1);	//hier haben wir eigentlich 0 für monatg, ... 4 für freitag
+		selectedOffer = selectedDay.getOfferList().get(favouriteMenu);
+		if(mAdapter != null)
+			mAdapter.notifyDataSetChanged();
+		
 	}
 
 
@@ -330,6 +332,15 @@ public class MainActivity extends SherlockFragmentActivity implements OfferConst
 			favouriteMenu = 2;
 		}
 		System.out.println("showBadgeInfo:" +showBadgeInfo);
+		
+		if(showBadgeInfo){
+			System.out.println("badge neu anzeigen");
+			updateBadgeInfo();
+		}else{
+			badgeLayout.setVisibility(View.GONE);
+		}
+		if(mAdapter != null)
+			mAdapter.setPrimaryItem(mViewPager, favouriteMenu, mAdapter.getFragmentList().get(favouriteMenu));
 	}
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -337,7 +348,6 @@ public class MainActivity extends SherlockFragmentActivity implements OfferConst
 		if( requestCode == SHOW_PREFERENCES){
 			updateFromPreferences();
 		}
-		
 	}
 
 
@@ -346,15 +356,7 @@ public class MainActivity extends SherlockFragmentActivity implements OfferConst
 			String key) {
 		
 		updateFromPreferences();
-		
-		if(showBadgeInfo){
-			updateBadgeInfo();
-		}else{
-			badgeLayout.setVisibility(View.GONE);
-		}
-		
-		mAdapter.setPrimaryItem(mViewPager, favouriteMenu, mAdapter.getFragmentList().get(favouriteMenu));
-		
+
 	}
 
 }

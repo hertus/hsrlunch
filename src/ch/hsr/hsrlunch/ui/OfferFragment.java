@@ -59,7 +59,7 @@ public class OfferFragment extends Fragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		if (menuNum >= 0) {
+		if (menuNum >= 0 && MainActivity.dataAvailable) {
 			title.setText(MainActivity.selectedDay.getOfferList().get(menuNum).getTitle());
 			date.setText(MainActivity.selectedDay.getDate().toString());
 			content.setText(MainActivity.selectedDay.getOfferList().get(menuNum).getMenuText());
@@ -68,7 +68,7 @@ public class OfferFragment extends Fragment {
 
 	}
 	public void updateValues(){
-		if (menuNum >= 0) {
+		if (menuNum >= 0 && MainActivity.dataAvailable) {
 			title.setText(MainActivity.selectedDay.getOfferList().get(menuNum).getTitle());
 			date.setText(MainActivity.selectedDay.getDate().toString());
 			content.setText(MainActivity.selectedDay.getOfferList().get(menuNum).getMenuText());
