@@ -1,6 +1,5 @@
 package ch.hsr.hsrlunch.ui;
 
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,7 +9,6 @@ import android.widget.TextView;
 import ch.hsr.hsrlunch.MainActivity;
 import ch.hsr.hsrlunch.R;
 
-
 public class OfferFragment extends Fragment {
 	private static final String MENU_DATA_EXTRA = "menuNum";
 	int menuNum;
@@ -19,6 +17,7 @@ public class OfferFragment extends Fragment {
 	TextView date;
 	TextView content;
 	TextView price;
+
 	public static OfferFragment newInstance(int menuNum) {
 		final OfferFragment f = new OfferFragment();
 		final Bundle args = new Bundle();
@@ -59,22 +58,21 @@ public class OfferFragment extends Fragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		if (menuNum >= 0 && MainActivity.dataAvailable) {
-			title.setText(MainActivity.selectedDay.getOfferList().get(menuNum).getTitle());
-			date.setText(MainActivity.selectedDay.getDate().toString());
-			content.setText(MainActivity.selectedDay.getOfferList().get(menuNum).getMenuText());
-			price.setText(MainActivity.selectedDay.getOfferList().get(menuNum).getPrice());
-		}
+		updateValues();
 
 	}
-	public void updateValues(){
+
+	public void updateValues() {
 		if (menuNum >= 0 && MainActivity.dataAvailable) {
-			title.setText(MainActivity.selectedDay.getOfferList().get(menuNum).getTitle());
+			//title.setText(MainActivity.selectedDay.getOfferList().get(menuNum)
+			//		.getTitle());
 			date.setText(MainActivity.selectedDay.getDate().toString());
-			content.setText(MainActivity.selectedDay.getOfferList().get(menuNum).getMenuText());
-			price.setText(MainActivity.selectedDay.getOfferList().get(menuNum).getPrice());
+			content.setText(MainActivity.selectedDay.getOfferList()
+					.get(menuNum).getMenuText());
+			price.setText(MainActivity.selectedDay.getOfferList().get(menuNum)
+					.getPrice());
 		}
-		
+
 	}
 
 }

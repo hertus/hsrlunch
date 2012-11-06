@@ -14,7 +14,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.AdapterView;
@@ -41,80 +40,73 @@ import com.actionbarsherlock.view.MenuItem.OnMenuItemClickListener;
 import com.actionbarsherlock.widget.ShareActionProvider;
 import com.viewpagerindicator.TabPageIndicator;
 
-public class MainActivity extends SherlockFragmentActivity implements OfferConstants,OnSharedPreferenceChangeListener{
+public class MainActivity extends SherlockFragmentActivity implements
+		OfferConstants, OnSharedPreferenceChangeListener {
 	private static final int SHOW_PREFERENCES = 1;
 	private static final long WEEK_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
-	
-	public static List<WorkDay> dayList;
-	public static List<String> tabTitleList;
+	public static List<WorkDay> dayList = new ArrayList<WorkDay>();
+	public static List<String> tabTitleList = new ArrayList<String>(3);
 	public static boolean dataAvailable;
 	public static WorkDay selectedDay;
 	public static Offer selectedOffer;
-	
+
 	private List<Offer> offerList;
 	private Badge badge;
 
 	private ViewPager mViewPager;
 	private MenuDrawerManager mMenuDrawer;
-	private TabPageAdapter mAdapter;
+	private TabPageAdapter mTabPageAdapter;
 	private ShareActionProvider provider;
 	private MenuViewAdapter mvAdapter;
 	private LinearLayout badgeLayout;
+	private CustomMenuView menuView;
 
 	private DBOpenHelper dbHelper;
 	private OfferUpdater offerUpdater;
 
-	
 	private boolean showBadgeInfo = false;
 	private int favouriteMenu = 0;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		mMenuDrawer = new MenuDrawerManager(this, MenuDrawer.MENU_DRAG_CONTENT);
-		CustomMenuView menuView = new CustomMenuView(this);
-		mvAdapter = new MenuViewAdapter(this,mMenuDrawer);
-		menuView.setAdapter(mvAdapter);
-		menuView.setOnScrollChangedListener(new CustomMenuView.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                mMenuDrawer.getMenuDrawer().invalidate();
-            }
-        });
-		menuView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				mvAdapter.setActiveEntry(position);
-				mMenuDrawer.setActiveView(view, position); // falls vorig Zeit ^^
-				mMenuDrawer.closeMenu();
-				if (position <= 6) {
-					showDay(position);
-				} else {
-					//starte Settings-Activity
-					Intent i = new Intent(getApplicationContext(),SettingsActivity.class);
-					startActivityForResult(i, SHOW_PREFERENCES);
-				}
-			}
-		});
-		
+
+		onCreateMenuDrawer();
 		mMenuDrawer.setContentView(R.layout.activity_main);
 		mMenuDrawer.setMenuView(menuView);
-		
+
 		getSupportActionBar().setHomeButtonEnabled(true);
 
+		// später furtschmeissen
 		init();
 
-		FragmentPagerAdapter mAdapter = new TabPageAdapter(
-				getSupportFragmentManager());
+		onCreatePageViewer();
+
+		onCreatePersistence();
+
+		PreferenceManager.setDefaultValues(this, R.xml.userpreference, false);
+		badgeLayout = (LinearLayout) findViewById(R.id.badge);
+		if (showBadgeInfo) {
+			updateBadgeView();
+		} else {
+			badgeLayout.setVisibility(View.GONE);
+		}
+
+	}
+
+	private void onCreatePersistence() {
+		dbHelper = new DBOpenHelper(this);
+		offerUpdater = new OfferUpdater(dbHelper);
+	}
+
+	private void onCreatePageViewer() {
+		mTabPageAdapter = new TabPageAdapter(getSupportFragmentManager());
 		mViewPager = (ViewPager) findViewById(R.id.viewpager);
-		mViewPager.setAdapter(mAdapter);
+		mViewPager.setAdapter(mTabPageAdapter);
 
 		TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);
 		indicator.setViewPager(mViewPager);
-
-
 
 		/* Defining a listener for pageChange */
 		ViewPager.SimpleOnPageChangeListener pageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
@@ -127,63 +119,77 @@ public class MainActivity extends SherlockFragmentActivity implements OfferConst
 		};
 		// Setting the pageChange listener to the viewPager */
 		indicator.setOnPageChangeListener(pageChangeListener);
-
-		// slidemenu.setAsShown();
-		// slidemenu.setHeaderImage(getResources().getDrawable(R.drawable.hsrlunch));
-
-		dbHelper = new DBOpenHelper(this);
-		offerUpdater = new OfferUpdater(dbHelper);
-		
-		PreferenceManager.setDefaultValues(this, R.xml.userpreference, false);
-		badgeLayout = (LinearLayout) findViewById(R.id.badge);
-		if(showBadgeInfo){
-			updateBadgeInfo();
-		}else{
-			badgeLayout.setVisibility(View.GONE);
-		}
-		
 	}
 
+	private void onCreateMenuDrawer() {
+		menuView = new CustomMenuView(this);
+		mMenuDrawer = new MenuDrawerManager(this, MenuDrawer.MENU_DRAG_CONTENT);
+		mvAdapter = new MenuViewAdapter(this, mMenuDrawer);
+		menuView.setAdapter(mvAdapter);
+		menuView.setOnScrollChangedListener(new CustomMenuView.OnScrollChangedListener() {
+			@Override
+			public void onScrollChanged() {
+				mMenuDrawer.getMenuDrawer().invalidate();
+			}
+		});
+		menuView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				mvAdapter.setActiveEntry(position);
+				mMenuDrawer.setActiveView(view, position); // falls vorig Zeit
+															// ^^
+				mMenuDrawer.closeMenu();
+				if (position <= 6) {
+					setSelectedDay(position);
+				} else {
+					// starte Settings-Activity
+					Intent i = new Intent(getApplicationContext(),
+							SettingsActivity.class);
+					startActivityForResult(i, SHOW_PREFERENCES);
+				}
+			}
+		});
+	}
 
-	private void updateBadgeInfo() {
+	private void updateBadgeView() {
 		badgeLayout.setVisibility(View.VISIBLE);
-		
+
 		TextView badgeAmount = (TextView) findViewById(R.id.amount);
-		badgeAmount.setText(badge.getAmount()+" CHF");
+		badgeAmount.setText(badge.getAmount() + " CHF");
 		TextView badgeLastUpdate = (TextView) findViewById(R.id.lastUpdate);
 		badgeLastUpdate.setText(badge.getLastUpdate());
 	}
 
-	
 	@Override
-	public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
-		System.out.println("Option Printed!");
+	public boolean onOptionsItemSelected(
+			com.actionbarsherlock.view.MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home: // this is the app icon of the actionbar
 			mMenuDrawer.toggleMenu();
 			break;
 		}
-		if (mAdapter != null)
-			mAdapter.notifyDataSetChanged();
 		return super.onOptionsItemSelected(item);
 	}
 
-	private void showDay(int position) {
-		// TODO ViewPager soll entsprechenden Tag anzeigen: 1 = Montag, 5 = Freitag
-		selectedDay = dayList.get(position-1);	//hier haben wir eigentlich 0 fÃ¼r monatg, ... 4 fÃ¼r freitag
+	private void setSelectedDay(int position) {
+		// TODO ViewPager soll entsprechenden Tag anzeigen: 1 = Montag, 5 =
+		// Freitag
+		selectedDay = dayList.get(position - 1); // hier haben wir eigentlich 0
+													// fÃ¼r monatg, ... 4 fÃ¼r
+													// freitag
 		selectedOffer = selectedDay.getOfferList().get(favouriteMenu);
-		if(mAdapter != null)
-			mAdapter.notifyDataSetChanged();
-		
-	}
+		if (mTabPageAdapter != null)
+			mTabPageAdapter.notifyDataSetChanged();
 
+	}
 
 	/*
 	 * statisches FÃ¼llen der Daten solange zugriff auf DB noch nicht
 	 * implementiert ist
 	 */
 	private void init() {
-		
+
 		badge = new Badge(999.99, new Date());
 
 		Offer m1 = new Offer(0,
@@ -208,14 +214,12 @@ public class MainActivity extends SherlockFragmentActivity implements OfferConst
 		GregorianCalendar cal4 = new GregorianCalendar(2012, 9, 25);
 		GregorianCalendar cal5 = new GregorianCalendar(2012, 9, 26);
 
-		dayList = new ArrayList<WorkDay>();
 		dayList.add(new WorkDay(0, new Date(cal1.getTimeInMillis()), offerList));
 		dayList.add(new WorkDay(1, new Date(cal2.getTimeInMillis()), offerList));
 		dayList.add(new WorkDay(2, new Date(cal3.getTimeInMillis()), offerList));
 		dayList.add(new WorkDay(3, new Date(cal4.getTimeInMillis()), offerList));
 		dayList.add(new WorkDay(4, new Date(cal5.getTimeInMillis()), offerList));
 
-		tabTitleList = new ArrayList<String>(3);
 		tabTitleList.add("tages");
 		tabTitleList.add("vegi");
 		tabTitleList.add("woche");
@@ -228,30 +232,31 @@ public class MainActivity extends SherlockFragmentActivity implements OfferConst
 		 * fÃ¼r den Sontag 1 zurÃ¼ck am wochenende wird der Freitag gesetzt
 		 */
 		switch (cal.get(Calendar.DAY_OF_WEEK)) {
-		case 1: dataAvailable= false;
-		break;
-		case 6: 
+		case 1:
+			dataAvailable = false;
+			break;
+		case 6:
 			selectedDayIndex = 4;
-			dataAvailable= true;
+			dataAvailable = true;
 			break;
 		case 7:
-			dataAvailable= false;
+			dataAvailable = false;
 			break;
 		case 2:
 			selectedDayIndex = 0;
-			dataAvailable= true;
+			dataAvailable = true;
 			break;
 		case 3:
 			selectedDayIndex = 1;
-			dataAvailable= true;
+			dataAvailable = true;
 			break;
 		case 4:
 			selectedDayIndex = 2;
-			dataAvailable= true;
+			dataAvailable = true;
 			break;
 		case 5:
 			selectedDayIndex = 3;
-			dataAvailable= true;
+			dataAvailable = true;
 			break;
 		}
 		// selectedDayIndex = (+5) % 7 > 4 ? 4: cal.get(Calendar.DAY_OF_WEEK)+5
@@ -276,17 +281,19 @@ public class MainActivity extends SherlockFragmentActivity implements OfferConst
 			public boolean onMenuItemClick(MenuItem item) {
 				Toast.makeText(getApplicationContext(), "Update",
 						Toast.LENGTH_SHORT).show();
-				offerUpdater.updateAllOffer();
+				offerUpdater.updateAllOffer(); // TODO: später ändern - Factory
+												// füllt Objekte etc.
 				return false;
 			}
 		});
-		
+
 		MenuItem settings = menu.findItem(R.id.menu_settings);
 		settings.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-			
+
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
-				Intent i = new Intent(getApplicationContext(),SettingsActivity.class);
+				Intent i = new Intent(getApplicationContext(),
+						SettingsActivity.class);
 				startActivityForResult(i, SHOW_PREFERENCES);
 				return true;
 			}
@@ -299,16 +306,17 @@ public class MainActivity extends SherlockFragmentActivity implements OfferConst
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("text/plain");
 		intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "HSR Menu @ "
-				+ selectedDay.getDate() + "-" + selectedOffer.getTitle());
+				+ selectedDay.getDate() + "-"); // + selectedOffer.getTitle()
 		intent.putExtra(android.content.Intent.EXTRA_TEXT,
 				selectedOffer.getOfferTxt());
 		return intent;
 	}
 
 	public boolean DBUpdateNeeded() {
+		// TODO: check if 7 days difference + check if sunday is past
 		long dbage = new WeekDataSource(dbHelper).getWeekLastUpdate();
 		long actday = new Date().getTime();
-		long difference = 4 * 24 * 60 * 60 * 1000; // Weil der 1.1.1970 ein
+		long difference = 3 * 24 * 60 * 60 * 1000; // Weil der 1.1.1970 ein
 													// Donnerstag war
 
 		if (actday - ((actday + difference) % WEEK_IN_MILLISECONDS) > dbage)
@@ -316,45 +324,49 @@ public class MainActivity extends SherlockFragmentActivity implements OfferConst
 		return false; // dbage ist neuer als der letzte Montag
 
 	}
-	private void updateFromPreferences(){
+
+	private void updateFromPreferences() {
 		System.out.println("updateFromPreferences()");
 		Context context = getApplicationContext();
-		SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(context);
-		
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(context);
+
 		showBadgeInfo = prefs.getBoolean(SettingsActivity.PREF_BADGE, false);
-		
-		String temp = prefs.getString(SettingsActivity.PREF_FAV_MENU, OFFER_DAILY_TITLE);
-		if ( temp.equals(OFFER_DAILY_TITLE)){
+
+		String temp = prefs.getString(SettingsActivity.PREF_FAV_MENU,
+				OFFER_DAILY_TITLE);
+		if (temp.equals(OFFER_DAILY_TITLE)) {
 			favouriteMenu = 0;
-		}else if(temp.equals(OFFER_VEGI)){
+		} else if (temp.equals(OFFER_VEGI_TITLE)) {
 			favouriteMenu = 1;
-		}else{
+		} else {
 			favouriteMenu = 2;
 		}
-		System.out.println("showBadgeInfo:" +showBadgeInfo);
-		
-		if(showBadgeInfo){
+		System.out.println("showBadgeInfo:" + showBadgeInfo);
+
+		if (showBadgeInfo) {
 			System.out.println("badge neu anzeigen");
-			updateBadgeInfo();
-		}else{
+			updateBadgeView();
+		} else {
 			badgeLayout.setVisibility(View.GONE);
 		}
-		if(mAdapter != null)
-			mAdapter.setPrimaryItem(mViewPager, favouriteMenu, mAdapter.getFragmentList().get(favouriteMenu));
+		if (mTabPageAdapter != null)
+			mTabPageAdapter.setPrimaryItem(mViewPager, favouriteMenu,
+					mTabPageAdapter.getFragmentList().get(favouriteMenu));
 	}
+
 	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data){
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if( requestCode == SHOW_PREFERENCES){
+		if (requestCode == SHOW_PREFERENCES) {
 			updateFromPreferences();
 		}
 	}
 
-
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		
+
 		updateFromPreferences();
 
 	}
