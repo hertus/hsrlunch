@@ -1,7 +1,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="AppTheme" parent="android:Theme.Light" />
-    <style name="myTheme" parent="@style/Theme.Sherlock">
+    <style name="myTheme" parent="@style/Theme.Sherlock.Light">
 
         <!-- default ViewPagerTab Style from viewpagerindicator -->
         <item name="vpiTabPageIndicatorStyle">@style/Widget.TabPageIndicator</item>
@@ -65,6 +64,4 @@
         <item name="mdArrowDrawable">@drawable/menu_arrow</item>
         <item name="mdMenuWidth">250dp</item>
     </style>
-
-
 </resources>

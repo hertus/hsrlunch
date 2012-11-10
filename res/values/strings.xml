@@ -2,7 +2,7 @@
 
     <string name="app_name">HSRlunch</string>
     <string name="title_activity_main">HSRlunch</string>
-    <string name="kontoStand">HSR Badge-Kontostand:</string>
+    <string name="kontoStand">Badge-Kontostand:</string>
     <string name="OFFER_DAILY_TITLE">Tagesteller</string>
     <string name="OFFER_VEGI_TITLE">Vegetarisch</string>
     <string name="OFFER_WEEK_TITLE">Wochen-Hit</string>
