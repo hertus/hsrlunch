@@ -2,7 +2,7 @@ package ch.hsr.hsrlunch.model;
 
 public class Offer {
 
-	int offerType = 0;
+	int offerType = 1;
 	String content = "";
 	String price = "";
 

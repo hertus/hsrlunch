@@ -8,51 +8,39 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import ch.hsr.hsrlunch.MainActivity;
 import ch.hsr.hsrlunch.R;
+import ch.hsr.hsrlunch.util.DBConstants;
 
 public class OfferFragment extends Fragment {
-	private static final String MENU_DATA_EXTRA = "menuNum";
 	int menuNum;
 
 	TextView title;
 	TextView date;
 	TextView content;
 	TextView price;
+	
+	   @Override
+	    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+	            Bundle savedInstanceState) {
+	        
+	        
+			final View v = inflater.inflate(R.layout.offer, container, false);
 
-	public static OfferFragment newInstance(int menuNum) {
-		final OfferFragment f = new OfferFragment();
-		final Bundle args = new Bundle();
-		args.putInt(MENU_DATA_EXTRA, menuNum);
-		f.setArguments(args);
-		return f;
-	}
+			if (v != null) {
+				title = (TextView) v.findViewById(R.id.title);
+				date = (TextView) v.findViewById(R.id.date);
+				content = (TextView) v.findViewById(R.id.content);
+				price = (TextView) v.findViewById(R.id.price);
+			}
 
-	// Empty constructor, required as per Fragment docs
+			return v;
+
+	    }
+
 	public OfferFragment() {
+		menuNum = 0;
 	}
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		if (getArguments() != null) {
-			menuNum = getArguments().getInt(MENU_DATA_EXTRA);
-		} else
-			menuNum = -1;
-	}
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-
-		final View v = inflater.inflate(R.layout.offer, container, false);
-
-		if (v != null) {
-			title = (TextView) v.findViewById(R.id.title);
-			date = (TextView) v.findViewById(R.id.date);
-			content = (TextView) v.findViewById(R.id.content);
-			price = (TextView) v.findViewById(R.id.price);
-		}
-
-		return v;
+	public OfferFragment(int position){
+		menuNum = position;
 	}
 
 	@Override
@@ -63,16 +51,32 @@ public class OfferFragment extends Fragment {
 	}
 
 	public void updateValues() {
-		if (menuNum >= 0 && MainActivity.dataAvailable) {
-			//title.setText(MainActivity.selectedDay.getOfferList().get(menuNum)
-			//		.getTitle());
-			date.setText(MainActivity.selectedDay.getDate().toString());
-			content.setText(MainActivity.selectedDay.getOfferList()
-					.get(menuNum).getMenuText());
-			price.setText(MainActivity.selectedDay.getOfferList().get(menuNum)
-					.getPrice());
+
+		if (menuNum >= 0 ){
+			if (MainActivity.dataAvailable) {
+				if(MainActivity.selectedDay.getOfferList().get(menuNum).getContent().equals("EMPTY")){
+					setEmptyText();
+				}else{
+				title.setText(getResources().getStringArray(R.array.menu_title_entries)[menuNum]);
+				date.setText(MainActivity.selectedDay.getDate().toString());
+				content.setText(MainActivity.selectedDay.getOfferList()
+						.get(menuNum).getMenuText());
+				price.setText(MainActivity.selectedDay.getOfferList().get(menuNum)
+						.getPrice());
+			}
+			}else{
+				setEmptyText();
+			}
+				
 		}
 
+	}
+
+	private void setEmptyText() {
+		content.setText(R.string.notAvailable);
+		title.setText("");
+		date.setText("");
+		price.setText("");
 	}
 
 }

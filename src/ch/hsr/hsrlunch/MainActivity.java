@@ -21,7 +21,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import ch.hsr.hsrlunch.controller.OfferConstants;
 import ch.hsr.hsrlunch.controller.OfferUpdater;
 import ch.hsr.hsrlunch.controller.WeekDataSource;
 import ch.hsr.hsrlunch.model.Badge;
@@ -40,16 +39,15 @@ import com.actionbarsherlock.view.MenuItem.OnMenuItemClickListener;
 import com.actionbarsherlock.widget.ShareActionProvider;
 import com.viewpagerindicator.TabPageIndicator;
 
-public class MainActivity extends SherlockFragmentActivity implements
-		OfferConstants, OnSharedPreferenceChangeListener {
+public class MainActivity extends SherlockFragmentActivity implements OnSharedPreferenceChangeListener {
 	private static final int SHOW_PREFERENCES = 1;
 	private static final long WEEK_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
 	public static List<WorkDay> dayList = new ArrayList<WorkDay>();
-	public static List<String> tabTitleList = new ArrayList<String>(3);
-	public static boolean dataAvailable;
+	public static boolean dataAvailable = true;
 	public static WorkDay selectedDay;
 	public static Offer selectedOffer;
+	public static String[] offertitles;
 
 	private List<Offer> offerList;
 	private Badge badge;
@@ -78,7 +76,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		getSupportActionBar().setHomeButtonEnabled(true);
 
-		// sp�ter furtschmeissen
+		// sp�ter furtschmeissen
 		init();
 
 		onCreatePageViewer();
@@ -92,6 +90,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 		} else {
 			badgeLayout.setVisibility(View.GONE);
 		}
+		
+		offertitles = getResources().getStringArray(R.array.menu_title_entries);
 
 	}
 
@@ -173,15 +173,13 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void setSelectedDay(int position) {
-		// TODO ViewPager soll entsprechenden Tag anzeigen: 1 = Montag, 5 =
-		// Freitag
+		// entsprechenden Tag anzeigen: 1 = Montag, 5 =Freitag
 		selectedDay = dayList.get(position - 1); // hier haben wir eigentlich 0
 													// für monatg, ... 4 für
 													// freitag
 		selectedOffer = selectedDay.getOfferList().get(favouriteMenu);
 		if (mTabPageAdapter != null)
 			mTabPageAdapter.notifyDataSetChanged();
-
 	}
 
 	/*
@@ -192,14 +190,14 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		badge = new Badge(999.99, new Date());
 
-		Offer m1 = new Offer(0,
+		Offer m1 = new Offer(1,
 				"Fischtäbli\nSauce Tatar\nBlattspinat\nSalzkartoffeln",
 				"INT 8.00 EXT 10.60");
 		Offer m2 = new Offer(
-				1,
+				2,
 				"Gemüseteigtaschen\nTomatensauce\nSalzkartoffeln\nBuntersalat",
 				"INT 8.00 EXT 10.60");
-		Offer m3 = new Offer(2,
+		Offer m3 = new Offer(3,
 				"Schweinefilet im Speckmantel\nTomatensauce\nBuntersalat",
 				"INT 14.50 EXT 15.50");
 		offerList = new ArrayList<Offer>();
@@ -220,10 +218,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 		dayList.add(new WorkDay(3, new Date(cal4.getTimeInMillis()), offerList));
 		dayList.add(new WorkDay(4, new Date(cal5.getTimeInMillis()), offerList));
 
-		tabTitleList.add("tages");
-		tabTitleList.add("vegi");
-		tabTitleList.add("woche");
-
 		GregorianCalendar cal = new GregorianCalendar();
 		int selectedDayIndex = 0;
 
@@ -231,34 +225,36 @@ public class MainActivity extends SherlockFragmentActivity implements
 		 * hier wird der aktuelle wochentag gesetzt, Calender.DAY_OF_WEEK gibt
 		 * für den Sontag 1 zurück am wochenende wird der Freitag gesetzt
 		 */
-		switch (cal.get(Calendar.DAY_OF_WEEK)) {
-		case 1:
-			dataAvailable = false;
-			break;
-		case 6:
-			selectedDayIndex = 4;
-			dataAvailable = true;
-			break;
-		case 7:
-			dataAvailable = false;
-			break;
-		case 2:
-			selectedDayIndex = 0;
-			dataAvailable = true;
-			break;
-		case 3:
-			selectedDayIndex = 1;
-			dataAvailable = true;
-			break;
-		case 4:
-			selectedDayIndex = 2;
-			dataAvailable = true;
-			break;
-		case 5:
-			selectedDayIndex = 3;
-			dataAvailable = true;
-			break;
-		}
+//		switch (cal.get(Calendar.DAY_OF_WEEK)) {
+//		case 1:
+//			dataAvailable = false;
+//			break;
+//		case 6:
+//			selectedDayIndex = 4;
+//			dataAvailable = true;
+//			break;
+//		case 7:
+//			dataAvailable = false;
+//			break;
+//		case 2:
+//			selectedDayIndex = 0;
+//			dataAvailable = true;
+//			break;
+//		case 3:
+//			selectedDayIndex = 1;
+//			dataAvailable = true;
+//			break;
+//		case 4:
+//			selectedDayIndex = 2;
+//			dataAvailable = true;
+//			break;
+//		case 5:
+//			selectedDayIndex = 3;
+//			dataAvailable = true;
+//			break;
+//		}
+		dataAvailable= true;
+		selectedDayIndex = 4;
 		// selectedDayIndex = (+5) % 7 > 4 ? 4: cal.get(Calendar.DAY_OF_WEEK)+5
 		// % 7;
 		selectedDay = dayList.get(selectedDayIndex);
@@ -281,8 +277,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 			public boolean onMenuItemClick(MenuItem item) {
 				Toast.makeText(getApplicationContext(), "Update",
 						Toast.LENGTH_SHORT).show();
-				offerUpdater.updateAllOffer(); // TODO: sp�ter �ndern - Factory
-												// f�llt Objekte etc.
+				offerUpdater.updateAllOffer(); // TODO: sp�ter �ndern - Factory
+												// f�llt Objekte etc.
 				return false;
 			}
 		});
@@ -306,7 +302,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("text/plain");
 		intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "HSR Menu @ "
-				+ selectedDay.getDate() + "-"); // + selectedOffer.getTitle()
+				+ selectedDay.getDate() + "-" +offertitles[selectedOffer.getOfferType()-1 ]);
 		intent.putExtra(android.content.Intent.EXTRA_TEXT,
 				selectedOffer.getOfferTxt());
 		return intent;
@@ -326,33 +322,33 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void updateFromPreferences() {
-		System.out.println("updateFromPreferences()");
 		Context context = getApplicationContext();
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(context);
 
 		showBadgeInfo = prefs.getBoolean(SettingsActivity.PREF_BADGE, false);
+		
 
-		String temp = prefs.getString(SettingsActivity.PREF_FAV_MENU,
-				OFFER_DAILY_TITLE);
-		if (temp.equals(OFFER_DAILY_TITLE)) {
-			favouriteMenu = 0;
-		} else if (temp.equals(OFFER_VEGI_TITLE)) {
-			favouriteMenu = 1;
-		} else {
-			favouriteMenu = 2;
+		String temp = prefs.getString(SettingsActivity.PREF_FAV_MENU, offertitles[0]);
+		
+		//index des gewünschten menus updaten
+		for(int i = 0; i<= offertitles.length; i++){
+			if(temp.equals(offertitles[i])){
+				favouriteMenu = i;
+				break;
+			}
 		}
-		System.out.println("showBadgeInfo:" + showBadgeInfo);
 
+		//falls nötig Badge Info aktualisieren und anzeigen
 		if (showBadgeInfo) {
-			System.out.println("badge neu anzeigen");
 			updateBadgeView();
 		} else {
 			badgeLayout.setVisibility(View.GONE);
 		}
-		if (mTabPageAdapter != null)
+		if (mTabPageAdapter != null){
 			mTabPageAdapter.setPrimaryItem(mViewPager, favouriteMenu,
 					mTabPageAdapter.getFragmentList().get(favouriteMenu));
+		}
 	}
 
 	@Override
@@ -366,9 +362,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-
 		updateFromPreferences();
-
 	}
 
 }
