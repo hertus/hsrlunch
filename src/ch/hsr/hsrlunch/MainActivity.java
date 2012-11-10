@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
@@ -82,8 +83,14 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 		onCreatePageViewer();
 
 		onCreatePersistence();
+		
 
-		PreferenceManager.setDefaultValues(this, R.xml.userpreference, false);
+		 if (Build.VERSION.SDK_INT >= 14) {
+			 PreferenceManager.setDefaultValues(this, R.xml.userpreference, false);
+		 }else{
+			 PreferenceManager.setDefaultValues(this, R.xml.userpreference_oldver, false);
+		 }
+		
 		badgeLayout = (LinearLayout) findViewById(R.id.badge);
 		if (showBadgeInfo) {
 			updateBadgeView();
@@ -326,8 +333,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(context);
 
-		showBadgeInfo = prefs.getBoolean(SettingsActivity.PREF_BADGE, false);
-		
+		showBadgeInfo = prefs.getBoolean(SettingsActivity.PREF_BADGE, false);		
 
 		String temp = prefs.getString(SettingsActivity.PREF_FAV_MENU, offertitles[0]);
 		

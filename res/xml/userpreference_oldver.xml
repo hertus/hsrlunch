@@ -6,12 +6,14 @@
         android:title="@string/pref_fav_menu"
         android:entries="@array/menu_title_entries"
         android:entryValues="@array/menu_title_entries"
-        android:defaultValue="@string/pref_menu_default" 
-         />
-       <SwitchPreference
-        android:key="pref_badge"
-        android:title="@string/pref_badge"
-        android:summary="@string/pref_badge_long"
-        android:defaultValue="false"
-		 />       
+        android:defaultValue="@string/pref_menu_default" />  
+        <CheckBoxPreference  
+             android:key="pref_badge"
+             android:defaultValue="false"
+             android:summaryOff="@string/off"
+             android:summaryOn="@string/on"
+            />
+            
+ 
 </PreferenceScreen>
+
