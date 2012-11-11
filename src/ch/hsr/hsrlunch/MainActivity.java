@@ -71,7 +71,17 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		onCreatePersistence();
+		offertitles = getResources().getStringArray(R.array.menu_title_entries);
 
+		 if (Build.VERSION.SDK_INT >= 14) {
+			 PreferenceManager.setDefaultValues(this, R.xml.userpreference, false);
+		 }else{
+			 PreferenceManager.setDefaultValues(this, R.xml.userpreference_oldver, false);
+		 }	
+		updatePreferences();
+		 
 		onCreateMenuDrawer();
 		mMenuDrawer.setContentView(R.layout.activity_main);
 		mMenuDrawer.setMenuView(menuView);
@@ -80,24 +90,15 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 
 		// sp�ter furtschmeissen
 		init();
+		
+		//für test am wochenende überschrieben der Werte
+		dataAvailable = true;
+		setSelectedDay(5);
 
 		onCreateViewPager();
 
-		onCreatePersistence();
-		
 		badgeLayout = (LinearLayout) findViewById(R.id.badge);
-		offertitles = getResources().getStringArray(R.array.menu_title_entries);
-		
-
-		 if (Build.VERSION.SDK_INT >= 14) {
-			 PreferenceManager.setDefaultValues(this, R.xml.userpreference, false);
-		 }else{
-			 PreferenceManager.setDefaultValues(this, R.xml.userpreference_oldver, false);
-		 }		
-		
-		 updateBadgeView();
-			if(mViewPager != null)
-				mViewPager.setCurrentItem(favouriteMenu);
+		updateBadgeView();
 
 	}
 
@@ -110,9 +111,11 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 		mTabPageAdapter = new TabPageAdapter(getSupportFragmentManager());
 		mViewPager = (ViewPager) findViewById(R.id.viewpager);
 		mViewPager.setAdapter(mTabPageAdapter);
+		mViewPager.setCurrentItem(favouriteMenu, true);
 
 		TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);
 		indicator.setViewPager(mViewPager);
+		indicator.setCurrentItem(favouriteMenu);
 
 		// Listener für "pageChange Event"
 		ViewPager.SimpleOnPageChangeListener pageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
@@ -168,6 +171,10 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 			badgeLayout.setVisibility(View.GONE);
 		}
 	}
+	private void updateViewPager() {
+		if(mViewPager != null)
+			mViewPager.setCurrentItem(favouriteMenu, true);
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(
@@ -185,13 +192,13 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 	 * @param:  int position 1-5, 1 = Montag, ..., 5=Freitag
 	 */
 	private void setSelectedDay(int position) {
-		//korrekter index für dayList durch -1
+		//korrektur index für dayList durch -1
 		selectedDay = dayList.get(position - 1); 
 		selectedOffer = selectedDay.getOfferList().get(favouriteMenu);
-		if (mTabPageAdapter != null)
+		if (mTabPageAdapter != null) {
 			mTabPageAdapter.notifyDataSetChanged();
-		if(mViewPager != null)
-			mViewPager.setCurrentItem(favouriteMenu, true);
+			updateViewPager();
+		}
 	}
 
 	/*
@@ -242,10 +249,6 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 			dataAvailable = true;
 			setSelectedDay( (cal.get(Calendar.DAY_OF_WEEK)+6) % 7);
 		}		
-		
-		//für test am wochenende überschrieben der Werte
-		dataAvailable = true;
-		setSelectedDay(4);
 	}
 
 	@Override
@@ -307,7 +310,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 
 	}
 
-	private void updateFromPreferences() {
+	private void updatePreferences() {
 		
 		Context context = getApplicationContext();
 		SharedPreferences prefs = PreferenceManager
@@ -324,11 +327,6 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 				break;
 			}
 		}
-
-		//Badge Information updaten und wenn nötig anzeigen
-		updateBadgeView();
-		if(mViewPager != null)
-			mViewPager.setCurrentItem(favouriteMenu, true);
 		
 	}
 
@@ -336,14 +334,20 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == SHOW_PREFERENCES) {
-			updateFromPreferences();
+			updatePreferences();
+			//Badge Information updaten und wenn nötig anzeigen
+			updateBadgeView();
+			updateViewPager();
 		}
 	}
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		updateFromPreferences();
+		updatePreferences();
+		//Badge Information updaten und wenn nötig anzeigen
+		updateBadgeView();
+		updateViewPager();
 	}
 
 }
