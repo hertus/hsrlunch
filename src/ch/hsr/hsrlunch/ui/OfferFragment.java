@@ -8,40 +8,59 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import ch.hsr.hsrlunch.MainActivity;
 import ch.hsr.hsrlunch.R;
-import ch.hsr.hsrlunch.util.DBConstants;
 
 public class OfferFragment extends Fragment {
-	int menuNum;
+	private static final String MENU_DATA_EXTRA = "menuNum";
+	private int menuNum;
 
-	TextView title;
-	TextView date;
-	TextView content;
-	TextView price;
+	private TextView title;
+	private TextView date;
+	private TextView content;
+	private TextView price;
+
 	
-	   @Override
-	    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-	            Bundle savedInstanceState) {
-	        
-	        
-			final View v = inflater.inflate(R.layout.offer, container, false);
-
-			if (v != null) {
-				title = (TextView) v.findViewById(R.id.title);
-				date = (TextView) v.findViewById(R.id.date);
-				content = (TextView) v.findViewById(R.id.content);
-				price = (TextView) v.findViewById(R.id.price);
-			}
-
-			return v;
-
-	    }
-
+	// Empty constructor, required as per Fragment docs
 	public OfferFragment() {
-		menuNum = 0;
 	}
-	public OfferFragment(int position){
-		menuNum = position;
+	
+	public static OfferFragment newInstance(int menuNum) {
+		
+		final OfferFragment f = new OfferFragment();
+		final Bundle args = new Bundle();
+		args.putInt(MENU_DATA_EXTRA, menuNum);
+		f.setArguments(args);
+
+		return f;
 	}
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		menuNum = getArguments() != null ? getArguments().getInt(MENU_DATA_EXTRA) : -1;
+	}
+	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+
+		final View v = inflater.inflate(R.layout.offer, container, false);
+
+		if (v != null) {
+			title = (TextView) v.findViewById(R.id.title);
+			date = (TextView) v.findViewById(R.id.date);
+			content = (TextView) v.findViewById(R.id.content);
+			price = (TextView) v.findViewById(R.id.price);
+			updateValues();
+		}
+
+		return v;
+
+	}
+	   public void onSaveInstanceState(Bundle outState) {
+	        super.onSaveInstanceState(outState);
+	        getArguments().putInt(MENU_DATA_EXTRA, menuNum);
+	    }
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -51,23 +70,28 @@ public class OfferFragment extends Fragment {
 	}
 
 	public void updateValues() {
+		if (menuNum < 0 || !MainActivity.dataAvailable) {
+			setEmptyText();
+			return;
+		} else {
+			if (menuNum >= 0) {
+				if (MainActivity.dataAvailable) {
+					if (MainActivity.selectedDay.getOfferList().get(menuNum)
+							.getContent().equals("EMPTY")) {
+						setEmptyText();
+					} else {
+						title.setText(getResources().getStringArray(
+								R.array.menu_title_entries)[menuNum]);
+						date.setText(MainActivity.selectedDay.getDate()
+								.toString());
+						content.setText(MainActivity.selectedDay.getOfferList()
+								.get(menuNum).getMenuText());
+						price.setText(MainActivity.selectedDay.getOfferList()
+								.get(menuNum).getPrice());
+					}
 
-		if (menuNum >= 0 ){
-			if (MainActivity.dataAvailable) {
-				if(MainActivity.selectedDay.getOfferList().get(menuNum).getContent().equals("EMPTY")){
-					setEmptyText();
-				}else{
-				title.setText(getResources().getStringArray(R.array.menu_title_entries)[menuNum]);
-				date.setText(MainActivity.selectedDay.getDate().toString());
-				content.setText(MainActivity.selectedDay.getOfferList()
-						.get(menuNum).getMenuText());
-				price.setText(MainActivity.selectedDay.getOfferList().get(menuNum)
-						.getPrice());
+				}
 			}
-			}else{
-				setEmptyText();
-			}
-				
 		}
 
 	}

@@ -13,7 +13,7 @@
   	<string name="pref_badge_long">Aktivierung des Badge-Konto Stand</string>
   	<string name="pref_lang">Sprache wählen</string>
   	<string name="pref_menu_default">Tagesteller</string>
-  	<string name="notAvailable">An diesen Tag sind leider keine Informationen vorhanden</string>
+  	<string name="notAvailable">Es sind leider keine Informationen vorhanden</string>
   	<string name="on">Badge Info aktiviert</string>
   	<string name="off">Badge Info deaktiviert</string>
         <string name="SlideHead">Tagesauswahl</string>

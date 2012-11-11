@@ -61,11 +61,12 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 	private LinearLayout badgeLayout;
 	private CustomMenuView menuView;
 
-	private DBOpenHelper dbHelper;
+	private final DBOpenHelper dbHelper= new DBOpenHelper(this);
 	private OfferUpdater offerUpdater;
 
+	//Attributes for Preferences in SettingActivity
 	private boolean showBadgeInfo = false;
-	private int favouriteMenu = 0;
+	private int favouriteMenu;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -80,34 +81,32 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 		// sp�ter furtschmeissen
 		init();
 
-		onCreatePageViewer();
+		onCreateViewPager();
 
 		onCreatePersistence();
+		
+		badgeLayout = (LinearLayout) findViewById(R.id.badge);
+		offertitles = getResources().getStringArray(R.array.menu_title_entries);
 		
 
 		 if (Build.VERSION.SDK_INT >= 14) {
 			 PreferenceManager.setDefaultValues(this, R.xml.userpreference, false);
 		 }else{
 			 PreferenceManager.setDefaultValues(this, R.xml.userpreference_oldver, false);
-		 }
+		 }		
 		
-		badgeLayout = (LinearLayout) findViewById(R.id.badge);
-		if (showBadgeInfo) {
-			updateBadgeView();
-		} else {
-			badgeLayout.setVisibility(View.GONE);
-		}
-		
-		offertitles = getResources().getStringArray(R.array.menu_title_entries);
+		 updateBadgeView();
+			if(mViewPager != null)
+				mViewPager.setCurrentItem(favouriteMenu);
 
 	}
 
 	private void onCreatePersistence() {
-		dbHelper = new DBOpenHelper(this);
+//		dbHelper = new DBOpenHelper(this);
 		offerUpdater = new OfferUpdater(dbHelper);
 	}
 
-	private void onCreatePageViewer() {
+	private void onCreateViewPager() {
 		mTabPageAdapter = new TabPageAdapter(getSupportFragmentManager());
 		mViewPager = (ViewPager) findViewById(R.id.viewpager);
 		mViewPager.setAdapter(mTabPageAdapter);
@@ -115,7 +114,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 		TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);
 		indicator.setViewPager(mViewPager);
 
-		/* Defining a listener for pageChange */
+		// Listener für "pageChange Event"
 		ViewPager.SimpleOnPageChangeListener pageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
 			@Override
 			public void onPageSelected(int position) {
@@ -124,7 +123,6 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 				provider.setShareIntent(getDefaultShareIntent());
 			}
 		};
-		// Setting the pageChange listener to the viewPager */
 		indicator.setOnPageChangeListener(pageChangeListener);
 	}
 
@@ -144,8 +142,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				mvAdapter.setActiveEntry(position);
-				mMenuDrawer.setActiveView(view, position); // falls vorig Zeit
-															// ^^
+				mMenuDrawer.setActiveView(view, position); // falls vorig Zeit^^
 				mMenuDrawer.closeMenu();
 				if (position <= 6) {
 					setSelectedDay(position);
@@ -160,12 +157,16 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 	}
 
 	private void updateBadgeView() {
-		badgeLayout.setVisibility(View.VISIBLE);
-
-		TextView badgeAmount = (TextView) findViewById(R.id.amount);
-		badgeAmount.setText(badge.getAmount() + " CHF");
-		TextView badgeLastUpdate = (TextView) findViewById(R.id.lastUpdate);
-		badgeLastUpdate.setText(badge.getLastUpdate());
+		
+		if (showBadgeInfo) {
+			badgeLayout.setVisibility(View.VISIBLE);
+			TextView badgeAmount = (TextView) findViewById(R.id.amount);
+			badgeAmount.setText(badge.getAmount() + " CHF");
+			TextView badgeLastUpdate = (TextView) findViewById(R.id.lastUpdate);
+			badgeLastUpdate.setText(badge.getLastUpdate());
+		} else {
+			badgeLayout.setVisibility(View.GONE);
+		}
 	}
 
 	@Override
@@ -179,14 +180,18 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 		return super.onOptionsItemSelected(item);
 	}
 
+	/*
+	 * setzen des ausgewählten Tages(selectedDay) des viewPagers
+	 * @param:  int position 1-5, 1 = Montag, ..., 5=Freitag
+	 */
 	private void setSelectedDay(int position) {
-		// entsprechenden Tag anzeigen: 1 = Montag, 5 =Freitag
-		selectedDay = dayList.get(position - 1); // hier haben wir eigentlich 0
-													// für monatg, ... 4 für
-													// freitag
+		//korrekter index für dayList durch -1
+		selectedDay = dayList.get(position - 1); 
 		selectedOffer = selectedDay.getOfferList().get(favouriteMenu);
 		if (mTabPageAdapter != null)
 			mTabPageAdapter.notifyDataSetChanged();
+		if(mViewPager != null)
+			mViewPager.setCurrentItem(favouriteMenu, true);
 	}
 
 	/*
@@ -212,7 +217,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 		offerList.add(m2);
 		offerList.add(m3);
 
-		// achtung monat bei GregorianCalendar liegt zwischen 0 und 11!
+		// achtung monat bei GregorianCalendar liegt zwischen 0 und 11!!!
 		GregorianCalendar cal1 = new GregorianCalendar(2012, 9, 22);
 		GregorianCalendar cal2 = new GregorianCalendar(2012, 9, 23);
 		GregorianCalendar cal3 = new GregorianCalendar(2012, 9, 24);
@@ -225,47 +230,22 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 		dayList.add(new WorkDay(3, new Date(cal4.getTimeInMillis()), offerList));
 		dayList.add(new WorkDay(4, new Date(cal5.getTimeInMillis()), offerList));
 
-		GregorianCalendar cal = new GregorianCalendar();
-		int selectedDayIndex = 0;
-
+		GregorianCalendar cal = new GregorianCalendar();		
 		/*
-		 * hier wird der aktuelle wochentag gesetzt, Calender.DAY_OF_WEEK gibt
-		 * für den Sontag 1 zurück am wochenende wird der Freitag gesetzt
+		 * Samstags und Sonntags stehen keine Informationen bereit
 		 */
-//		switch (cal.get(Calendar.DAY_OF_WEEK)) {
-//		case 1:
-//			dataAvailable = false;
-//			break;
-//		case 6:
-//			selectedDayIndex = 4;
-//			dataAvailable = true;
-//			break;
-//		case 7:
-//			dataAvailable = false;
-//			break;
-//		case 2:
-//			selectedDayIndex = 0;
-//			dataAvailable = true;
-//			break;
-//		case 3:
-//			selectedDayIndex = 1;
-//			dataAvailable = true;
-//			break;
-//		case 4:
-//			selectedDayIndex = 2;
-//			dataAvailable = true;
-//			break;
-//		case 5:
-//			selectedDayIndex = 3;
-//			dataAvailable = true;
-//			break;
-//		}
-		dataAvailable= true;
-		selectedDayIndex = 4;
-		// selectedDayIndex = (+5) % 7 > 4 ? 4: cal.get(Calendar.DAY_OF_WEEK)+5
-		// % 7;
-		selectedDay = dayList.get(selectedDayIndex);
-		selectedOffer = selectedDay.getOfferList().get(0);
+		if(cal.get(Calendar.DAY_OF_WEEK) == 1	/*sonntag*/
+				|| cal.get(Calendar.DAY_OF_WEEK) == 7 /*samstag*/ ){
+			dataAvailable = false;
+			setSelectedDay(1);
+		}else{
+			dataAvailable = true;
+			setSelectedDay( (cal.get(Calendar.DAY_OF_WEEK)+6) % 7);
+		}		
+		
+		//für test am wochenende überschrieben der Werte
+		dataAvailable = true;
+		setSelectedDay(4);
 	}
 
 	@Override
@@ -319,8 +299,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 		// TODO: check if 7 days difference + check if sunday is past
 		long dbage = new WeekDataSource(dbHelper).getWeekLastUpdate();
 		long actday = new Date().getTime();
-		long difference = 3 * 24 * 60 * 60 * 1000; // Weil der 1.1.1970 ein
-													// Donnerstag war
+		long difference = 3 * 24 * 60 * 60 * 1000; // Weil der 1.1.1970 ein Donnerstag war
 
 		if (actday - ((actday + difference) % WEEK_IN_MILLISECONDS) > dbage)
 			return true; // dbage ist aus letzer Woche
@@ -329,6 +308,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 	}
 
 	private void updateFromPreferences() {
+		
 		Context context = getApplicationContext();
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(context);
@@ -337,7 +317,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 
 		String temp = prefs.getString(SettingsActivity.PREF_FAV_MENU, offertitles[0]);
 		
-		//index des gewünschten menus updaten
+		//update index von  favourite menu 
 		for(int i = 0; i<= offertitles.length; i++){
 			if(temp.equals(offertitles[i])){
 				favouriteMenu = i;
@@ -345,16 +325,11 @@ public class MainActivity extends SherlockFragmentActivity implements OnSharedPr
 			}
 		}
 
-		//falls nötig Badge Info aktualisieren und anzeigen
-		if (showBadgeInfo) {
-			updateBadgeView();
-		} else {
-			badgeLayout.setVisibility(View.GONE);
-		}
-		if (mTabPageAdapter != null){
-			mTabPageAdapter.setPrimaryItem(mViewPager, favouriteMenu,
-					mTabPageAdapter.getFragmentList().get(favouriteMenu));
-		}
+		//Badge Information updaten und wenn nötig anzeigen
+		updateBadgeView();
+		if(mViewPager != null)
+			mViewPager.setCurrentItem(favouriteMenu, true);
+		
 	}
 
 	@Override

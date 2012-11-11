@@ -25,7 +25,7 @@ public class TabPageAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {    	
     	if(fragmentList.get(position) == null){
     		
-    	OfferFragment frag = new OfferFragment(position);
+    	OfferFragment frag = OfferFragment.newInstance(position);
     	fragmentList.put(position, frag);
     	return frag;
     	}else
