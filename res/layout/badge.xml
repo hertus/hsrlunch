@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    
+    android:background="@drawable/tab_bg_selected"
     >
 
     <TextView
@@ -12,18 +12,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
-        android:text="@string/kontoStand" />
+        android:text="@string/kontoStand" 
+         style="@style/TextAppearance.TabPageIndicator"
+         />
 
     <TextView
         android:id="@+id/amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp" />
+        android:paddingLeft="10dp" 
+         style="@style/TextAppearance.TabPageIndicator"
+         />
 
     <TextView
         android:id="@+id/lastUpdate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp" />
+        android:paddingLeft="10dp"
+         style="@style/TextAppearance.TabPageIndicator"
+          />
 
 </LinearLayout>

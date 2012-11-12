@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="pref_menu_entries">
+    <string-array name="menu_title_entries">
         <item>Tagesteller</item>
         <item>Vegetarisch</item>
         <item>Wochen-Hit</item>

@@ -2,6 +2,8 @@ package ch.hsr.hsrlunch.ui;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 
+import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
 import ch.hsr.hsrlunch.R;
 
@@ -11,13 +13,25 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 	public static final String PREF_BADGE = "pref_badge";
 	
 
-        // We use addPreferencesFromResource as we need sdk-9 compatibility
+        // We use addPreferencesFromResource as we need sdk-7 compatibility
         // but build with sdk 15
-        @Override
+        
+		@Override
+		@SuppressLint("NewApi")
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            addPreferencesFromResource(R.xml.userpreference);
+
+            if (Build.VERSION.SDK_INT >= 14) {
+                // Display the fragment as the main content.
+            	
+                getFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, new SettingsFragment())
+                        .commit();
+            }else{
+            	addPreferencesFromResource(R.xml.userpreference_oldver);
+            }
+           
         }
 
         @Override

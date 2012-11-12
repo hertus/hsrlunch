@@ -11,34 +11,35 @@ import ch.hsr.hsrlunch.R;
 
 public class OfferFragment extends Fragment {
 	private static final String MENU_DATA_EXTRA = "menuNum";
-	int menuNum;
+	private int menuNum;
 
-	TextView title;
-	TextView date;
-	TextView content;
-	TextView price;
+	private TextView title;
+	private TextView date;
+	private TextView content;
+	private TextView price;
 
+	
+	// Empty constructor, required as per Fragment docs
+	public OfferFragment() {
+	}
+	
 	public static OfferFragment newInstance(int menuNum) {
+		
 		final OfferFragment f = new OfferFragment();
 		final Bundle args = new Bundle();
 		args.putInt(MENU_DATA_EXTRA, menuNum);
 		f.setArguments(args);
+
 		return f;
 	}
-
-	// Empty constructor, required as per Fragment docs
-	public OfferFragment() {
-	}
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (getArguments() != null) {
-			menuNum = getArguments().getInt(MENU_DATA_EXTRA);
-		} else
-			menuNum = -1;
+		
+		menuNum = getArguments() != null ? getArguments().getInt(MENU_DATA_EXTRA) : -1;
 	}
-
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -50,10 +51,16 @@ public class OfferFragment extends Fragment {
 			date = (TextView) v.findViewById(R.id.date);
 			content = (TextView) v.findViewById(R.id.content);
 			price = (TextView) v.findViewById(R.id.price);
+			updateValues();
 		}
 
 		return v;
+
 	}
+	   public void onSaveInstanceState(Bundle outState) {
+	        super.onSaveInstanceState(outState);
+	        getArguments().putInt(MENU_DATA_EXTRA, menuNum);
+	    }
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -73,6 +80,13 @@ public class OfferFragment extends Fragment {
 					.getPrice());
 		}
 
+	}
+
+	private void setEmptyText() {
+		content.setText(R.string.notAvailable);
+		title.setText("");
+		date.setText("");
+		price.setText("");
 	}
 
 }
