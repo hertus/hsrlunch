@@ -1,13 +1,11 @@
 package ch.hsr.hsrlunch.model;
 
 public class Offer {
-
-	int offerType = 0;
-	String content = "";
-	String price = "";
+	int offerType;
+	String content;
+	String price;
 
 	public Offer(int offerType, String content, String price) {
-		super();
 		this.offerType = offerType;
 		this.content = content;
 		this.price = price;
@@ -21,16 +19,12 @@ public class Offer {
 		this.offerType = offerType;
 	}
 
-	public void setPrice(String price) {
-		this.price = price;
-	}
-
 	public String getPrice() {
 		return price;
 	}
 
-	public String getMenuText() {
-		return content;
+	public void setPrice(String price) {
+		this.price = price;
 	}
 
 	public String getContent() {
@@ -40,9 +34,4 @@ public class Offer {
 	public void setContent(String content) {
 		this.content = content;
 	}
-
-	public String getOfferTxt() {
-		return content + "\n" + price;
-	}
-
 }

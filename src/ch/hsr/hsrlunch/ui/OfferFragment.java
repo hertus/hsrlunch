@@ -66,9 +66,9 @@ public class OfferFragment extends Fragment {
 		if (menuNum >= 0 && MainActivity.dataAvailable) {
 			//title.setText(MainActivity.selectedDay.getOfferList().get(menuNum)
 			//		.getTitle());
-			date.setText(MainActivity.selectedDay.getDate().toString());
-			content.setText(MainActivity.selectedDay.getOfferList()
-					.get(menuNum).getMenuText());
+			//date.setText(MainActivity.selectedDay.getDate().toString());
+			//content.setText(MainActivity.selectedDay.getOfferList()
+			//		.get(menuNum).getMenuText());
 			price.setText(MainActivity.selectedDay.getOfferList().get(menuNum)
 					.getPrice());
 		}

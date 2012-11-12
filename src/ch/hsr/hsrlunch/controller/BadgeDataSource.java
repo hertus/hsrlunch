@@ -52,7 +52,7 @@ public class BadgeDataSource implements DBConstants {
 	/**
 	 * @return Date in milliseconds as a Long
 	 */
-	public Long getBadgeLastUpdate() {
+	public long getBadgeLastUpdate() {
 		String where = COLUMN_BADGE_ID + " = " + standardBadgeId;
 		Cursor cursor = db.query(TABLE_BADGE,
 				new String[] { COLUMN_BADGE_LASTUPDATE }, where, null, null,

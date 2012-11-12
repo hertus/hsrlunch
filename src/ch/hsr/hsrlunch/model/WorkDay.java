@@ -1,33 +1,40 @@
 package ch.hsr.hsrlunch.model;
 
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.List;
-
+import android.util.SparseArray;
 
 public class WorkDay {
-
 	int id;
-	Date date;
-	List<Offer> offerList;
-	DateFormat df;
+	long date;
+	SparseArray<Offer> offerList;
 
-
-	public WorkDay(int id, Date date, List<Offer> offerList) {
-		super();
+	public WorkDay(int id, long date, SparseArray<Offer> offerList) {
 		this.id = id;
 		this.date = date;
 		this.offerList = offerList;
-		
-		df = DateFormat.getDateInstance( DateFormat.FULL );
-		   
 	}
-	public String getDate() {
-		return df.format(date);
+
+	public int getId() {
+		return id;
 	}
-	public List<Offer> getOfferList() {
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public long getDate() {
+		return date;
+	}
+
+	public void setDate(long date) {
+		this.date = date;
+	}
+
+	public SparseArray<Offer> getOfferList() {
 		return offerList;
 	}
-	
-	
+
+	public void setOfferList(SparseArray<Offer> offerList) {
+		this.offerList = offerList;
+	}
+
 }

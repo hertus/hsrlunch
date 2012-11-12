@@ -158,7 +158,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		TextView badgeAmount = (TextView) findViewById(R.id.amount);
 		badgeAmount.setText(badge.getAmount() + " CHF");
 		TextView badgeLastUpdate = (TextView) findViewById(R.id.lastUpdate);
-		badgeLastUpdate.setText(badge.getLastUpdate());
+		//badgeLastUpdate.setText(badge.getLastUpdate());
 	}
 
 	@Override
@@ -189,7 +189,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	 * implementiert ist
 	 */
 	private void init() {
-
+		/*
 		badge = new Badge(999.99, new Date());
 
 		Offer m1 = new Offer(0,
@@ -202,11 +202,14 @@ public class MainActivity extends SherlockFragmentActivity implements
 		Offer m3 = new Offer(2,
 				"Schweinefilet im Speckmantel\nTomatensauce\nBuntersalat",
 				"INT 14.50 EXT 15.50");
+	
+		
 		offerList = new ArrayList<Offer>();
 		offerList.add(m1);
 		offerList.add(m2);
 		offerList.add(m3);
-
+	*/ 
+		
 		// achtung monat bei GregorianCalendar liegt zwischen 0 und 11!
 		GregorianCalendar cal1 = new GregorianCalendar(2012, 9, 22);
 		GregorianCalendar cal2 = new GregorianCalendar(2012, 9, 23);
@@ -214,12 +217,14 @@ public class MainActivity extends SherlockFragmentActivity implements
 		GregorianCalendar cal4 = new GregorianCalendar(2012, 9, 25);
 		GregorianCalendar cal5 = new GregorianCalendar(2012, 9, 26);
 
+		/*
 		dayList.add(new WorkDay(0, new Date(cal1.getTimeInMillis()), offerList));
 		dayList.add(new WorkDay(1, new Date(cal2.getTimeInMillis()), offerList));
 		dayList.add(new WorkDay(2, new Date(cal3.getTimeInMillis()), offerList));
 		dayList.add(new WorkDay(3, new Date(cal4.getTimeInMillis()), offerList));
 		dayList.add(new WorkDay(4, new Date(cal5.getTimeInMillis()), offerList));
-
+		*/
+		
 		tabTitleList.add("tages");
 		tabTitleList.add("vegi");
 		tabTitleList.add("woche");
@@ -308,7 +313,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "HSR Menu @ "
 				+ selectedDay.getDate() + "-"); // + selectedOffer.getTitle()
 		intent.putExtra(android.content.Intent.EXTRA_TEXT,
-				selectedOffer.getOfferTxt());
+				selectedOffer.getContent());
 		return intent;
 	}
 

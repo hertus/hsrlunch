@@ -26,7 +26,7 @@ public class WorkDayDataSource implements DBConstants {
 	 * @param workdayId
 	 * @return Workday Date in milliseconds as a Long
 	 */
-	public Long getWorkDayDate(int workdayId) {
+	public long getWorkDayDate(int workdayId) {
 		String where = COLUMN_WORKDAY_ID + " = " + workdayId;
 		Cursor cursor = db.query(TABLE_WORKDAY,
 				new String[] { COLUMN_WORKDAY_DATE }, where, null, null, null,

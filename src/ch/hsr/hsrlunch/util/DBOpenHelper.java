@@ -19,11 +19,11 @@ public class DBOpenHelper extends SQLiteOpenHelper implements DBConstants {
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE " + TABLE_WEEK + " (" + COLUMN_WEEK_ID
 				+ " INTEGER PRIMARY KEY, " + COLUMN_WEEK_LASTUPDATE
-				+ " DATE NOT NULL)");
+				+ " LONG NOT NULL)");
 
 		db.execSQL("CREATE TABLE " + TABLE_WORKDAY + " (" + COLUMN_WORKDAY_ID
 				+ " INTEGER PRIMARY KEY, " + COLUMN_WORKDAY_DATE
-				+ " DATE NOT NULL," + COLUMN_WORKDAY_WEEKID
+				+ " LONG NOT NULL," + COLUMN_WORKDAY_WEEKID
 				+ " INTEGER NOT NULL REFERENCES " + TABLE_WEEK + ")");
 
 		db.execSQL("CREATE TABLE " + TABLE_OFFER + " (" + COLUMN_OFFER_ID
@@ -36,7 +36,7 @@ public class DBOpenHelper extends SQLiteOpenHelper implements DBConstants {
 		db.execSQL("CREATE TABLE " + TABLE_BADGE + " (" + COLUMN_BADGE_ID
 				+ " INTEGER PRIMARY KEY, " + COLUMN_BADGE_AMOUNT
 				+ " DOUBLE NOT NULL, " + COLUMN_BADGE_LASTUPDATE
-				+ " DATE NOT NULL)");
+				+ " LONG NOT NULL)");
 
 		initializeData(db);
 	}

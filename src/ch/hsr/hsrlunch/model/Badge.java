@@ -1,31 +1,38 @@
 package ch.hsr.hsrlunch.model;
 
 import java.text.DateFormat;
-import java.util.Date;
 
 public class Badge {
+	int id;
 	double amount;
-	Date lastUpdate;
-	DateFormat df;
-	
-	public Badge(double amount, Date lastUpdate) {
-		super();
+	long lastUpdate;
+	DateFormat dateFormat;
+
+	public Badge(int id, double amount, long lastUpdate) {
+		this.id = id;
 		this.amount = amount;
 		this.lastUpdate = lastUpdate;
-		df = DateFormat.getDateInstance( DateFormat.SHORT );
+		dateFormat = DateFormat.getDateInstance(DateFormat.SHORT);
 	}
+
 	public double getAmount() {
 		return amount;
 	}
+
 	public void setAmount(double amount) {
 		this.amount = amount;
 	}
-	public String getLastUpdate() {
-		return df.format(lastUpdate);
+
+	public long getLastUpdate() {
+		return lastUpdate;
 	}
-	public void setLastUpdate(Date lastUpdate) {
+
+	public void setLastUpdate(long lastUpdate) {
 		this.lastUpdate = lastUpdate;
 	}
-	
+
+	public String getLastUpdateString() {
+		return dateFormat.format(lastUpdate);
+	}
 
 }
