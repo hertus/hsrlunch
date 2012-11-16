@@ -12,7 +12,7 @@ import android.util.Log;
 public class DBOpenHelper extends SQLiteOpenHelper implements DBConstants, OfferConstants{
 	private static final long INIT_DATE = 1351344627652L; // something last year
 	private static final String DATABASE_NAME = "hsrlunch.db";
-	private static final int DATABASE_VERSION = 37;
+	private static final int DATABASE_VERSION = 38;
 
 	public DBOpenHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);

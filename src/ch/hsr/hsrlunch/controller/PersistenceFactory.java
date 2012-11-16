@@ -61,16 +61,6 @@ public class PersistenceFactory implements OfferConstants {
 		weekDataSource.openRead();
 		week = new Week(weekDataSource.getWeekLastUpdate(), workdayList);
 		weekDataSource.close();
-
-		System.out.println("Size workdaylist: " + week.getDayList().size());
-		for (int i = 0; i <= week.getDayList().size(); i++) {
-			System.out.println(week.getDayList().get(i).getOfferList().get(0)
-					.getPrice());
-			System.out.println(week.getDayList().get(i).getOfferList().get(1)
-					.getPrice());
-			System.out.println(week.getDayList().get(i).getOfferList().get(2)
-					.getPrice());
-		}
 	}
 
 	public void updateAllOffers() {
@@ -106,7 +96,7 @@ public class PersistenceFactory implements OfferConstants {
 		workDayDataSource.close();
 
 		weekDataSource.openWrite();
-		week.setLastUpdate(dateHelper.getTime());
+		week.setLastUpdate(dateHelper.getMondayOfThisWeek().getTime());
 		weekDataSource.setWeekLastUpdate(week.getLastUpdate());
 		weekDataSource.close();
 

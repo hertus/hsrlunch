@@ -148,8 +148,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 				mvAdapter.setActiveEntry(position);
 				mMenuDrawer.setActiveView(view, position); // falls vorig Zeit^^
 				mMenuDrawer.closeMenu();
-				if (position <= 6) {
-					setSelectedDay(position-1);
+				if (position >= 1 && position <= 6) {
+					setSelectedDay(position - 1);
 				} else {
 					// starte Settings-Activity
 					Intent i = new Intent(getApplicationContext(),
@@ -221,7 +221,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			setSelectedDay(1);
 		} else {
 			dataAvailable = true;
-			setSelectedDay((cal.get(Calendar.DAY_OF_WEEK) + 6) % 7);
+			setSelectedDay((cal.get(Calendar.DAY_OF_WEEK) + 5) % 7);
 		}
 	}
 
@@ -269,7 +269,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		intent.setType("text/plain");
 		intent.putExtra(android.content.Intent.EXTRA_SUBJECT,
 				"HSR Menu @ " + selectedDay.getDate() + "-"
-						+ offertitles[selectedOffer.getOfferType() - 1]);
+						+ offertitles[selectedOffer.getOfferType()]);
 		intent.putExtra(android.content.Intent.EXTRA_TEXT,
 				selectedOffer.getOfferAndPrice());
 		return intent;
@@ -302,11 +302,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 		// update index von favourite menu
 		for (int i = 0; i <= offertitles.length; i++) {
 			if (temp.equals(offertitles[i])) {
-				favouriteMenu = i + 1;
+				favouriteMenu = i;
 				return;
 			}
 		}
-
 	}
 
 	@Override

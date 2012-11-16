@@ -34,7 +34,8 @@ public class DateHelper {
 	 * @return Date Object of that Weekday
 	 */
 	public Date getDateOfWeekDay(int dayNr){
-		cal.set(Calendar.DAY_OF_WEEK, ++dayNr);
+		dayNr += 2;
+		cal.set(Calendar.DAY_OF_WEEK, dayNr);
 		return cal.getTime();
 	}
 
