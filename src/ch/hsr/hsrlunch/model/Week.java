@@ -5,24 +5,14 @@ import java.text.DateFormat;
 import android.util.SparseArray;
 
 public class Week {
-	int id;
 	long lastUpdate;
 	SparseArray<WorkDay> dayList;
 	DateFormat dateFormat;
 
-	public Week(int id, long lastUpdate, SparseArray<WorkDay> dayList) {
-		this.id = id;
+	public Week(long lastUpdate, SparseArray<WorkDay> dayList) {
 		this.lastUpdate = lastUpdate;
 		this.dayList = dayList;
 		dateFormat = DateFormat.getDateInstance(DateFormat.SHORT);
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public long getLastUpdate() {

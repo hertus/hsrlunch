@@ -70,14 +70,27 @@ public class OfferFragment extends Fragment {
 	}
 
 	public void updateValues() {
-		if (menuNum >= 0 && MainActivity.dataAvailable) {
-			//title.setText(MainActivity.selectedDay.getOfferList().get(menuNum)
-			//		.getTitle());
-			//date.setText(MainActivity.selectedDay.getDate().toString());
-			//content.setText(MainActivity.selectedDay.getOfferList()
-			//		.get(menuNum).getMenuText());
-			price.setText(MainActivity.selectedDay.getOfferList().get(menuNum)
-					.getPrice());
+		if (menuNum < 0 || !MainActivity.dataAvailable) {
+			setEmptyText();
+			return;
+		} else {
+			if (menuNum >= 0) {
+				if (MainActivity.dataAvailable) {
+					if (MainActivity.selectedDay.getOfferList().get(menuNum)
+							.getContent().equals("EMPTY")) {
+						setEmptyText();
+					} else {
+						title.setText(getResources().getStringArray(
+								R.array.menu_title_entries)[menuNum]);
+						date.setText(MainActivity.selectedDay.getDateString());
+						content.setText(MainActivity.selectedDay.getOfferList()
+								.get(menuNum).getContent());
+						price.setText(MainActivity.selectedDay.getOfferList()
+								.get(menuNum).getPrice());
+					}
+
+				}
+			}
 		}
 
 	}

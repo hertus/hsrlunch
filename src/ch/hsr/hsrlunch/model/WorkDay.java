@@ -1,24 +1,18 @@
 package ch.hsr.hsrlunch.model;
 
+import java.text.DateFormat;
+
 import android.util.SparseArray;
 
 public class WorkDay {
-	int id;
 	long date;
 	SparseArray<Offer> offerList;
+	DateFormat dateFormat;
 
-	public WorkDay(int id, long date, SparseArray<Offer> offerList) {
-		this.id = id;
+	public WorkDay(long date, SparseArray<Offer> offerList) {
 		this.date = date;
 		this.offerList = offerList;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
+		dateFormat = DateFormat.getDateInstance(DateFormat.LONG);
 	}
 
 	public long getDate() {
@@ -35,6 +29,10 @@ public class WorkDay {
 
 	public void setOfferList(SparseArray<Offer> offerList) {
 		this.offerList = offerList;
+	}
+
+	public String getDateString() {
+		return dateFormat.format(date);
 	}
 
 }

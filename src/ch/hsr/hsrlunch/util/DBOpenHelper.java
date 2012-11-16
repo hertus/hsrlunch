@@ -8,8 +8,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class DBOpenHelper extends SQLiteOpenHelper implements DBConstants {
+	private static final long INIT_DATE = 1351344627652L; // something last year
 	private static final String DATABASE_NAME = "hsrlunch.db";
-	private static final int DATABASE_VERSION = 29;
+	private static final int DATABASE_VERSION = 34;
 
 	public DBOpenHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -47,13 +48,13 @@ public class DBOpenHelper extends SQLiteOpenHelper implements DBConstants {
 
 		// There will be only 2 Weeks, so only ID = 1-2 exists for Weeks
 		db.execSQL("INSERT INTO " + TABLE_WEEK + "(" + COLUMN_WEEK_ID + ", "
-				+ COLUMN_WEEK_LASTUPDATE + ")VALUES(1,0);");
+				+ COLUMN_WEEK_LASTUPDATE + ")VALUES(1," + INIT_DATE + ");");
 
 		// 1 Week will have 5 Workdays, so only ID = 1-5 exist for Workday
 		for (int i = 1; i <= 5; i++) {
 			db.execSQL("INSERT INTO " + TABLE_WORKDAY + "(" + COLUMN_WORKDAY_ID
 					+ ", " + COLUMN_WORKDAY_DATE + ", " + COLUMN_WORKDAY_WEEKID
-					+ ")VALUES(" + i + "," + new Date().getTime() + ",1);");
+					+ ")VALUES(" + i + "," + INIT_DATE + ",1);");
 		}
 
 		// Every Workday has 3 OfferTypes

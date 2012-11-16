@@ -1,110 +1,118 @@
 package ch.hsr.hsrlunch.controller;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-
-import android.text.format.DateUtils;
-import android.text.method.DateTimeKeyListener;
+import android.util.Pair;
 import android.util.SparseArray;
+import ch.hsr.hsrlunch.model.Badge;
 import ch.hsr.hsrlunch.model.Offer;
 import ch.hsr.hsrlunch.model.Week;
 import ch.hsr.hsrlunch.model.WorkDay;
 import ch.hsr.hsrlunch.util.DBOpenHelper;
+import ch.hsr.hsrlunch.util.DateHelper;
 
 public class PersistenceFactory implements OfferConstants {
-	
-	private final long DAY_IN_MILLISECONDS =  (24 * 60 * 60 * 1000);
 
 	private Week week;
 	private WorkDay workday;
 	private Offer offer;
-	private DBOpenHelper dbHelper;
+	private Badge badge;
 	private OfferUpdater offUp;
 
 	private WeekDataSource weekDataSource;
 	private WorkDayDataSource workDayDataSource;
 	private OfferDataSource offerDataSource;
 
-	private SparseArray<WorkDay> workdayList;
 	private SparseArray<Offer> offerList;
+	private SparseArray<WorkDay> workdayList;
+	private SparseArray<SparseArray<Pair<String, String>>> updatedOfferList;
 
 	public PersistenceFactory(DBOpenHelper dbHelper) {
-		this.dbHelper = dbHelper;
-		offUp = new OfferUpdater(dbHelper);
-		createAndFillAllOffers();
+		offUp = new OfferUpdater();
+		weekDataSource = new WeekDataSource(dbHelper);
+		workDayDataSource = new WorkDayDataSource(dbHelper);
+		offerDataSource = new OfferDataSource(dbHelper);
+		createAndFillAllFromDB();
 	}
 
-	private void createAndFillAllOffers() {
+	private void createAndFillAllFromDB() {
 
+		offerDataSource.openRead();
+		workDayDataSource.openRead();
+
+		workdayList = new SparseArray<WorkDay>();
 		for (int nrWorkDay = OFFER_MONDAY; nrWorkDay <= OFFER_FRIDAY; nrWorkDay++) {
+
+			offerList = new SparseArray<Offer>();
 			for (int nrOfferType = OFFER_DAILY; nrOfferType <= OFFER_WEEK; nrOfferType++) {
-				offerList = new SparseArray<Offer>();
+
 				offer = new Offer(nrOfferType, offerDataSource.getOfferContent(
 						nrOfferType, nrWorkDay), offerDataSource.getOfferPrice(
 						nrOfferType, nrWorkDay));
-				offerList.append(nrOfferType, offer);
+				offerList.put(nrOfferType, offer);
 
 			}
-			workday = new WorkDay(nrWorkDay,
-					workDayDataSource.getWorkDayDate(nrWorkDay), offerList);
-
-			workdayList = new SparseArray<WorkDay>();
-			workdayList.append(nrWorkDay, workday);
+			workday = new WorkDay(workDayDataSource.getWorkDayDate(nrWorkDay),
+					offerList);
+			workdayList.put(nrWorkDay, workday);
 		}
 
-		week = new Week(1, weekDataSource.getWeekLastUpdate(), workdayList);
+		offerDataSource.close();
+		workDayDataSource.close();
+
+		weekDataSource.openRead();
+		week = new Week(weekDataSource.getWeekLastUpdate(), workdayList);
+		weekDataSource.close();
 	}
 
-	public void updateDB() {
-		offUp.updateAllOffer();
-		Date date = new Date();
-		DateUtils dateUtils = new DateUtils();
-		GregorianCalendar gregorianCalendar = new GregorianCalendar();
+	public void updateAllOffers() {
+		// TODO: Create a new Task and wait for it with ProgressBar
+		updatedOfferList = offUp.updateAndGetOffersArray();
+		DateHelper dateHelper = new DateHelper();
 
-		week.setLastUpdate(date.getTime());
-		weekDataSource.setWeekLastUpdate(week.getLastUpdate());
-		gregorianCalendar.get(Calendar.DAY_OF_WEEK);
-		
-		
-		week.getDayList().get(OFFER_MONDAY).setDate(date.getTime());
-		week.getDayList().get(OFFER_TUESDAY).setDate(date.getTime() + DAY_IN_MILLISECONDS);
-		week.getDayList().get(OFFER_WEDNESDAY).setDate(date.getTime() + 2*DAY_IN_MILLISECONDS);
-		week.getDayList().get(OFFER_THURSDAY).setDate(date.getTime() + 3*DAY_IN_MILLISECONDS);
-		week.getDayList().get(OFFER_FRIDAY).setDate(date.getTime() + 4*DAY_IN_MILLISECONDS);
+		offerDataSource.openWrite();
+		workDayDataSource.openWrite();
 
-		
-		
-		updateAllFromDB();
-	}
+		for (int nrWorkDay = OFFER_MONDAY; nrWorkDay <= OFFER_FRIDAY; nrWorkDay++) {
 
-	public void updateAllFromDB() {
-
-		for (int nrWordkDay = OFFER_MONDAY; nrWordkDay <= OFFER_FRIDAY; nrWordkDay++) {
+			// Set parsed OfferContent in Object and DB
 			for (int nrOfferType = OFFER_DAILY; nrOfferType <= OFFER_WEEK; nrOfferType++) {
-				offerList.get(nrOfferType).setContent(
-						offerDataSource
-								.getOfferContent(nrOfferType, nrWordkDay));
-				offerList.get(nrOfferType).setPrice(
-						offerDataSource.getOfferPrice(nrOfferType, nrWordkDay));
+				String content = updatedOfferList.get(nrWorkDay).get(
+						nrOfferType).first;
+				workday.getOfferList().get(nrOfferType).setContent(content);
+				offerDataSource
+						.setOfferContent(content, nrOfferType, nrWorkDay);
 
+				String price = updatedOfferList.get(nrWorkDay).get(nrOfferType).second;
+				workday.getOfferList().get(nrOfferType).setPrice(price);
+				offerDataSource.setOfferPrice(price, nrOfferType, nrWorkDay);
 			}
-			workdayList.get(nrWordkDay).setDate(
-					workDayDataSource.getWorkDayDate(nrWordkDay));
+
+			// Set OfferList to WorkdayObject and DB
+			long updateTime = dateHelper.getDateOfWeekDay(nrWorkDay).getTime();
+			week.getDayList().get(nrWorkDay).setDate(updateTime);
+			workDayDataSource.setWorkdayDate(nrWorkDay, updateTime);
 		}
-		week.setLastUpdate(weekDataSource.getWeekLastUpdate());
+
+		offerDataSource.close();
+		workDayDataSource.close();
+
+		weekDataSource.openWrite();
+		week.setLastUpdate(dateHelper.getTime());
+		weekDataSource.setWeekLastUpdate(week.getLastUpdate());
+		weekDataSource.close();
+
+		offerDataSource.openRead();
+		for (int i = OFFER_MONDAY; i <= OFFER_FRIDAY; i++) {
+			System.out.println("price" + i + ": "
+					+ offerDataSource.getOfferPrice(1, i));
+		}
+		offerDataSource.close();
 	}
 
 	public Week getWeek() {
 		return week;
 	}
 
-	public WorkDay getWorkday() {
-		return workday;
+	public Badge getBadge() {
+		return badge;
 	}
-
-	public Offer getOffer() {
-		return offer;
-	}
-
 }

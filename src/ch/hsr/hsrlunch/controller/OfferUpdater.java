@@ -1,97 +1,86 @@
 package ch.hsr.hsrlunch.controller;
 
+import java.util.Date;
+import java.util.concurrent.CountDownLatch;
+
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
+import android.util.Pair;
 import android.util.SparseArray;
 import ch.hsr.hsrlunch.util.OfferParser;
-import ch.hsr.hsrlunch.util.DBOpenHelper;
-import ch.hsr.hsrlunch.controller.OfferDataSource;
 
 public class OfferUpdater implements OfferConstants {
-	private OfferDataSource offerData;
-	SparseArray<SparseArray<String>> offerArrayList = new SparseArray<SparseArray<String>>();
+	private CountDownLatch endSignal;
+	private SparseArray<SparseArray<Pair<String, String>>> returnArray;
 
-	public OfferUpdater(DBOpenHelper dbHelper) {
-		offerData = new OfferDataSource(dbHelper);
+	public OfferUpdater() {
 	}
 
-	public void updateSingleOffer(int day) {
-		new MultipleSiteParserTask(day).execute();
-	}
-
+	/**
+	 * @return Returns a SparseArray with a SparseArraye coming from the
+	 *         OfferParser. This SparseArray contains Pairs, where FIRST =
+	 *         OfferContent and SECOND = OfferPrice
+	 * @see API SDK Version lower then 10 has no ThreadPoolExecutor for multiple
+	 *      AsyncTasks
+	 */
 	@SuppressLint("NewApi")
-	public void updateAllOffer() {
+	public SparseArray<SparseArray<Pair<String, String>>> updateAndGetOffersArray() {
 
-		Log.w(OfferUpdater.class.getName(),
-				"BEGIN WITH UPDATE ALL OFFER PARSING!");
+		returnArray = new SparseArray<SparseArray<Pair<String, String>>>();
+		endSignal = new CountDownLatch(OFFER_FRIDAY);
 
-		// Try Parallel AsyncTask connecting Websites and Parse
-		for (int i = OFFER_MONDAY; i <= OFFER_FRIDAY; i++) {
-			if (Build.VERSION.SDK_INT >= 11) {
-				new MultipleSiteParserTask(i)
-						.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-			} else {
-				new MultipleSiteParserTask(i).execute();
-			}
-		}
-	}
-
-	private synchronized void setOfferContent(int day) {
-		offerData.open();
+		// Create and Execute AsyncTask for MO-FR
 		try {
-			offerData.setOfferContent(offerArrayList.get(day).get(OFFER_DAILY),
-					OFFER_DAILY, day);
-			offerData.setOfferPrice(
-					offerArrayList.get(day).get(OFFER_DAILY_PRICE),
-					OFFER_DAILY, day);
-			offerData.setOfferContent(offerArrayList.get(day).get(OFFER_VEGI),
-					OFFER_VEGI, day);
-			offerData.setOfferPrice(
-					offerArrayList.get(day).get(OFFER_VEGI_PRICE), OFFER_VEGI,
-					day);
-			offerData.setOfferContent(offerArrayList.get(day).get(OFFER_WEEK),
-					OFFER_WEEK, day);
-			offerData.setOfferPrice(
-					offerArrayList.get(day).get(OFFER_WEEK_PRICE), OFFER_WEEK,
-					day);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			offerData.close();
-		}
+			for (int i = OFFER_MONDAY; i <= OFFER_FRIDAY; i++) {
+				if (Build.VERSION.SDK_INT >= 11) {
+					new SiteParserTask().executeOnExecutor(
+							AsyncTask.THREAD_POOL_EXECUTOR, i);
 
+				} else {
+					new SiteParserTask().execute(i);
+				}
+			}
+
+			Log.i(OfferUpdater.class.getName(),
+					"HSRLunch - OfferParser: Begin waiting for Parser AsyncTasks");
+			long timeStart = new Date().getTime();
+			endSignal.await();
+			long timeEnd = new Date().getTime();
+			Log.i(OfferUpdater.class.getName(),
+					"HSRLunch - OfferParser: End with waiting for Parser AsyncTasks, time: "
+							+ (timeEnd - timeStart) / 1000 + " sec");
+
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+		return returnArray;
 	}
 
-	private class MultipleSiteParserTask extends AsyncTask<Void, Void, Void> {
-		int day;
+	private synchronized void setOfferContent(int day,
+			SparseArray<Pair<String, String>> offers) {
+		returnArray.append(day, offers);
+	}
 
-		public MultipleSiteParserTask(int day) {
-			this.day = day;
-		}
+	private class SiteParserTask extends AsyncTask<Integer, Void, Void> {
 
 		@Override
-		protected Void doInBackground(Void... params) {
+		protected Void doInBackground(Integer... day) {
 
 			OfferParser parser = new OfferParser();
 
 			try {
 				parser.setUrl("http://hochschule-rapperswil.sv-group.ch/de/menuplan.html?addGP%5Bweekday%5D="
-						+ day + "&addGP%5Bweekmod%5D=0");
+						+ day[0] + "&addGP%5Bweekmod%5D=0");
 				parser.parse();
-				offerArrayList.append(day, parser.getOffers());
 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			setOfferContent(day[0], parser.getOffers());
+			endSignal.countDown();
 			return null;
-		}
-
-		@Override
-		protected void onPostExecute(Void result) {
-			setOfferContent(day);
-			Log.w(OfferUpdater.class.getName(), "END WITH UPDATE OFFER" + day);
 		}
 
 	}

@@ -14,8 +14,12 @@ public class WorkDayDataSource implements DBConstants {
 		this.dbHelper = dbHelper;
 	}
 
-	public void open() {
+	public void openWrite() {
 		db = dbHelper.getWritableDatabase();
+	}
+	
+	public void openRead(){
+		db = dbHelper.getReadableDatabase();
 	}
 
 	public void close() {

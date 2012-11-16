@@ -14,8 +14,12 @@ public class WeekDataSource implements DBConstants {
 		this.dbHelper = dbHelper;
 	}
 
-	public void open() {
+	public void openWrite() {
 		db = dbHelper.getWritableDatabase();
+	}
+
+	public void openRead() {
+		db = dbHelper.getReadableDatabase();
 	}
 
 	public void close() {
@@ -26,12 +30,13 @@ public class WeekDataSource implements DBConstants {
 	 * @return Date in milliseconds from the Last Update as a Long
 	 */
 	public long getWeekLastUpdate() {
-		String where = COLUMN_WEEK_ID + " = 0";
+		String where = COLUMN_WEEK_ID + " = 1";
 		Cursor cursor = db.query(TABLE_WEEK,
 				new String[] { COLUMN_WEEK_LASTUPDATE }, where, null, null,
 				null, null);
 		cursor.moveToFirst();
-		long lastupdate = cursor.getLong(cursor.getColumnIndex(COLUMN_WEEK_LASTUPDATE));
+		long lastupdate = cursor.getLong(cursor
+				.getColumnIndex(COLUMN_WEEK_LASTUPDATE));
 		cursor.close();
 		return lastupdate;
 	}
@@ -43,7 +48,7 @@ public class WeekDataSource implements DBConstants {
 	public void setWeekLastUpdate(long dateInMillisec) {
 		ContentValues values = new ContentValues();
 		values.put(COLUMN_WEEK_LASTUPDATE, dateInMillisec);
-		String where = COLUMN_WEEK_ID + "= 0";
+		String where = COLUMN_WEEK_ID + "= 1";
 		db.update(TABLE_WEEK, values, where, null);
 	}
 }
