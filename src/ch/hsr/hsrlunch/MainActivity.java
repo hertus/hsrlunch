@@ -149,7 +149,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 				mMenuDrawer.setActiveView(view, position); // falls vorig Zeit^^
 				mMenuDrawer.closeMenu();
 				if (position <= 6) {
-					setSelectedDay(position);
+					setSelectedDay(position-1);
 				} else {
 					// starte Settings-Activity
 					Intent i = new Intent(getApplicationContext(),
@@ -192,10 +192,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 	/*
 	 * setzen des ausgewählten Tages(selectedDay) des viewPagers
 	 * 
-	 * @param: int position 1-5, 1 = Montag, ..., 5=Freitag
+	 * @param: int position 0-4, 0 = Montag, ..., 4=Freitag
 	 */
 	private void setSelectedDay(int position) {
-		// korrektur index für dayList durch -1
 		selectedDay = week.getDayList().get(position);
 		selectedOffer = selectedDay.getOfferList().get(favouriteMenu);
 		if (mTabPageAdapter != null) {
