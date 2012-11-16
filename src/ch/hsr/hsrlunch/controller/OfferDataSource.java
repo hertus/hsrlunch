@@ -28,9 +28,9 @@ public class OfferDataSource implements DBConstants {
 
 	/**
 	 * @param offerType
-	 *            [1-3] where 1=Daily, 2=Vegi and 3=Weekly
+	 *            [0-2] where 0=Daily, 1=Vegi and 2=Weekly
 	 * @param workDay
-	 *            [1-5] where 1=MO ... 5=FR
+	 *            [0-4] where 0=MO ... 4=FR
 	 * @return Content of this Offer as a String
 	 */
 	public String getOfferContent(int offerType, int workDay) {
@@ -48,9 +48,9 @@ public class OfferDataSource implements DBConstants {
 
 	/**
 	 * @param offerType
-	 *            [1-3] where 1=Daily, 2=Vegi and 3=Weekly
+	 *            [0-2] where 0=Daily, 1=Vegi and 2=Weekly
 	 * @param workDay
-	 *            [1-5] where 1=MO ... 5=FR
+	 *            [0-4] where 0=MO ... 4=FR
 	 * @return Price of this Offer as a String
 	 */
 	public String getOfferPrice(int offerType, int workDay) {
@@ -69,9 +69,9 @@ public class OfferDataSource implements DBConstants {
 	/**
 	 * @param content
 	 * @param type
-	 *            [1-3] where 1=Daily, 2=Vegi and 3=Weekly
-	 * @param workday
-	 *            [1-5] where 1=MO ... 5=FR
+	 *            [0-2] where 0=Daily, 1=Vegi and 2=Weekly
+	 * @param workDay
+	 *            [0-4] where 0=MO ... 4=FR
 	 */
 	public void setOfferContent(String content, int type, int workday) {
 		if (content != null) {
@@ -93,9 +93,9 @@ public class OfferDataSource implements DBConstants {
 	/**
 	 * @param price
 	 * @param type
-	 *            [1-3] where 1=Daily, 2=Vegi and 3=Weekly
-	 * @param workday
-	 *            [1-5] where 1=MO ... 5=FR
+	 *            [0-2] where 0=Daily, 1=Vegi and 2=Weekly
+	 * @param workDay
+	 *            [0-4] where 0=MO ... 4=FR
 	 */
 	public void setOfferPrice(String price, int type, int workday) {
 		if (price != null) {
