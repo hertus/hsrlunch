@@ -14,12 +14,12 @@ public class PersistenceFactory implements OfferConstants {
 	private Week week;
 	private WorkDay workday;
 	private Offer offer;
-	private Badge badge;
 	private OfferUpdater offUp;
 
 	private WeekDataSource weekDataSource;
 	private WorkDayDataSource workDayDataSource;
 	private OfferDataSource offerDataSource;
+	private BadgeDataSource badgeDataSource;
 
 	private SparseArray<Offer> offerList;
 	private SparseArray<WorkDay> workdayList;
@@ -30,9 +30,10 @@ public class PersistenceFactory implements OfferConstants {
 		weekDataSource = new WeekDataSource(dbHelper);
 		workDayDataSource = new WorkDayDataSource(dbHelper);
 		offerDataSource = new OfferDataSource(dbHelper);
+		badgeDataSource = new BadgeDataSource(dbHelper);
 		createAndFillAllFromDB();
 	}
-
+	
 	private void createAndFillAllFromDB() {
 
 		offerDataSource.openRead();
@@ -61,6 +62,11 @@ public class PersistenceFactory implements OfferConstants {
 		weekDataSource.openRead();
 		week = new Week(weekDataSource.getWeekLastUpdate(), workdayList);
 		weekDataSource.close();
+	}
+
+	public  void updateBadgeEntry(double amount, long date) {
+		badgeDataSource.setBadgeAmount(amount);
+		badgeDataSource.setBadgeLastUpdate(date);
 	}
 
 	public void updateAllOffers() {
@@ -113,6 +119,6 @@ public class PersistenceFactory implements OfferConstants {
 	}
 
 	public Badge getBadge() {
-		return badge;
+		return new Badge(badgeDataSource.getBadgeAmount(), badgeDataSource.getBadgeLastUpdate());
 	}
 }
