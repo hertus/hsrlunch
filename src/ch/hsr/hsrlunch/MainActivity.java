@@ -210,6 +210,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			//initiate Update
 			BadgeUpdater service = new BadgeUpdater();
 			service.setBackend(persistenceFactory);
+			service.setContext(this);
 			service.setListener(this);
 			service.execute();
 		} else {
