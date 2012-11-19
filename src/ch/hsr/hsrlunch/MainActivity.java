@@ -204,6 +204,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	private void updateBadgeView() {
 		if (showBadgeInfo) {
+			badgeLayout.setVisibility(View.VISIBLE);
+			//hole Informationen aus der DB:
+			onBadgeUpdate();
 			//initiate Update
 			BadgeUpdater service = new BadgeUpdater();
 			service.setBackend(persistenceFactory);
@@ -330,7 +333,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 	@Override
 	public void onBadgeUpdate() {
 		Badge badge = persistenceFactory.getBadge();
-		badgeLayout.setVisibility(View.VISIBLE);
 		TextView badgeAmount = (TextView) findViewById(R.id.amount);
 		badgeAmount.setText(badge.getAmount() + " CHF");
 		TextView badgeLastUpdate = (TextView) findViewById(R.id.lastUpdate);

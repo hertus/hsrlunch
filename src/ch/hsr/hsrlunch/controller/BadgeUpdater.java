@@ -16,8 +16,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import ch.hsr.hsrlunch.model.MyHttpClient;
+import ch.hsr.hsrlunch.ui.SettingsActivity;
 import ch.hsr.hsrlunch.util.OnBadgeResultListener;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 
 public class BadgeUpdater extends AsyncTask<Void,Void, Void> {
 
@@ -25,13 +29,20 @@ public class BadgeUpdater extends AsyncTask<Void,Void, Void> {
 	private PersistenceFactory persistenceFactory;
 	private HttpResponse response;
 	private InputStream inputStream;
+	private Context maincontext;
 
 	@Override
 	protected Void doInBackground(Void... arg0) {
 		DefaultHttpClient client =new MyHttpClient().getMyHttpClient();
-//		client.getCredentialsProvider().setCredentials(new AuthScope(null, -1),new UsernamePasswordCredentials("hsr\\c1buechi", "test33test"));
-		client.getCredentialsProvider().setCredentials(new AuthScope(null, -1),new UsernamePasswordCredentials("hsr\\c1buechi", ""));
-		HttpGet request = new HttpGet("https://152.96.21.52:4450/VerrechnungsportalService.svc/JSON/getBadgeSaldo");
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		client.getCredentialsProvider().setCredentials(new AuthScope(null, -1),new UsernamePasswordCredentials("SIFSV-80018\\ChallPUser", "1q$2w$3e$4r$5t"));
+		HttpGet request = new HttpGet("https://152.96.80.18/VerrechnungsportalService.svc/json/getBadgeSaldo");
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(maincontext);
+//		client.getCredentialsProvider().setCredentials(new AuthScope(null, -1),new UsernamePasswordCredentials(prefs.getString(SettingsActivity.PREF_BADGE_USERNAME, ""), prefs.getString(SettingsActivity.PREF_BADGE_PASSWORD, "")));
+//		client.getCredentialsProvider().setCredentials(new AuthScope(null, -1),new UsernamePasswordCredentials("hsr\\c1buechi", ""));
+//		HttpGet request = new HttpGet("https://152.96.21.52:4450/VerrechnungsportalService.svc/JSON/getBadgeSaldo");
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		ByteArrayOutputStream content = new ByteArrayOutputStream();
 		try {
 			response = client.execute(request);
@@ -46,7 +57,7 @@ public class BadgeUpdater extends AsyncTask<Void,Void, Void> {
 			}
 			
 			JSONObject object = new JSONObject(new String(content.toByteArray()));
-			
+			System.out.println("BadgeVermögen: " + object.getDouble("badgeSaldo"));
 			persistenceFactory.updateBadgeEntry(object.getDouble("badgeSaldo"), new Date().getTime());
 			
 		} catch (ClientProtocolException e) {
@@ -71,6 +82,10 @@ public class BadgeUpdater extends AsyncTask<Void,Void, Void> {
 
 	public void setListener(OnBadgeResultListener listener) {
 		this.listener = listener;		
+	}
+	
+	public void setContext(Context main) {
+		this.maincontext = main;
 	}
 
 	public void setBackend(PersistenceFactory persistenceFactory) {

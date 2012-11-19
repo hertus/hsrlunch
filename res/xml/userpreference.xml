@@ -13,5 +13,7 @@
         android:title="@string/pref_badge"
         android:summary="@string/pref_badge_long"
         android:defaultValue="false"
-		 />       
+		 />
+       <EditTextPreference android:key="pref_username" android:dependency="pref_badge" android:title='@string/pref_badge_username' android:summary="@string/pref_badge_username_long"/>
+       <EditTextPreference android:key="pref_password" android:dependency="pref_badge" android:title='@string/pref_badge_password' android:summary="@string/pref_badge_password_long" android:inputType="textPassword" />       
 </PreferenceScreen>

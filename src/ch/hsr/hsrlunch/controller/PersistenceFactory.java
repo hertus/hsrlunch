@@ -65,8 +65,10 @@ public class PersistenceFactory implements OfferConstants {
 	}
 
 	public  void updateBadgeEntry(double amount, long date) {
+		badgeDataSource.open();
 		badgeDataSource.setBadgeAmount(amount);
 		badgeDataSource.setBadgeLastUpdate(date);
+		badgeDataSource.close();
 	}
 
 	public void updateAllOffers() {
@@ -119,6 +121,9 @@ public class PersistenceFactory implements OfferConstants {
 	}
 
 	public Badge getBadge() {
-		return new Badge(badgeDataSource.getBadgeAmount(), badgeDataSource.getBadgeLastUpdate());
+		badgeDataSource.open();
+		Badge badge = new Badge(badgeDataSource.getBadgeAmount(), badgeDataSource.getBadgeLastUpdate());
+		badgeDataSource.close();
+		return  badge;
 	}
 }

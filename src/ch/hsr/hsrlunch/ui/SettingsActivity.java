@@ -11,6 +11,9 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 
 	public static final String PREF_FAV_MENU = "pref_fav_menu";
 	public static final String PREF_BADGE = "pref_badge";
+	public static final String PREF_BADGE_USERNAME = "pref_badge_username";
+	public static final String PREF_BADGE_PASSWORD = "pref_badge_password";
+	
 	
 
         // We use addPreferencesFromResource as we need sdk-7 compatibility

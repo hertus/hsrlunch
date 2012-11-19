@@ -25,4 +25,8 @@
             <item >Donnerstag</item>
             <item >Freitag</item>
         </string-array>
+        <string name="pref_badge_username">Username</string><string name="pref_badge_username_long">Bitte hier den Usernamen mit führendem hsr\\ eingeben</string>
+        <string name="pref_badge_password">Passwort</string>
+        <string name="pref_badge_password_long">Bitte hier das Passwort der HSR eingeben</string>
+        
 </resources>
