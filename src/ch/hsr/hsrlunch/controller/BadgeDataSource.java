@@ -33,7 +33,7 @@ public class BadgeDataSource implements DBConstants {
 				new String[] { COLUMN_BADGE_AMOUNT }, where, null, null, null,
 				null);
 		cursor.moveToFirst();
-		double amount = cursor.getLong(cursor
+		double amount = cursor.getDouble(cursor
 				.getColumnIndex(COLUMN_BADGE_AMOUNT));
 		cursor.close();
 		return amount;
