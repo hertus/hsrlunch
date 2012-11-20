@@ -82,7 +82,7 @@ public class OfferFragment extends Fragment {
 					} else {
 						title.setText(getResources().getStringArray(
 								R.array.menu_title_entries)[menuNum]);
-						date.setText(MainActivity.selectedDay.getDateString());
+						date.setText(MainActivity.selectedDay.getDateStringLong());
 						content.setText(MainActivity.selectedDay.getOfferList()
 								.get(menuNum).getContent());
 						price.setText(MainActivity.selectedDay.getOfferList()

@@ -19,7 +19,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import ch.hsr.hsrlunch.controller.BadgeUpdater;
 import ch.hsr.hsrlunch.controller.PersistenceFactory;
 import ch.hsr.hsrlunch.controller.WeekDataSource;
@@ -41,7 +40,6 @@ import com.actionbarsherlock.view.MenuItem.OnMenuItemClickListener;
 import com.actionbarsherlock.widget.ShareActionProvider;
 import com.viewpagerindicator.TabPageIndicator;
 
-
 public class MainActivity extends SherlockFragmentActivity implements
 		OnSharedPreferenceChangeListener, OnBadgeResultListener {
 	private static final int SHOW_PREFERENCES = 1;
@@ -52,6 +50,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	public static Offer selectedOffer;
 	public static String[] offertitles;
 
+	private static Context context;
 	private ViewPager mViewPager;
 	private MenuDrawerManager mMenuDrawer;
 	private TabPageAdapter mTabPageAdapter;
@@ -73,15 +72,18 @@ public class MainActivity extends SherlockFragmentActivity implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		context = getApplicationContext();
 
 		onCreatePersistence();
 
 		offertitles = getResources().getStringArray(R.array.menu_title_entries);
 
 		if (Build.VERSION.SDK_INT >= 14) {
-			PreferenceManager.setDefaultValues(this, R.xml.userpreference,false);
+			PreferenceManager.setDefaultValues(this, R.xml.userpreference,
+					false);
 		} else {
-			PreferenceManager.setDefaultValues(this,R.xml.userpreference_oldver, false);
+			PreferenceManager.setDefaultValues(this,
+					R.xml.userpreference_oldver, false);
 		}
 		updatePreferences();
 
@@ -101,6 +103,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	}
 
+	public static Context getMainContext() {
+		return context;
+	}
+
 	private void onCreatePersistence() {
 		dbHelper = new DBOpenHelper(this);
 		persistenceFactory = new PersistenceFactory(dbHelper);
@@ -108,16 +114,14 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void updatePreferences() {
-	
-		Context context = getApplicationContext();
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(context);
-	
+
 		showBadgeInfo = prefs.getBoolean(SettingsActivity.PREF_BADGE, false);
-	
+
 		String temp = prefs.getString(SettingsActivity.PREF_FAV_MENU,
 				offertitles[0]);
-	
+
 		// update index von favourite menu
 		for (int i = 0; i <= offertitles.length; i++) {
 			if (temp.equals(offertitles[i])) {
@@ -162,10 +166,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 	 * implementiert ist
 	 */
 	private void init() {
-	
-//		badge = new Badge(999.99, new Date().getTime());
-		
-	
+
+		// badge = new Badge(999.99, new Date().getTime());
+
 		GregorianCalendar cal = new GregorianCalendar();
 		/*
 		 * Samstags und Sonntags stehen keine Informationen bereit
@@ -205,9 +208,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private void updateBadgeView() {
 		if (showBadgeInfo) {
 			badgeLayout.setVisibility(View.VISIBLE);
-			//hole Informationen aus der DB:
+			// hole Informationen aus der DB:
 			onBadgeUpdate();
-			//initiate Update
+			// initiate Update
 			BadgeUpdater service = new BadgeUpdater();
 			service.setBackend(persistenceFactory);
 			service.setContext(this);
@@ -262,12 +265,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
-				Toast.makeText(getApplicationContext(), "Update",
-						Toast.LENGTH_SHORT).show();
-				persistenceFactory.updateAllOffers();
+				persistenceFactory.newUpdateTask();
+
 				if (mTabPageAdapter != null) {
 					mTabPageAdapter.notifyDataSetChanged();
 				}
+
 				return false;
 			}
 		});
@@ -291,10 +294,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("text/plain");
 		intent.putExtra(android.content.Intent.EXTRA_SUBJECT,
-				"HSR Menu @ " + selectedDay.getDate() + "-"
-						+ offertitles[selectedOffer.getOfferType()]);
+				"HSR SV-Menu am: " + selectedDay.getDateStringMedium());
 		intent.putExtra(android.content.Intent.EXTRA_TEXT,
-				selectedOffer.getOfferAndPrice());
+				offertitles[selectedOffer.getOfferType()] + "\n\n"
+						+ selectedOffer.getOfferAndPrice());
 		return intent;
 	}
 

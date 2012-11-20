@@ -12,7 +12,6 @@ public class WorkDay {
 	public WorkDay(long date, SparseArray<Offer> offerList) {
 		this.date = date;
 		this.offerList = offerList;
-		dateFormat = DateFormat.getDateInstance(DateFormat.LONG);
 	}
 
 	public long getDate() {
@@ -31,7 +30,13 @@ public class WorkDay {
 		this.offerList = offerList;
 	}
 
-	public String getDateString() {
+	public String getDateStringLong() {
+		dateFormat = DateFormat.getDateInstance(DateFormat.LONG);
+		return dateFormat.format(date);
+	}
+	
+	public String getDateStringMedium() {
+		dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
 		return dateFormat.format(date);
 	}
 

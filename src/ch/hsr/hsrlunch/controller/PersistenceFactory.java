@@ -1,20 +1,24 @@
 package ch.hsr.hsrlunch.controller;
 
+import android.os.AsyncTask;
+import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
+import android.widget.Toast;
+import ch.hsr.hsrlunch.MainActivity;
 import ch.hsr.hsrlunch.model.Badge;
 import ch.hsr.hsrlunch.model.Offer;
 import ch.hsr.hsrlunch.model.Week;
 import ch.hsr.hsrlunch.model.WorkDay;
 import ch.hsr.hsrlunch.util.DBOpenHelper;
 import ch.hsr.hsrlunch.util.DateHelper;
+import ch.hsr.hsrlunch.util.XMLParser;
 
 public class PersistenceFactory implements OfferConstants {
 
 	private Week week;
 	private WorkDay workday;
 	private Offer offer;
-	private OfferUpdater offUp;
 
 	private WeekDataSource weekDataSource;
 	private WorkDayDataSource workDayDataSource;
@@ -26,14 +30,44 @@ public class PersistenceFactory implements OfferConstants {
 	private SparseArray<SparseArray<Pair<String, String>>> updatedOfferList;
 
 	public PersistenceFactory(DBOpenHelper dbHelper) {
-		offUp = new OfferUpdater();
 		weekDataSource = new WeekDataSource(dbHelper);
 		workDayDataSource = new WorkDayDataSource(dbHelper);
 		offerDataSource = new OfferDataSource(dbHelper);
 		badgeDataSource = new BadgeDataSource(dbHelper);
+
 		createAndFillAllFromDB();
 	}
-	
+
+	public void newUpdateTask() {
+		new UpdateTask().execute();
+	}
+
+	private class UpdateTask extends AsyncTask<Void, Void, Boolean> {
+
+		@Override
+		protected void onPreExecute() {
+		}
+
+		@Override
+		protected Boolean doInBackground(Void... params) {
+
+			try {
+				updateAllOffers();
+				return true;
+			} catch (Exception e) {
+				Log.e("ch.hsr.hsrlunch", "error on updating", e);
+				return false;
+			}
+		}
+
+		@Override
+		protected void onPostExecute(Boolean success) {
+			Toast toast = Toast.makeText(MainActivity.getMainContext(), "Menus up to date!",
+					Toast.LENGTH_SHORT);
+			toast.show();
+		}
+	}
+
 	private void createAndFillAllFromDB() {
 
 		offerDataSource.openRead();
@@ -64,7 +98,7 @@ public class PersistenceFactory implements OfferConstants {
 		weekDataSource.close();
 	}
 
-	public  void updateBadgeEntry(double amount, long date) {
+	public void updateBadgeEntry(double amount, long date) {
 		badgeDataSource.open();
 		badgeDataSource.setBadgeAmount(amount);
 		badgeDataSource.setBadgeLastUpdate(date);
@@ -72,8 +106,8 @@ public class PersistenceFactory implements OfferConstants {
 	}
 
 	public void updateAllOffers() {
-		// TODO: Create a new Task and wait for it with ProgressBar
-		updatedOfferList = offUp.updateAndGetOffersArray();
+		XMLParser parser = new XMLParser();
+		updatedOfferList = parser.parseOffers();
 		DateHelper dateHelper = new DateHelper();
 
 		offerDataSource.openWrite();
@@ -122,8 +156,9 @@ public class PersistenceFactory implements OfferConstants {
 
 	public Badge getBadge() {
 		badgeDataSource.open();
-		Badge badge = new Badge(badgeDataSource.getBadgeAmount(), badgeDataSource.getBadgeLastUpdate());
+		Badge badge = new Badge(badgeDataSource.getBadgeAmount(),
+				badgeDataSource.getBadgeLastUpdate());
 		badgeDataSource.close();
-		return  badge;
+		return badge;
 	}
 }

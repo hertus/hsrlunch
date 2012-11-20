@@ -144,11 +144,35 @@ public class XMLParser implements OfferConstants {
 							priceExt = priceList.item(1).getFirstChild()
 									.getNodeValue();
 						}
+
+						// Set Prices when there is no Price online
 						if (priceInt.equals("") || priceExt.equals("")) {
-							offerList.get(dayId).put(
-									menuId,
-									new Pair<String, String>(offerContent,
-											"EMPTY"));
+							switch (menuId) {
+							case OFFER_DAILY:
+								offerList.get(dayId).put(
+										menuId,
+										new Pair<String, String>(offerContent,
+												PRICE_STANDARD));
+								break;
+
+							case OFFER_VEGI:
+								offerList.get(dayId).put(
+										menuId,
+										new Pair<String, String>(offerContent,
+												PRICE_STANDARD));
+								break;
+
+							case OFFER_WEEK:
+								offerList.get(dayId).put(
+										menuId,
+										new Pair<String, String>(offerContent,
+												PRICE_STANDARD_WEEK));
+								break;
+
+							default:
+								break;
+							}
+
 						} else {
 							offerList.get(dayId).put(
 									menuId,
