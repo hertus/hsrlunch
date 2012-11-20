@@ -91,7 +91,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 		mMenuDrawer.setContentView(R.layout.activity_main);
 		mMenuDrawer.setMenuView(menuView);
 
-		getSupportActionBar().setHomeButtonEnabled(true);
+//		getSupportActionBar().setHomeButtonEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		// sp�ter furtschmeissen
 		init();
