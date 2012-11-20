@@ -8,9 +8,6 @@ public interface OfferConstants {
 	final int OFFER_DAILY = 0;
 	final int OFFER_VEGI = 1;
 	final int OFFER_WEEK = 2;
-	final int OFFER_DAILY_PRICE = 11;
-	final int OFFER_VEGI_PRICE = 12;
-	final int OFFER_WEEK_PRICE = 13;
 
 	final int OFFER_MONDAY = 0;
 	final int OFFER_TUESDAY = 1;

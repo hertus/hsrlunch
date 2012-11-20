@@ -1,23 +1,17 @@
 package ch.hsr.hsrlunch.controller;
 
-import java.util.Date;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
-import android.os.Build;
-import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
-import ch.hsr.hsrlunch.util.OfferParser;
+import ch.hsr.hsrlunch.util.XMLParser;
 
 public class OfferUpdater implements OfferConstants {
-	private CountDownLatch endSignal;
-	private SparseArray<SparseArray<Pair<String, String>>> returnArray;
+	private SparseArray<SparseArray<Pair<String, String>>> updatedArray;
 
-	public OfferUpdater() {
-	}
-
+	
 	/**
 	 * @return Returns a SparseArray with a SparseArraye coming from the
 	 *         OfferParser. This SparseArray contains Pairs, where FIRST =
@@ -28,59 +22,35 @@ public class OfferUpdater implements OfferConstants {
 	@SuppressLint("NewApi")
 	public SparseArray<SparseArray<Pair<String, String>>> updateAndGetOffersArray() {
 
-		returnArray = new SparseArray<SparseArray<Pair<String, String>>>();
-		endSignal = new CountDownLatch(OFFER_FRIDAY);
-
-		// Create and Execute AsyncTask for MO-FR
+		updatedArray = new SparseArray<SparseArray<Pair<String, String>>>();
 		try {
-			for (int i = OFFER_MONDAY; i <= OFFER_FRIDAY; i++) {
-				if (Build.VERSION.SDK_INT >= 11) {
-					new SiteParserTask().executeOnExecutor(
-							AsyncTask.THREAD_POOL_EXECUTOR, i);
-
-				} else {
-					new SiteParserTask().execute(i);
-				}
-			}
-
-			Log.i(OfferUpdater.class.getName(),
-					"HSRLunch - OfferParser: Begin waiting for Parser AsyncTasks");
-			long timeStart = new Date().getTime();
-			endSignal.await();
-			long timeEnd = new Date().getTime();
-			Log.i(OfferUpdater.class.getName(),
-					"HSRLunch - OfferParser: End with waiting for Parser AsyncTasks, time: "
-							+ (timeEnd - timeStart) / 1000 + " sec");
-
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
+			// Wait and get Result of AsyncTask
+			updatedArray = new SiteParserTask().execute().get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
 		}
-		return returnArray;
+		return updatedArray;
 	}
 
-	private synchronized void setOfferContent(int day,
-			SparseArray<Pair<String, String>> offers) {
-		returnArray.append(day, offers);
-	}
-
-	private class SiteParserTask extends AsyncTask<Integer, Void, Void> {
+	private class SiteParserTask
+			extends
+			AsyncTask<Integer, Void, SparseArray<SparseArray<Pair<String, String>>>> {
 
 		@Override
-		protected Void doInBackground(Integer... day) {
-
-			OfferParser parser = new OfferParser();
+		protected SparseArray<SparseArray<Pair<String, String>>> doInBackground(
+				Integer... day) {
+			SparseArray<SparseArray<Pair<String, String>>> content = new SparseArray<SparseArray<Pair<String, String>>>();
+			XMLParser parser = new XMLParser();
 
 			try {
-				parser.setUrl("http://hochschule-rapperswil.sv-group.ch/de/menuplan.html?addGP%5Bweekday%5D="
-						+ day[0] + "&addGP%5Bweekmod%5D=0");
-				parser.parse();
+				content = parser.parseOffers();
 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			setOfferContent(day[0], parser.getOffers());
-			endSignal.countDown();
-			return null;
+			return content;
 		}
 
 	}
