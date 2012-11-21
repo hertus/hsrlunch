@@ -72,6 +72,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		context = getApplicationContext();
 
 		onCreatePersistence();
@@ -88,6 +89,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 		updatePreferences();
 
 		onCreateMenuDrawer();
+		
+
+        
 		mMenuDrawer.setContentView(R.layout.activity_main);
 		mMenuDrawer.setMenuView(menuView);
 
@@ -260,12 +264,14 @@ public class MainActivity extends SherlockFragmentActivity implements
 		provider = (ShareActionProvider) item.getActionProvider();
 		provider.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
 		provider.setShareIntent(getDefaultShareIntent());
-
-		MenuItem refresh = menu.findItem(R.id.menu_refresh);
+		
+	    MenuItem refresh = menu.findItem(R.id.menu_refresh);
+	
 		refresh.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
+				persistenceFactory.setMenuItem(item);
 				persistenceFactory.newUpdateTask();
 
 				if (mTabPageAdapter != null) {
@@ -275,6 +281,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 				return false;
 			}
 		});
+		
+
 
 		MenuItem settings = menu.findItem(R.id.menu_settings);
 		settings.setOnMenuItemClickListener(new OnMenuItemClickListener() {

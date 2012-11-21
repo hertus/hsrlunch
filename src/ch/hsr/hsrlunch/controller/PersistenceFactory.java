@@ -1,11 +1,17 @@
 package ch.hsr.hsrlunch.controller;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.MenuItem;
+
+import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
 import android.widget.Toast;
 import ch.hsr.hsrlunch.MainActivity;
+import ch.hsr.hsrlunch.R;
 import ch.hsr.hsrlunch.model.Badge;
 import ch.hsr.hsrlunch.model.Offer;
 import ch.hsr.hsrlunch.model.Week;
@@ -28,6 +34,9 @@ public class PersistenceFactory implements OfferConstants {
 	private SparseArray<Offer> offerList;
 	private SparseArray<WorkDay> workdayList;
 	private SparseArray<SparseArray<Pair<String, String>>> updatedOfferList;
+	
+	private MenuItem item;
+
 
 	public PersistenceFactory(DBOpenHelper dbHelper) {
 		weekDataSource = new WeekDataSource(dbHelper);
@@ -46,6 +55,8 @@ public class PersistenceFactory implements OfferConstants {
 
 		@Override
 		protected void onPreExecute() {
+			if (item != null)
+				item.setActionView(R.layout.progress);
 		}
 
 		@Override
@@ -65,6 +76,8 @@ public class PersistenceFactory implements OfferConstants {
 			Toast toast = Toast.makeText(MainActivity.getMainContext(), "Menus up to date!",
 					Toast.LENGTH_SHORT);
 			toast.show();
+			if(item != null)
+				item.setActionView(null);
 		}
 	}
 
@@ -160,5 +173,15 @@ public class PersistenceFactory implements OfferConstants {
 				badgeDataSource.getBadgeLastUpdate());
 		badgeDataSource.close();
 		return badge;
+	}
+
+	public void newUpdateTask(MenuItem item) {
+		
+		newUpdateTask();
+		
+	}
+
+	public void setMenuItem(MenuItem item) {
+		this.item =item;		
 	}
 }
