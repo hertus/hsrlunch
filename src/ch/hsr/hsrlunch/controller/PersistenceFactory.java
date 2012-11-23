@@ -164,9 +164,6 @@ public class PersistenceFactory implements OfferConstants {
 		week.setLastUpdate(dateHelper.getMondayOfThisWeek().getTime());
 		weekDataSource.setWeekLastUpdate(week.getLastUpdate());
 		weekDataSource.close();
-
-		offerDataSource.openRead();
-		offerDataSource.close();
 	}
 
 	public Week getWeek() {

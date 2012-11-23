@@ -20,19 +20,19 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import ch.hsr.hsrlunch.controller.OfferConstants;
-
 import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
+import ch.hsr.hsrlunch.controller.OfferConstants;
 
 public class XMLParser implements OfferConstants {
 
-	// Cause of API7 we can't use Node.getTextContent();
 	private final String branch = "7700";
 	private final String auth = "j1schmid_hsr.ch@aejcg45QlzKGtirbKJE79dQrH3QWkvxanEGwQojFcKmK5mw4ZyZTqaQet5wf";
 	private final String baseurl = "http://micro.sv-group.com/typo3conf/ext/netv_svg_menu/menu_xmlexp/branchstate.xml.php?branch="
 			+ branch + "&authstring=" + auth;
+
+	private SparseArray<SparseArray<Pair<String, String>>> offerList;
 
 	/**
 	 * @return Returns a SparseArray within an SparseArray, containing a Pair in
@@ -42,14 +42,15 @@ public class XMLParser implements OfferConstants {
 	 */
 	public SparseArray<SparseArray<Pair<String, String>>> parseOffers() {
 		Log.d("Parser Debug", "Begin with Connections");
-		SparseArray<SparseArray<Pair<String, String>>> offerList = new SparseArray<SparseArray<Pair<String, String>>>();
+		Log.d("System Encoding", System.getProperty("file.encoding").toString());
+
 		String menuUrl = getMenuUrl();
 		String xml = getXMLfromURL(menuUrl);
 		Document doc = getDomElement(xml);
 
 		if (doc != null) {
 			Log.d("XML Parser", "Begin with Parsing");
-			offerList = parseOfferContents(offerList, doc);
+			offerList = parseOfferContents(doc);
 			Log.d("XML Parser", "End with Parsing");
 		} else {
 			Log.d("XMLParser", "Document doc was null from getDomElement(xml)");
@@ -58,22 +59,23 @@ public class XMLParser implements OfferConstants {
 	}
 
 	private SparseArray<SparseArray<Pair<String, String>>> parseOfferContents(
-			SparseArray<SparseArray<Pair<String, String>>> offerList,
-			Document doc) {
+			Document domDoc) {
 
 		String offerContent;
 		String priceInt;
 		String priceExt;
 
-		NodeList dayList = doc.getElementsByTagName("day");
+		offerList = new SparseArray<SparseArray<Pair<String, String>>>();
+		NodeList dayList = domDoc.getElementsByTagName("day");
+
 		if (dayList != null) {
 			// Iterate all Days
 			for (int i = 0; i < dayList.getLength(); i++) {
 
 				if (dayList.item(i) != null) {
 					Element dayElement = (Element) dayList.item(i);
-					int dayId = Integer.parseInt(dayList.item(i)
-							.getAttributes().item(0).getNodeValue());
+					int dayId = Integer.parseInt(dayElement.getAttributes()
+							.item(0).getTextContent());
 
 					// Change dayIDs to Business Logic
 					switch (dayId) {
@@ -110,9 +112,9 @@ public class XMLParser implements OfferConstants {
 						priceExt = "";
 
 						Element menuElement = (Element) menuList.item(j);
-						int menuId = Integer.parseInt(menuList.item(j)
+						int menuId = Integer.parseInt(menuElement
 								.getAttributes().getNamedItem("id")
-								.getNodeValue());
+								.getTextContent());
 
 						// Set menuIDs to Business Logic
 						switch (menuId) {
@@ -132,19 +134,16 @@ public class XMLParser implements OfferConstants {
 						NodeList descList = menuElement
 								.getElementsByTagName("description");
 						if (descList.item(0) != null) {
-							offerContent = descList.item(0).getFirstChild()
-									.getNodeValue();
+							offerContent = descList.item(0).getTextContent();
 						}
+
 						NodeList priceList = menuElement
 								.getElementsByTagName("value");
-
-						if (priceList.item(0).getFirstChild() != null) {
-							priceInt = priceList.item(0).getFirstChild()
-									.getNodeValue();
+						if (priceList.item(0).getTextContent() != null) {
+							priceInt = priceList.item(0).getTextContent();
 						}
-						if (priceList.item(1).getFirstChild() != null) {
-							priceExt = priceList.item(1).getFirstChild()
-									.getNodeValue();
+						if (priceList.item(1).getTextContent() != null) {
+							priceExt = priceList.item(1).getTextContent();
 						}
 
 						// Set Prices when there is no Price online
@@ -200,10 +199,12 @@ public class XMLParser implements OfferConstants {
 
 		NodeList nodeList = doc.getElementsByTagName("exporturl");
 		if (nodeList.item(0) != null) {
-			return nodeList.item(0).getFirstChild().getNodeValue();
+			Log.d("XML Parser", "exporturl: "
+					+ nodeList.item(0).getTextContent());
+			return nodeList.item(0).getTextContent();
 		} else {
 			Log.d("XMLParser",
-					"NodeList nodeLsit from exporturl was null - no exporturl available?");
+					"NodeList from exporturl was null - no exporturl available?");
 			return null;
 		}
 	}
@@ -213,7 +214,6 @@ public class XMLParser implements OfferConstants {
 		try {
 			DefaultHttpClient httpClient = new DefaultHttpClient();
 			HttpPost httpPost = new HttpPost(url);
-
 			HttpResponse httpResponse = httpClient.execute(httpPost);
 			HttpEntity httpEntity = httpResponse.getEntity();
 			xml = EntityUtils.toString(httpEntity);
@@ -232,10 +232,18 @@ public class XMLParser implements OfferConstants {
 		Document doc = null;
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		try {
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			InputSource is = new InputSource();
-			is.setCharacterStream(new StringReader(xml));
-			doc = db.parse(is);
+			if (xml != null) {
+				dbf.setCoalescing(true);
+				DocumentBuilder db = dbf.newDocumentBuilder();
+
+				InputSource is = new InputSource(new StringReader(xml));
+				is.setEncoding("UTF-8");
+
+				doc = db.parse(is);
+			} else {
+				throw new IOException(
+						"XML was null - could not get Data from HTTP");
+			}
 		} catch (ParserConfigurationException e) {
 			Log.e("Error: ", e.getMessage());
 			return null;
