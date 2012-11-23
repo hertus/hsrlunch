@@ -30,7 +30,7 @@ public class DateHelper {
 	
 	/**
 	 * 
-	 * @param dayNr - where Monday = 1 (like in HSRlunch domain model)
+	 * @param dayNr - where Monday = 0 (like in HSRlunch domain model)
 	 * @return Date Object of that Weekday
 	 */
 	public Date getDateOfWeekDay(int dayNr){

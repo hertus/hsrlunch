@@ -1,10 +1,5 @@
 package ch.hsr.hsrlunch.controller;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.MenuItem;
-
-import android.app.Activity;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.util.Pair;
@@ -20,6 +15,8 @@ import ch.hsr.hsrlunch.util.DBOpenHelper;
 import ch.hsr.hsrlunch.util.DateHelper;
 import ch.hsr.hsrlunch.util.XMLParser;
 
+import com.actionbarsherlock.view.MenuItem;
+
 public class PersistenceFactory implements OfferConstants {
 
 	private Week week;
@@ -34,9 +31,8 @@ public class PersistenceFactory implements OfferConstants {
 	private SparseArray<Offer> offerList;
 	private SparseArray<WorkDay> workdayList;
 	private SparseArray<SparseArray<Pair<String, String>>> updatedOfferList;
-	
-	private MenuItem item;
 
+	private MenuItem item;
 
 	public PersistenceFactory(DBOpenHelper dbHelper) {
 		weekDataSource = new WeekDataSource(dbHelper);
@@ -73,10 +69,10 @@ public class PersistenceFactory implements OfferConstants {
 
 		@Override
 		protected void onPostExecute(Boolean success) {
-			Toast toast = Toast.makeText(MainActivity.getMainContext(), "Menus up to date!",
-					Toast.LENGTH_SHORT);
+			Toast toast = Toast.makeText(MainActivity.getMainContext(),
+					"Menus up to date!", Toast.LENGTH_SHORT);
 			toast.show();
-			if(item != null)
+			if (item != null)
 				item.setActionView(null);
 		}
 	}
@@ -127,24 +123,38 @@ public class PersistenceFactory implements OfferConstants {
 		workDayDataSource.openWrite();
 
 		for (int nrWorkDay = OFFER_MONDAY; nrWorkDay <= OFFER_FRIDAY; nrWorkDay++) {
+			if (updatedOfferList.get(nrWorkDay) != null) {
+				// Set parsed OfferContent in Object and DB
+				for (int nrOfferType = OFFER_DAILY; nrOfferType <= OFFER_WEEK; nrOfferType++) {
+					if (updatedOfferList.get(nrWorkDay).get(nrOfferType).first != null) {
+						String content = updatedOfferList.get(nrWorkDay).get(
+								nrOfferType).first;
+						workday.getOfferList().get(nrOfferType)
+								.setContent(content);
+						offerDataSource.setOfferContent(content, nrOfferType,
+								nrWorkDay);
 
-			// Set parsed OfferContent in Object and DB
-			for (int nrOfferType = OFFER_DAILY; nrOfferType <= OFFER_WEEK; nrOfferType++) {
-				String content = updatedOfferList.get(nrWorkDay).get(
-						nrOfferType).first;
-				workday.getOfferList().get(nrOfferType).setContent(content);
-				offerDataSource
-						.setOfferContent(content, nrOfferType, nrWorkDay);
+						String price = updatedOfferList.get(nrWorkDay).get(
+								nrOfferType).second;
+						workday.getOfferList().get(nrOfferType).setPrice(price);
+						offerDataSource.setOfferPrice(price, nrOfferType,
+								nrWorkDay);
+					} else {
+						Log.d("PersistenceFactory",
+								"offerlist offer item type " + nrOfferType
+										+ " was null");
+					}
+				}
 
-				String price = updatedOfferList.get(nrWorkDay).get(nrOfferType).second;
-				workday.getOfferList().get(nrOfferType).setPrice(price);
-				offerDataSource.setOfferPrice(price, nrOfferType, nrWorkDay);
+				// Set OfferList to WorkdayObject and DB
+				long updateTime = dateHelper.getDateOfWeekDay(nrWorkDay)
+						.getTime();
+				week.getDayList().get(nrWorkDay).setDate(updateTime);
+				workDayDataSource.setWorkdayDate(nrWorkDay, updateTime);
+			} else {
+				Log.d("PersistenceFactory", "offerlist workday item "
+						+ nrWorkDay + " was null");
 			}
-
-			// Set OfferList to WorkdayObject and DB
-			long updateTime = dateHelper.getDateOfWeekDay(nrWorkDay).getTime();
-			week.getDayList().get(nrWorkDay).setDate(updateTime);
-			workDayDataSource.setWorkdayDate(nrWorkDay, updateTime);
 		}
 
 		offerDataSource.close();
@@ -154,13 +164,6 @@ public class PersistenceFactory implements OfferConstants {
 		week.setLastUpdate(dateHelper.getMondayOfThisWeek().getTime());
 		weekDataSource.setWeekLastUpdate(week.getLastUpdate());
 		weekDataSource.close();
-
-		offerDataSource.openRead();
-		for (int i = OFFER_MONDAY; i <= OFFER_FRIDAY; i++) {
-			System.out.println("price" + i + ": "
-					+ offerDataSource.getOfferPrice(1, i));
-		}
-		offerDataSource.close();
 	}
 
 	public Week getWeek() {
@@ -176,12 +179,10 @@ public class PersistenceFactory implements OfferConstants {
 	}
 
 	public void newUpdateTask(MenuItem item) {
-		
 		newUpdateTask();
-		
 	}
 
 	public void setMenuItem(MenuItem item) {
-		this.item =item;		
+		this.item = item;
 	}
 }
