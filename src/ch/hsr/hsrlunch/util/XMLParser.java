@@ -48,9 +48,11 @@ public class XMLParser implements OfferConstants {
 		Document doc = getDomElement(xml);
 
 		if (doc != null) {
-			Log.d("XML Parser Debug", "Begin with Parsing");
+			Log.d("XML Parser", "Begin with Parsing");
 			offerList = parseOfferContents(offerList, doc);
-			Log.d("XML Parser Debug", "End with Parsing");
+			Log.d("XML Parser", "End with Parsing");
+		} else {
+			Log.d("XMLParser", "Document doc was null from getDomElement(xml)");
 		}
 		return offerList;
 	}
@@ -182,8 +184,12 @@ public class XMLParser implements OfferConstants {
 						}
 					}
 
+				} else {
+					Log.d("XMLParser", "Item" + i + " of dayList was null");
 				}
 			}
+		} else {
+			Log.d("XMLParser", "NodeList dayList was null");
 		}
 		return offerList;
 	}
@@ -196,6 +202,8 @@ public class XMLParser implements OfferConstants {
 		if (nodeList.item(0) != null) {
 			return nodeList.item(0).getFirstChild().getNodeValue();
 		} else {
+			Log.d("XMLParser",
+					"NodeList nodeLsit from exporturl was null - no exporturl available?");
 			return null;
 		}
 	}
