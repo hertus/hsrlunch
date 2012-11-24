@@ -41,7 +41,6 @@ public class XMLParser implements OfferConstants {
 	 *         - 4 and from Offers 0 - 3. Offer 0 = DAILY, 1 = VEGI, 2 = WEEK
 	 */
 	public SparseArray<SparseArray<Pair<String, String>>> parseOffers() {
-		Log.d("Parser Debug", "Begin with Connections");
 		Log.d("System Encoding", System.getProperty("file.encoding").toString());
 
 		String menuUrl = getMenuUrl();
@@ -49,9 +48,7 @@ public class XMLParser implements OfferConstants {
 		Document doc = getDomElement(xml);
 
 		if (doc != null) {
-			Log.d("XML Parser", "Begin with Parsing");
 			offerList = parseOfferContents(doc);
-			Log.d("XML Parser", "End with Parsing");
 		} else {
 			Log.d("XMLParser", "Document doc was null from getDomElement(xml)");
 		}

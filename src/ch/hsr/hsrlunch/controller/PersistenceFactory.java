@@ -22,6 +22,7 @@ public class PersistenceFactory implements OfferConstants {
 	private Week week;
 	private WorkDay workday;
 	private Offer offer;
+	private Badge badge;
 
 	private WeekDataSource weekDataSource;
 	private WorkDayDataSource workDayDataSource;
@@ -34,6 +35,13 @@ public class PersistenceFactory implements OfferConstants {
 
 	private MenuItem item;
 
+	/**
+	 * PersistenceFactory opens DB Connection on initialize and gets the
+	 * available Data from SQLite to Domain Objects. Get all Offers and more
+	 * through the WEEK Object
+	 * 
+	 * @param dbHelper
+	 */
 	public PersistenceFactory(DBOpenHelper dbHelper) {
 		weekDataSource = new WeekDataSource(dbHelper);
 		workDayDataSource = new WorkDayDataSource(dbHelper);
@@ -62,9 +70,11 @@ public class PersistenceFactory implements OfferConstants {
 				updateAllOffers();
 				return true;
 			} catch (Exception e) {
-				Log.e("ch.hsr.hsrlunch", "error on updating", e);
+				Log.e("ch.hsr.hsrlunch", "error on updating updateAllOffers()",
+						e);
 				return false;
 			}
+
 		}
 
 		@Override
@@ -79,9 +89,15 @@ public class PersistenceFactory implements OfferConstants {
 
 	private void createAndFillAllFromDB() {
 
+		// Fill Badge
+		badgeDataSource.openRead();
+		badge = new Badge(badgeDataSource.getBadgeAmount(),
+				badgeDataSource.getBadgeLastUpdate());
+		badgeDataSource.close();
+
+		// Fill Offers and WorkDay
 		offerDataSource.openRead();
 		workDayDataSource.openRead();
-
 		workdayList = new SparseArray<WorkDay>();
 		for (int nrWorkDay = OFFER_MONDAY; nrWorkDay <= OFFER_FRIDAY; nrWorkDay++) {
 
@@ -98,32 +114,27 @@ public class PersistenceFactory implements OfferConstants {
 					offerList);
 			workdayList.put(nrWorkDay, workday);
 		}
-
-		offerDataSource.close();
 		workDayDataSource.close();
+		offerDataSource.close();
 
+		// Fill Week
 		weekDataSource.openRead();
 		week = new Week(weekDataSource.getWeekLastUpdate(), workdayList);
 		weekDataSource.close();
 	}
 
-	public void updateBadgeEntry(double amount, long date) {
-		badgeDataSource.open();
-		badgeDataSource.setBadgeAmount(amount);
-		badgeDataSource.setBadgeLastUpdate(date);
-		badgeDataSource.close();
-	}
-
 	public void updateAllOffers() {
+		Log.d("PersistenceFactory", "Begin with updateAllOffers()");
+
 		XMLParser parser = new XMLParser();
 		updatedOfferList = parser.parseOffers();
-		DateHelper dateHelper = new DateHelper();
 
+		// Update Offer and Workday
 		offerDataSource.openWrite();
 		workDayDataSource.openWrite();
-
 		for (int nrWorkDay = OFFER_MONDAY; nrWorkDay <= OFFER_FRIDAY; nrWorkDay++) {
 			if (updatedOfferList.get(nrWorkDay) != null) {
+
 				// Set parsed OfferContent in Object and DB
 				for (int nrOfferType = OFFER_DAILY; nrOfferType <= OFFER_WEEK; nrOfferType++) {
 					if (updatedOfferList.get(nrWorkDay).get(nrOfferType).first != null) {
@@ -147,10 +158,10 @@ public class PersistenceFactory implements OfferConstants {
 				}
 
 				// Set OfferList to WorkdayObject and DB
-				long updateTime = dateHelper.getDateOfWeekDay(nrWorkDay)
+				long updateWorkdayDate = DateHelper.getDateOfWorkDay(nrWorkDay)
 						.getTime();
-				week.getDayList().get(nrWorkDay).setDate(updateTime);
-				workDayDataSource.setWorkdayDate(nrWorkDay, updateTime);
+				week.getDayList().get(nrWorkDay).setDate(updateWorkdayDate);
+				workDayDataSource.setWorkdayDate(nrWorkDay, updateWorkdayDate);
 			} else {
 				Log.d("PersistenceFactory", "offerlist workday item "
 						+ nrWorkDay + " was null");
@@ -160,10 +171,23 @@ public class PersistenceFactory implements OfferConstants {
 		offerDataSource.close();
 		workDayDataSource.close();
 
+		// update LatUpdate in Week
 		weekDataSource.openWrite();
-		week.setLastUpdate(dateHelper.getMondayOfThisWeek().getTime());
+		week.setLastUpdate(DateHelper.getMondayOfThisWeekDate().getTime());
 		weekDataSource.setWeekLastUpdate(week.getLastUpdate());
 		weekDataSource.close();
+
+		Log.d("PersistenceFactory", "End with updateAllOffers()");
+	}
+
+	public void updateBadgeEntry(double amount, long date) {
+		this.badge.setAmount(amount);
+		this.badge.setLastUpdate(date);
+
+		badgeDataSource.openWrite();
+		badgeDataSource.setBadgeAmount(amount);
+		badgeDataSource.setBadgeLastUpdate(date);
+		badgeDataSource.close();
 	}
 
 	public Week getWeek() {
@@ -171,15 +195,7 @@ public class PersistenceFactory implements OfferConstants {
 	}
 
 	public Badge getBadge() {
-		badgeDataSource.open();
-		Badge badge = new Badge(badgeDataSource.getBadgeAmount(),
-				badgeDataSource.getBadgeLastUpdate());
-		badgeDataSource.close();
 		return badge;
-	}
-
-	public void newUpdateTask(MenuItem item) {
-		newUpdateTask();
 	}
 
 	public void setMenuItem(MenuItem item) {
