@@ -1,24 +1,35 @@
 package ch.hsr.hsrlunch.util;
 
+import java.util.Arrays;
+import java.util.List;
+
+import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.util.SparseArray;
+import ch.hsr.hsrlunch.R;
 import ch.hsr.hsrlunch.ui.OfferFragment;
 
 public class TabPageAdapter extends FragmentPagerAdapter {
 
-	private static final String[] TABTITLES = { "tages", "vegi", "woche" };
+	//private static final String[] TABTITLES = { "tages", "vegi", "woche" };
+	private List<String> tabTitles;
+	
+
 
 	SparseArray<OfferFragment> fragmentList = new SparseArray<OfferFragment>();
 
-	public TabPageAdapter(FragmentManager fm) {
+	public TabPageAdapter(Activity mainActivity,FragmentManager fm) {
+		
 		super(fm);
+		tabTitles = Arrays.asList(mainActivity.getResources()
+				.getStringArray(R.array.tabTitles));
 	}
 
 	@Override
 	public int getCount() {
-		return TABTITLES.length;
+		return tabTitles.size();
 	}
 
 	@Override
@@ -34,7 +45,7 @@ public class TabPageAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public CharSequence getPageTitle(int position) {
-		return TABTITLES[position].toUpperCase();
+		return tabTitles.get(position);
 	}
 
 	/*

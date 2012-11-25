@@ -13,7 +13,8 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:text="@string/kontoStand" 
-         style="@style/TextAppearance.TabPageIndicator"
+        style="@style/badgeStyle"
+        
          />
 
     <TextView
@@ -21,7 +22,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="10dp" 
-         style="@style/TextAppearance.TabPageIndicator"
+         style="@style/badgeStyle"
+
          />
 
     <TextView
@@ -29,7 +31,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
-         style="@style/TextAppearance.TabPageIndicator"
+         style="@style/badgeStyle"
+
           />
 
 </LinearLayout>

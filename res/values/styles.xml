@@ -1,75 +1,88 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <color name="black">#000000</color>
+    <color name="title">#db1313</color>
+    <color name="date">#4e4949</color>
+    <color name="gray">#b0b0b0</color>
+    
+    <style name="titleTextSize">
+         <item name="android:textSize">16sp</item>
+    </style>
+
     <style name="myTheme" parent="@style/Theme.Sherlock.Light">
 
         <!-- default ViewPagerTab Style from viewpagerindicator -->
         <item name="vpiTabPageIndicatorStyle">@style/Widget.TabPageIndicator</item>
     </style>
-    
+
     <style name="SettingsTheme" parent="@style/Theme.Sherlock.Light">
-         <item name="android:textSize">16sp</item>
-        </style>
-    <style name="myTitle">
-          <item name="android:textSize">22sp</item>
-          <item name="android:textStyle">bold</item>
-          <item name="android:textColor">@color/title</item>
-          <item name="android:padding">10dp</item>
+        <item name="android:textSize">16sp</item>
     </style>
+
+    <style name="myTitle">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/title</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
     <style name="menuTxt">
         <item name="android:textColor">@color/black</item>
     </style>
+
     <style name="dateTxt" parent="menuTxt">
         <item name="android:paddingBottom">10dp</item>
         <item name="android:textColor">@color/date</item>
     </style>
-    
-    <!-- Style von Viewpager-Lib überschreiben, damit Tabs mit schwarzer schrift erscheinen -->
+
+    <!-- Style von Viewpager-Lib überschreiben, damit Tabs mit eigenen Text-Styles erscheinen -->
     <style name="TextAppearance.TabPageIndicator" parent="Widget">
-       <item name="android:textColor">@color/tab</item>
+        <item name="android:textColor">@color/gray</item>
+      
+    </style>
+       <style name="Widget.TabPageIndicator" parent="Widget">
+             <item name="android:textSize">16sp</item>
+            </style>
+
+    <style name="badgeStyle">
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:textStyle">bold</item>
     </style>
     
-    <color name="grey">#dddddd</color>
-    <color name="black">#000000</color>
-    <color name="title">#db1313</color>
-    <color name="date">#4e4949</color>
-    <color name="tab">#b0b0b0</color>
-    <color name="themeGray">#dddddd</color>
-    
-        <style name="MenuDrawer" />
 
-    <style name="MenuDrawer.Widget"  />
-    
-        <style name="MenuDrawer.Widget.Category">
-        <item name="android:textAppearance">?android:attr/textAppearance</item>       
-    <item name="android:textColor">@color/themeGray</item>
-       
-        <item name="android:textSize">18sp</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">32dp</item>
-        <item name="android:paddingTop">16dp</item>
-        <item name="android:paddingBottom">16dp</item>
+    <style name="MenuDrawer" />
+
+    <style name="MenuDrawer.Widget" />
+
+    <style name="MenuDrawer.Widget.Category" parent="Widget">
+        <item name="android:textAppearance">?android:attr/textAppearance</item>
+        <item name="android:textColor">@color/gray</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:background">@drawable/tab_bg_selected</item>
-  
-    </style>
-    
-            <style name="MenuDrawer.Widget.Item"  parent="@style/Theme.Sherlock.Light">
+        <item name="android:paddingLeft">22dip</item>
+        <item name="android:paddingRight">22dip</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
         <item name="android:textStyle">bold</item>
-       
         <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="MenuDrawer.Widget.Item" parent="@style/Theme.Sherlock.Light">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:paddingTop">8dp</item>
         <item name="android:paddingBottom">8dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:paddingLeft">16dp</item>
-
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:background">@color/themeGray</item>
-        
+        <item name="android:background">@color/gray</item>
     </style>
-    
-	<style name="MenuDrawerStyle" parent="Widget.MenuDrawer">
+
+<!--     <style name="MenuDrawerStyle" parent="Widget.MenuDrawer">
         <item name="mdArrowDrawable">@drawable/menu_arrow</item>
-        <item name="mdMenuWidth">250dp</item>
+        <item name="mdMenuWidth">200dp</item>
     </style>
+    -->
+
 </resources>

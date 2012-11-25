@@ -43,8 +43,8 @@ public class MenuViewAdapter extends BaseAdapter {
 
 		List<String> weekdays = Arrays.asList(this.main.getResources()
 				.getStringArray(R.array.weekdays));
-
-		mItems.add(new Category("Tagesauswahl"));
+		
+		mItems.add(new Category(main.getResources().getString(R.string.tagesauswahl) ));
 		for (String str : weekdays) {
 			mItems.add(new Item(str));
 		}

@@ -189,7 +189,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void onCreateViewPager() {
-		mTabPageAdapter = new TabPageAdapter(getSupportFragmentManager());
+		mTabPageAdapter = new TabPageAdapter(this,getSupportFragmentManager());
 		mViewPager = (ViewPager) findViewById(R.id.viewpager);
 		mViewPager.setAdapter(mTabPageAdapter);
 		mViewPager.setCurrentItem(favouriteMenu, true);
