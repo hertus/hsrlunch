@@ -46,9 +46,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 	public static boolean dataAvailable = true;
 	public static WorkDay selectedDay;
 	public static Offer selectedOffer;
+	private Week week;
+	
 	public static String[] offertitles;
 
 	private static Context context;
+	
 	private ViewPager mViewPager;
 	private MenuDrawerManager mMenuDrawer;
 	private TabPageAdapter mTabPageAdapter;
@@ -56,14 +59,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private MenuViewAdapter mvAdapter;
 	private LinearLayout badgeLayout;
 	private CustomMenuView menuView;
-	private Week week;
-
+	private TabPageIndicator indicator;
+	
 	private DBOpenHelper dbHelper;
 	private PersistenceFactory persistenceFactory;
 
 	// Attributes for Preferences in SettingActivity
 	private boolean showBadgeInfo = false;
 	private int favouriteMenu;
+	private int currentSelectedFragmentIndex;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -146,6 +150,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 				return;
 			}
 		}
+		currentSelectedFragmentIndex = favouriteMenu;
 	}
 
 	private void onCreateMenuDrawer() {
@@ -184,7 +189,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		mViewPager.setAdapter(mTabPageAdapter);
 		mViewPager.setCurrentItem(favouriteMenu, true);
 
-		TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicator);
+		indicator = (TabPageIndicator) findViewById(R.id.indicator);
 		indicator.setViewPager(mViewPager);
 		indicator.setCurrentItem(favouriteMenu);
 
@@ -192,8 +197,13 @@ public class MainActivity extends SherlockFragmentActivity implements
 		ViewPager.SimpleOnPageChangeListener pageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
 			@Override
 			public void onPageSelected(int position) {
+				System.out.println("onPageSelected-position:"+position);
+				System.out.println("indicatior:" +indicator);
+				System.out.println("viewPAger: "+mViewPager);
 				super.onPageSelected(position);
+				
 				selectedOffer = selectedDay.getOfferList().get(position);
+				
 				provider.setShareIntent(getDefaultShareIntent());
 			}
 		};
@@ -331,5 +341,19 @@ public class MainActivity extends SherlockFragmentActivity implements
 		TextView badgeLastUpdate = (TextView) findViewById(R.id.lastUpdate);
 		badgeLastUpdate.setText(badge.getLastUpdateString());
 	}
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("FragmentPosition", mViewPager.getCurrentItem());
+    }
+    
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        currentSelectedFragmentIndex = savedInstanceState.getInt("FragmentPosition");
+                    
+        mViewPager.setCurrentItem(currentSelectedFragmentIndex);
+        indicator.setCurrentItem(currentSelectedFragmentIndex);
+    }
 
 }
