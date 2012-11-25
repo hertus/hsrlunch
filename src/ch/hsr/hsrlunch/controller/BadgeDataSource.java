@@ -16,8 +16,12 @@ public class BadgeDataSource implements DBConstants {
 		standardBadgeId = 1;
 	}
 
-	public void open() {
+	public void openWrite() {
 		db = dbHelper.getWritableDatabase();
+	}
+
+	public void openRead() {
+		db = dbHelper.getReadableDatabase();
 	}
 
 	public void close() {

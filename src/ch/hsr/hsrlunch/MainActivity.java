@@ -1,8 +1,6 @@
 package ch.hsr.hsrlunch;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 import net.simonvt.widget.MenuDrawer;
 import net.simonvt.widget.MenuDrawerManager;
@@ -14,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -21,7 +20,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import ch.hsr.hsrlunch.controller.BadgeUpdater;
 import ch.hsr.hsrlunch.controller.PersistenceFactory;
-import ch.hsr.hsrlunch.controller.WeekDataSource;
 import ch.hsr.hsrlunch.model.Badge;
 import ch.hsr.hsrlunch.model.Offer;
 import ch.hsr.hsrlunch.model.Week;
@@ -29,6 +27,7 @@ import ch.hsr.hsrlunch.model.WorkDay;
 import ch.hsr.hsrlunch.ui.CustomMenuView;
 import ch.hsr.hsrlunch.ui.SettingsActivity;
 import ch.hsr.hsrlunch.util.DBOpenHelper;
+import ch.hsr.hsrlunch.util.DateHelper;
 import ch.hsr.hsrlunch.util.MenuViewAdapter;
 import ch.hsr.hsrlunch.util.OnBadgeResultListener;
 import ch.hsr.hsrlunch.util.TabPageAdapter;
@@ -43,7 +42,6 @@ import com.viewpagerindicator.TabPageIndicator;
 public class MainActivity extends SherlockFragmentActivity implements
 		OnSharedPreferenceChangeListener, OnBadgeResultListener {
 	private static final int SHOW_PREFERENCES = 1;
-	private static final long WEEK_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
 	public static boolean dataAvailable = true;
 	public static WorkDay selectedDay;
@@ -60,8 +58,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private CustomMenuView menuView;
 	private Week week;
 
-	// Instanciate DB (onCreate) and create PersistenceFactory = Fill all
-	// Objects from DB
 	private DBOpenHelper dbHelper;
 	private PersistenceFactory persistenceFactory;
 
@@ -72,9 +68,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		context = getApplicationContext();
 
+		// Initialize DB and check for Updates
 		onCreatePersistence();
 
 		offertitles = getResources().getStringArray(R.array.menu_title_entries);
@@ -89,17 +86,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 		updatePreferences();
 
 		onCreateMenuDrawer();
-		
 
-        
 		mMenuDrawer.setContentView(R.layout.activity_main);
 		mMenuDrawer.setMenuView(menuView);
 
-//		getSupportActionBar().setHomeButtonEnabled(true);
+		// getSupportActionBar().setHomeButtonEnabled(true);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		// sp�ter furtschmeissen
-		init();
+		// set the Day for View
+		setSelectedDay(DateHelper.getSelectedDayDayOfWeek());
 
 		onCreateViewPager();
 
@@ -116,6 +111,23 @@ public class MainActivity extends SherlockFragmentActivity implements
 		dbHelper = new DBOpenHelper(this);
 		persistenceFactory = new PersistenceFactory(dbHelper);
 		week = persistenceFactory.getWeek();
+
+		if (!DateHelper.compareLastUpdateToMonday(week.getLastUpdate())) {
+			Log.d("MainActivity",
+					"Menus update needed! LastUpdate: "
+							+ DateHelper.getFormatedDateStringSHORT(new Date(
+									week.getLastUpdate()))
+							+ "\nDate of Monday: "
+							+ DateHelper.getFormatedDateStringSHORT(DateHelper
+									.getMondayOfThisWeekDate()));
+			doUpdate();
+
+		} else {
+			Log.d("MainActivity",
+					"No Menus update needed, last on: "
+							+ DateHelper.getFormatedDateStringSHORT(new Date(
+									week.getLastUpdate())));
+		}
 	}
 
 	private void updatePreferences() {
@@ -164,28 +176,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 				}
 			}
 		});
-	}
-
-	/*
-	 * statisches Füllen der Daten solange zugriff auf DB noch nicht
-	 * implementiert ist
-	 */
-	private void init() {
-
-		// badge = new Badge(999.99, new Date().getTime());
-
-		GregorianCalendar cal = new GregorianCalendar();
-		/*
-		 * Samstags und Sonntags stehen keine Informationen bereit
-		 */
-		if (cal.get(Calendar.DAY_OF_WEEK) == 1 /* sonntag */
-				|| cal.get(Calendar.DAY_OF_WEEK) == 7 /* samstag */) {
-			dataAvailable = false;
-			setSelectedDay(1);
-		} else {
-			dataAvailable = true;
-			setSelectedDay((cal.get(Calendar.DAY_OF_WEEK) + 5) % 7);
-		}
 	}
 
 	private void onCreateViewPager() {
@@ -242,10 +232,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 		return super.onOptionsItemSelected(item);
 	}
 
-	/*
-	 * setzen des ausgewählten Tages(selectedDay) des viewPagers
+	/**
+	 * Sets the selected Day for viewPager
 	 * 
-	 * @param: int position 0-4, 0 = Montag, ..., 4=Freitag
+	 * @param int position 0-4, 0 = MO, ..., 4 = FR
 	 */
 	private void setSelectedDay(int position) {
 		selectedDay = week.getDayList().get(position);
@@ -264,25 +254,19 @@ public class MainActivity extends SherlockFragmentActivity implements
 		provider = (ShareActionProvider) item.getActionProvider();
 		provider.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
 		provider.setShareIntent(getDefaultShareIntent());
-		
-	    MenuItem refresh = menu.findItem(R.id.menu_refresh);
-	
+
+		MenuItem refresh = menu.findItem(R.id.menu_refresh);
+
 		refresh.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
 				persistenceFactory.setMenuItem(item);
-				persistenceFactory.newUpdateTask();
-
-				if (mTabPageAdapter != null) {
-					mTabPageAdapter.notifyDataSetChanged();
-				}
-
+				doUpdate();
 				return false;
 			}
-		});
-		
 
+		});
 
 		MenuItem settings = menu.findItem(R.id.menu_settings);
 		settings.setOnMenuItemClickListener(new OnMenuItemClickListener() {
@@ -310,16 +294,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 		return intent;
 	}
 
-	public boolean DBUpdateNeeded() {
-		// TODO: check if 7 days difference + check if sunday is past
-		long dbage = new WeekDataSource(dbHelper).getWeekLastUpdate();
-		long actday = new Date().getTime();
-		long difference = 3 * 24 * 60 * 60 * 1000; // Weil der 1.1.1970 ein
-													// Donnerstag war
+	private void doUpdate() {
+		persistenceFactory.newUpdateTask();
 
-		if (actday - ((actday + difference) % WEEK_IN_MILLISECONDS) > dbage)
-			return true; // dbage ist aus letzer Woche
-		return false; // dbage ist neuer als der letzte Montag
+		if (mTabPageAdapter != null) {
+			mTabPageAdapter.notifyDataSetChanged();
+		}
 
 	}
 
