@@ -17,4 +17,9 @@
             <item >Donnerstag</item>
             <item >Freitag</item>
         </string-array>
+        <string-array name="errorTypes">
+            <item>Info</item>
+            <item>Warnung</item>
+            <item>Fehler</item>
+        </string-array>
 </resources>

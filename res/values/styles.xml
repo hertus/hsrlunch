@@ -4,7 +4,9 @@
     <color name="title">#db1313</color>
     <color name="date">#4e4949</color>
     <color name="gray">#dddddd</color>
-    
+    <color name="yellow">#fffcac</color>
+    <color name="orange">#e9c69d</color>
+    <color name="red">#e9a69d</color>
     
     <style name="titleTextSize">
          <item name="android:textSize">16sp</item>
