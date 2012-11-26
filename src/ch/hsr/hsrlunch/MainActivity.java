@@ -52,6 +52,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private Week week;
 
 	public static String[] offertitles;
+	public String[] errorTypes;
 
 	private static Context context;
 	private static MenuItem refreshProgressItem;
@@ -61,9 +62,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private TabPageAdapter mTabPageAdapter;
 	private ShareActionProvider provider;
 	private MenuViewAdapter mvAdapter;
-	private LinearLayout badgeLayout;
-	private CustomMenuView menuView;
 	private TabPageIndicator indicator;
+
+	private LinearLayout badgeLayout;
+	private LinearLayout errorMsgLayout;
+	private CustomMenuView menuView;
 
 	private DBOpenHelper dbHelper;
 	private PersistenceFactory persistenceFactory;
@@ -81,6 +84,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		onCreatePersistence();
 
 		offertitles = getResources().getStringArray(R.array.menu_title_entries);
+		errorTypes = getResources().getStringArray(R.array.errorTypes);
 
 		setPreferencesVersion();
 		updatePreferences();
@@ -144,6 +148,18 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// set the Day for View
 			setSelectedDay(DateHelper.getSelectedDayDayOfWeek());
 		}
+
+		badgeLayout = (LinearLayout) findViewById(R.id.badge);
+		errorMsgLayout = (LinearLayout) findViewById(R.id.error);
+
+		updateBadgeView();
+
+		shareIntent = new Intent(Intent.ACTION_SEND);
+		shareIntent.setType("text/plain");
+
+		// Beispiel aufruf, Fehlernachricht anzeigen
+		setAndShowErrorMsg(0, R.string.err_no_internet);
+
 	}
 
 	public static Context getMainContext() {
@@ -166,7 +182,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 				offertitles[0]);
 
 		// update index favourite menu
-		for (int i = 0; i <= offertitles.length; i++) {
+		for (int i = 0; i < offertitles.length; i++) {
 			if (temp.equals(offertitles[i])) {
 				favouriteMenu = i;
 				return;
@@ -409,6 +425,42 @@ public class MainActivity extends SherlockFragmentActivity implements
 		selectedDay = week.getDayList().get(selDayIndex);
 		selectedOffer = week.getDayList().get(selDayIndex).getOfferList()
 				.get(currentSelectedFragmentIndex);
+	}
+
+	/*
+	 * @param int errorType 0= Information, 1 = Warning, 3 = Error
+	 * 
+	 * @param int errorMsgId REsource id of String of the message that should be
+	 * displayed
+	 */
+	public void setAndShowErrorMsg(int errorType, int errorMsgId) {
+
+		errorMsgLayout.setVisibility(View.VISIBLE);
+
+		TextView errorTypeTv = (TextView) findViewById(R.id.errorType);
+		TextView errorMsgTv = (TextView) findViewById(R.id.errorMsg);
+
+		errorTypeTv.setTextColor(getResources().getColor(R.color.black));
+		errorMsgTv.setTextColor(getResources().getColor(R.color.black));
+		errorMsgTv.setText(errorMsgId);
+
+		switch (errorType) {
+		case 0:
+			errorTypeTv.setText(errorTypes[0] + ":");
+			errorMsgLayout.setBackgroundColor(getResources().getColor(
+					R.color.yellow));
+			break;
+		case 1:
+			errorTypeTv.setText(errorTypes[1] + ":");
+			errorMsgLayout.setBackgroundColor(getResources().getColor(
+					R.color.orange));
+			break;
+		case 2:
+			errorTypeTv.setText(errorTypes[2] + ":");
+			errorMsgLayout.setBackgroundColor(getResources().getColor(
+					R.color.red));
+			break;
+		}
 	}
 
 }
