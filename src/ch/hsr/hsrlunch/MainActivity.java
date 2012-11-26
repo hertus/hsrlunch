@@ -427,7 +427,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 				.get(currentSelectedFragmentIndex);
 	}
 
-	/*
+	/**
 	 * @param int errorType 0= Information, 1 = Warning, 3 = Error
 	 * 
 	 * @param int errorMsgId REsource id of String of the message that should be
