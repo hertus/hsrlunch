@@ -1,6 +1,7 @@
 package ch.hsr.hsrlunch.model;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import android.util.SparseArray;
 
@@ -31,7 +32,8 @@ public class WorkDay {
 	}
 
 	public String getDateStringLong() {
-		dateFormat = DateFormat.getDateInstance(DateFormat.LONG);
+		dateFormat = new SimpleDateFormat("EEEE dd.MMMM.yyyy");
+		//dateFormat = DateFormat.getDateInstance(DateFormat.LONG);
 		return dateFormat.format(date);
 	}
 	
