@@ -2,6 +2,7 @@ package ch.hsr.hsrlunch.model;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import android.util.SparseArray;
 
@@ -32,8 +33,7 @@ public class WorkDay {
 	}
 
 	public String getDateStringLong() {
-		dateFormat = new SimpleDateFormat("EEEE dd.MMMM.yyyy");
-		//dateFormat = DateFormat.getDateInstance(DateFormat.LONG);
+		dateFormat = new SimpleDateFormat("EEEE dd.MM.yyyy", Locale.getDefault());
 		return dateFormat.format(date);
 	}
 	
