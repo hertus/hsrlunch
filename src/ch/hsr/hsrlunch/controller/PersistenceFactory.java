@@ -59,8 +59,9 @@ public class PersistenceFactory implements OfferConstants {
 
 		@Override
 		protected void onPreExecute() {
-			if (item != null)
+			if (item != null) {
 				item.setActionView(R.layout.progress);
+			}
 		}
 
 		@Override
@@ -82,8 +83,9 @@ public class PersistenceFactory implements OfferConstants {
 			Toast toast = Toast.makeText(MainActivity.getMainContext(),
 					"Menus up to date!", Toast.LENGTH_SHORT);
 			toast.show();
-			if (item != null)
+			if (item != null) {
 				item.setActionView(null);
+			}
 		}
 	}
 
