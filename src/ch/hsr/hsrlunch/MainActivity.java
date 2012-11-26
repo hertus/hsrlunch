@@ -100,9 +100,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		onCreateDataUpdate();
 
-		badgeLayout = (LinearLayout) findViewById(R.id.badge);
-		updateBadgeView();
-
 		shareIntent = new Intent(Intent.ACTION_SEND);
 		shareIntent.setType("text/plain");
 
@@ -257,18 +254,23 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void updateBadgeView() {
-		if (showBadgeInfo) {
+		if (showBadgeInfo ) {
+			if (CheckRessources.isOnHSRwifi(this)) {
 			badgeLayout.setVisibility(View.VISIBLE);
+			
+			
 			// hole Informationen aus der DB:
 			onBadgeUpdate();
 
 			// initiate Update
-			BadgeUpdater service = new BadgeUpdater();
+			BadgeUpdater service = new BadgeUpdater(this);
 			service.setBackend(persistenceFactory);
-			service.setContext(this);
 			service.setListener(this);
 			service.execute();
-
+			} else {
+				setAndShowErrorMsg(3, R.string.err_no_hsrwifi);
+				badgeLayout.setVisibility(View.GONE);	
+			}
 		} else {
 			badgeLayout.setVisibility(View.GONE);
 		}

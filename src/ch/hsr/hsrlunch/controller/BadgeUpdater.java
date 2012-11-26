@@ -15,6 +15,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import ch.hsr.hsrlunch.MainActivity;
+import ch.hsr.hsrlunch.R;
 import ch.hsr.hsrlunch.model.MyHttpClient;
 import ch.hsr.hsrlunch.ui.SettingsActivity;
 import ch.hsr.hsrlunch.util.OnBadgeResultListener;
@@ -29,7 +31,12 @@ public class BadgeUpdater extends AsyncTask<Void,Void, Void> {
 	private PersistenceFactory persistenceFactory;
 	private HttpResponse response;
 	private InputStream inputStream;
-	private Context maincontext;
+	private MainActivity main;
+
+	public BadgeUpdater(MainActivity mainActivity) {
+		super();
+		main = mainActivity;
+	}
 
 	@Override
 	protected Void doInBackground(Void... arg0) {
@@ -65,11 +72,12 @@ public class BadgeUpdater extends AsyncTask<Void,Void, Void> {
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			// Handle falls keine Inet-Verbindung ermöglicht werden kann!
+			main.setAndShowErrorMsg(3, R.string.err_badge_not_parseable);
 			e.printStackTrace();
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			// Handle falls der Wert nicht geparst werden kann
+			main.setAndShowErrorMsg(3, R.string.err_badge_not_parseable);
 			e.printStackTrace();
 		}
 		return null;
@@ -84,10 +92,6 @@ public class BadgeUpdater extends AsyncTask<Void,Void, Void> {
 		this.listener = listener;		
 	}
 	
-	public void setContext(Context main) {
-		this.maincontext = main;
-	}
-
 	public void setBackend(PersistenceFactory persistenceFactory) {
 		this.persistenceFactory = persistenceFactory;		
 	}

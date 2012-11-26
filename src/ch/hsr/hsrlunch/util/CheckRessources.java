@@ -29,6 +29,8 @@ public class CheckRessources {
 			WifiInfo wifiInfo = wifiManager.getConnectionInfo();
 
 			String ssid = wifiInfo.getSSID();
+			if(ssid == null)
+				return false;
 			Log.d("Wifi", "Connected with SSID: " + ssid);
 			if (ssid.equals("HSR-Secure")) {
 				Log.d("Wifi", "Connected in HSR-Secure");
