@@ -10,7 +10,7 @@ public class Badge {
 	public Badge(double amount, long lastUpdate) {
 		this.amount = amount;
 		this.lastUpdate = lastUpdate;
-		dateFormat = DateFormat.getDateInstance(DateFormat.SHORT);
+		dateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
 	}
 
 	public double getAmount() {
