@@ -39,8 +39,13 @@ public class XMLParser implements OfferConstants {
 	 *         where is .first = OffertContent and .second = OfferPrice if
 	 *         Orderprice = empty then String is "EMPTY". SparsArray from Day 0
 	 *         - 4 and from Offers 0 - 3. Offer 0 = DAILY, 1 = VEGI, 2 = WEEK
+	 * @throws ParserException
+	 * @throws IOException
+	 * @throws ClientProtocolException
+	 * @throws UnsupportedEncodingException
 	 */
-	public SparseArray<SparseArray<Pair<String, String>>> parseOffers() {
+	public SparseArray<SparseArray<Pair<String, String>>> parseOffers()
+			throws ParserException {
 		Log.d("System Encoding", System.getProperty("file.encoding").toString());
 
 		String menuUrl = getMenuUrl();
@@ -50,13 +55,13 @@ public class XMLParser implements OfferConstants {
 		if (doc != null) {
 			offerList = parseOfferContents(doc);
 		} else {
-			Log.d("XMLParser", "Document doc was null from getDomElement(xml)");
+			throw new ParserException("couldn't get DOM Document");
 		}
 		return offerList;
 	}
 
 	private SparseArray<SparseArray<Pair<String, String>>> parseOfferContents(
-			Document domDoc) {
+			Document domDoc) throws ParserException {
 
 		String offerContent;
 		String priceInt;
@@ -181,32 +186,34 @@ public class XMLParser implements OfferConstants {
 					}
 
 				} else {
-					Log.d("XMLParser", "Item" + i + " of dayList was null");
+					throw new ParserException(
+							"parsing item in dayList was null");
 				}
 			}
 		} else {
-			Log.d("XMLParser", "NodeList dayList was null");
+			throw new ParserException("parsing dayList was null");
 		}
 		return offerList;
 	}
 
-	private String getMenuUrl() {
+	private String getMenuUrl() throws ParserException {
 		String xml = getXMLfromURL(baseurl);
 		Document doc = getDomElement(xml);
-
-		NodeList nodeList = doc.getElementsByTagName("exporturl");
-		if (nodeList.item(0) != null) {
-			Log.d("XML Parser", "exporturl: "
-					+ nodeList.item(0).getTextContent());
-			return nodeList.item(0).getTextContent();
+		if (doc != null) {
+			NodeList nodeList = doc.getElementsByTagName("exporturl");
+			if (nodeList.item(0) != null) {
+				return nodeList.item(0).getTextContent();
+			} else {
+				throw new ParserException(
+						"nodeList from exporturl was null - no exporturl available?");
+			}
 		} else {
-			Log.d("XMLParser",
-					"NodeList from exporturl was null - no exporturl available?");
-			return null;
+			throw new ParserException(
+					"no DOM Document");
 		}
 	}
 
-	public String getXMLfromURL(String url) {
+	public String getXMLfromURL(String url) throws ParserException {
 		String xml = null;
 		try {
 			DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -216,16 +223,17 @@ public class XMLParser implements OfferConstants {
 			xml = EntityUtils.toString(httpEntity);
 
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			throw new ParserException("UnsupportedEncoding: " + e.getMessage());
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
+			throw new ParserException("ClientProtocoll Error: "
+					+ e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new ParserException("IOException: " + e.getMessage());
 		}
 		return xml;
 	}
 
-	public Document getDomElement(String xml) {
+	public Document getDomElement(String xml) throws ParserException {
 		Document doc = null;
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		try {
@@ -238,18 +246,16 @@ public class XMLParser implements OfferConstants {
 
 				doc = db.parse(is);
 			} else {
-				throw new IOException(
+				throw new ParserException(
 						"XML was null - could not get Data from HTTP");
 			}
 		} catch (ParserConfigurationException e) {
-			Log.e("Error: ", e.getMessage());
-			return null;
+			throw new ParserException("Error in ParserConfiguration: "
+					+ e.getMessage());
 		} catch (SAXException e) {
-			Log.e("Error: ", e.getMessage());
-			return null;
+			throw new ParserException("Error in SAX: " + e.getMessage());
 		} catch (IOException e) {
-			Log.e("Error: ", e.getMessage());
-			return null;
+			throw new ParserException("IOException: " + e.getMessage());
 		}
 		return doc;
 	}

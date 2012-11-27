@@ -71,7 +71,7 @@ public class DBOpenHelper extends SQLiteOpenHelper implements DBConstants, Offer
 		}
 
 		// Badge placeholders
-		double amountInit = 0.0;
+		double amountInit = 42.50;
 		db.execSQL("INSERT INTO " + TABLE_BADGE + "(" + COLUMN_BADGE_ID + ", "
 				+ COLUMN_BADGE_AMOUNT + ", " + COLUMN_BADGE_LASTUPDATE
 				+ ")VALUES(1," + amountInit + "," + new Date().getTime() + ")");

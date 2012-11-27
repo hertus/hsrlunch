@@ -1,4 +1,4 @@
-package ch.hsr.hsrlunch.model;
+package ch.hsr.hsrlunch.util;
 
 import java.security.KeyStore;
 

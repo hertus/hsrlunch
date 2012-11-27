@@ -1,9 +1,7 @@
 package ch.hsr.hsrlunch;
 
-import java.util.Date;
 import net.simonvt.widget.MenuDrawer;
 import net.simonvt.widget.MenuDrawerManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -17,7 +15,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import ch.hsr.hsrlunch.controller.BadgeUpdater;
 import ch.hsr.hsrlunch.controller.PersistenceFactory;
 import ch.hsr.hsrlunch.model.Badge;
 import ch.hsr.hsrlunch.model.Offer;
@@ -29,8 +26,8 @@ import ch.hsr.hsrlunch.util.CheckRessources;
 import ch.hsr.hsrlunch.util.DBOpenHelper;
 import ch.hsr.hsrlunch.util.DateHelper;
 import ch.hsr.hsrlunch.util.MenuViewAdapter;
-import ch.hsr.hsrlunch.util.OnBadgeResultListener;
 import ch.hsr.hsrlunch.util.TabPageAdapter;
+
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -39,13 +36,12 @@ import com.actionbarsherlock.widget.ShareActionProvider;
 import com.viewpagerindicator.TabPageIndicator;
 
 public class MainActivity extends SherlockFragmentActivity implements
-		OnSharedPreferenceChangeListener, OnBadgeResultListener {
+		OnSharedPreferenceChangeListener {
 	private static final int SHOW_PREFERENCES = 1;
 
 	private static final String FRAG_INDEX = "FragmentPosition";
 	private static final String SEL_DAY_INDEX = "selectedDayIndex";
 
-	public static boolean dataAvailable = true;
 	public static WorkDay selectedDay;
 	public static Offer selectedOffer;
 	private static Intent shareIntent;
@@ -54,7 +50,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 	public static String[] offertitles;
 	public String[] errorTypes;
 
-	private static Context context;
 	private static MenuItem refreshProgressItem;
 
 	private ViewPager mViewPager;
@@ -71,15 +66,16 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private DBOpenHelper dbHelper;
 	private PersistenceFactory persistenceFactory;
 
-	// Attributes for Preferences in SettingActivity
-	private boolean showBadgeInfo = false;
+	public static boolean dataAvailable = true;
+	private boolean isOnBadge = false;
+	private boolean isOnOfferUpdate = false;
+
 	private int favouriteMenu;
 	private int currentSelectedFragmentIndex;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		context = getApplicationContext();
 
 		onCreatePersistence();
 
@@ -90,7 +86,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 		updatePreferences();
 
 		onCreateMenuDrawer();
-
 		mMenuDrawer.setContentView(R.layout.activity_main);
 		mMenuDrawer.setMenuView(menuView);
 
@@ -98,11 +93,13 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		onCreateViewPager(savedInstanceState);
 
-		onCreateDataUpdate();
-
 		shareIntent = new Intent(Intent.ACTION_SEND);
 		shareIntent.setType("text/plain");
 
+		badgeLayout = (LinearLayout) findViewById(R.id.badge);
+		errorMsgLayout = (LinearLayout) findViewById(R.id.error);
+
+		onCreateDataUpdate();
 	}
 
 	private void setPreferencesVersion() {
@@ -115,65 +112,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 		}
 	}
 
-	private void onCreateDataUpdate() {
-		if (DateHelper.getDayOfWeek() == 1 || DateHelper.getDayOfWeek() == 7) {
-			Log.d("MainActivity",
-					"It's weekend! No DB Update, no Data, go out and play!");
-			dataAvailable = false;
-		} else {
-			// Initialize DB and check for Updates
-			if (!DateHelper.compareLastUpdateToMonday(week.getLastUpdate())) {
-				Log.d("MainActivity",
-						"Menus update needed! LastUpdate: "
-								+ DateHelper
-										.getFormatedDateStringSHORT(new Date(
-												week.getLastUpdate()))
-								+ "\nDate of Monday: "
-								+ DateHelper
-										.getFormatedDateStringSHORT(DateHelper
-												.getMondayOfThisWeekDate()));
-				doOfferUpdate();
-
-			} else {
-				Log.d("MainActivity",
-						"No Menus update needed, last on: "
-								+ DateHelper
-										.getFormatedDateStringSHORT(new Date(
-												week.getLastUpdate())));
-			}
-
-			// set the Day for View
-			setSelectedDay(DateHelper.getSelectedDayDayOfWeek());
-		}
-
-		badgeLayout = (LinearLayout) findViewById(R.id.badge);
-		errorMsgLayout = (LinearLayout) findViewById(R.id.error);
-
-		updateBadgeView();
-
-		shareIntent = new Intent(Intent.ACTION_SEND);
-		shareIntent.setType("text/plain");
-
-		// Beispiel aufruf, Fehlernachricht anzeigen
-		setAndShowErrorMsg(0, R.string.err_no_internet);
-
-	}
-
-	public static Context getMainContext() {
-		return context;
-	}
-
-	private void onCreatePersistence() {
-		dbHelper = new DBOpenHelper(this);
-		persistenceFactory = new PersistenceFactory(dbHelper);
-		week = persistenceFactory.getWeek();
-	}
-
 	private void updatePreferences() {
 		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(context);
+				.getDefaultSharedPreferences(this);
 
-		showBadgeInfo = prefs.getBoolean(SettingsActivity.PREF_BADGE, false);
+		isOnBadge = prefs.getBoolean(SettingsActivity.PREF_BADGE, false);
 
 		String temp = prefs.getString(SettingsActivity.PREF_FAV_MENU,
 				offertitles[0]);
@@ -186,6 +129,35 @@ public class MainActivity extends SherlockFragmentActivity implements
 			}
 		}
 		currentSelectedFragmentIndex = favouriteMenu;
+	}
+
+	private void onCreatePersistence() {
+		dbHelper = new DBOpenHelper(this);
+		persistenceFactory = new PersistenceFactory(dbHelper);
+		week = persistenceFactory.getWeek();
+	}
+
+	/**
+	 * Checks if DB Update for Offers if needed and update them. Checks if Badge
+	 * is switched on and update it.
+	 */
+	private void onCreateDataUpdate() {
+		if (DateHelper.getDayOfWeek() == 1 || DateHelper.getDayOfWeek() == 7) {
+			Log.d("MainActivity",
+					"It's weekend! No Updates, no Data, go out and play!");
+			dataAvailable = false;
+			isOnOfferUpdate = false;
+		} else {
+			// Initialize DB and check for Updates
+			if (!DateHelper.compareLastUpdateToMonday(week.getLastUpdate())) {
+				isOnOfferUpdate = true;
+			} else {
+				isOnOfferUpdate = false;
+			}
+			doUpdates();
+		}
+		setSelectedDay(DateHelper.getSelectedDayDayOfWeek());
+		updateBadgeView();
 	}
 
 	private void onCreateMenuDrawer() {
@@ -216,6 +188,46 @@ public class MainActivity extends SherlockFragmentActivity implements
 				}
 			}
 		});
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getSupportMenuInflater().inflate(R.menu.actionbar_menu, menu);
+
+		MenuItem item = menu.findItem(R.id.menu_share);
+		provider = (ShareActionProvider) item.getActionProvider();
+		provider.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
+		updateShareIntent();
+		provider.setShareIntent(shareIntent);
+
+		MenuItem refresh = menu.findItem(R.id.menu_refresh);
+		refreshProgressItem = refresh;
+
+		refresh.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				// when click on Refresh, do always a OfferUpdate
+				isOnOfferUpdate = true;
+				doUpdates();
+				return false;
+			}
+
+		});
+
+		MenuItem settings = menu.findItem(R.id.menu_settings);
+		settings.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				Intent i = new Intent(getApplicationContext(),
+						SettingsActivity.class);
+				startActivityForResult(i, SHOW_PREFERENCES);
+				return true;
+			}
+		});
+
+		return true;
 	}
 
 	private void onCreateViewPager(Bundle savedInstanceState) {
@@ -253,34 +265,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 		indicator.setOnPageChangeListener(pageChangeListener);
 	}
 
-	private void updateBadgeView() {
-		if (showBadgeInfo ) {
-			if (CheckRessources.isOnHSRwifi(this)) {
-			badgeLayout.setVisibility(View.VISIBLE);
-			
-			
-			// hole Informationen aus der DB:
-			onBadgeUpdate();
-
-			// initiate Update
-			BadgeUpdater service = new BadgeUpdater(this);
-			service.setBackend(persistenceFactory);
-			service.setListener(this);
-			service.execute();
-			} else {
-				setAndShowErrorMsg(3, R.string.err_no_hsrwifi);
-				badgeLayout.setVisibility(View.GONE);	
-			}
-		} else {
-			badgeLayout.setVisibility(View.GONE);
-		}
-	}
-
-	private void updateViewPager() {
-		if (mViewPager != null)
-			mViewPager.setCurrentItem(favouriteMenu, true);
-	}
-
 	@Override
 	public boolean onOptionsItemSelected(
 			com.actionbarsherlock.view.MenuItem item) {
@@ -300,48 +284,19 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private void setSelectedDay(int position) {
 		selectedDay = week.getDayList().get(position);
 		selectedOffer = selectedDay.getOfferList().get(favouriteMenu);
-		if (mTabPageAdapter != null) {
-			mTabPageAdapter.notifyDataSetChanged();
-			updateViewPager();
-		}
+		updateTabPageAdapterData();
+		updateViewPager();
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.actionbar_menu, menu);
+	private void updateViewPager() {
+		if (mViewPager != null)
+			mViewPager.setCurrentItem(favouriteMenu, true);
+	}
 
-		MenuItem item = menu.findItem(R.id.menu_share);
-		provider = (ShareActionProvider) item.getActionProvider();
-		provider.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
-		updateShareIntent();
-		provider.setShareIntent(shareIntent);
-
-		MenuItem refresh = menu.findItem(R.id.menu_refresh);
-		refreshProgressItem = refresh;
-
-		refresh.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-
-			@Override
-			public boolean onMenuItemClick(MenuItem item) {
-				doOfferUpdate();
-				return false;
-			}
-
-		});
-
-		MenuItem settings = menu.findItem(R.id.menu_settings);
-		settings.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-
-			@Override
-			public boolean onMenuItemClick(MenuItem item) {
-				Intent i = new Intent(getApplicationContext(),
-						SettingsActivity.class);
-				startActivityForResult(i, SHOW_PREFERENCES);
-				return true;
-			}
-		});
-
-		return true;
+	private void updateTabPageAdapterData() {
+		if (mTabPageAdapter != null) {
+			mTabPageAdapter.notifyDataSetChanged();
+		}
 	}
 
 	private void updateShareIntent() {
@@ -362,30 +317,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	}
 
-	private void doOfferUpdate() {
-		if (CheckRessources.isOnline(context)) {
-			Log.d("MainActivity", "Is online, begin with update!");
-
-			persistenceFactory.setMenuItem(refreshProgressItem);
-			persistenceFactory.newUpdateTask();
-
-			CheckRessources.isOnHSRwifi(context);
-
-			if (mTabPageAdapter != null) {
-				mTabPageAdapter.notifyDataSetChanged();
-			}
-		} else {
-			Log.d("MainActivity", "Is offline, can't update!");
-		}
-
-	}
-
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == SHOW_PREFERENCES) {
 			updatePreferences();
-			// Badge Information updaten und wenn nötig anzeigen
 			updateBadgeView();
 			updateViewPager();
 		}
@@ -395,18 +331,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
 		updatePreferences();
-		// Badge Information updaten und wenn nötig anzeigen
 		updateBadgeView();
 		updateViewPager();
-	}
-
-	@Override
-	public void onBadgeUpdate() {
-		Badge badge = persistenceFactory.getBadge();
-		TextView badgeAmount = (TextView) findViewById(R.id.amount);
-		badgeAmount.setText(badge.getAmount() + " CHF");
-		TextView badgeLastUpdate = (TextView) findViewById(R.id.lastUpdate);
-		badgeLastUpdate.setText(badge.getLastUpdateString());
 	}
 
 	@Override
@@ -429,11 +355,74 @@ public class MainActivity extends SherlockFragmentActivity implements
 				.get(currentSelectedFragmentIndex);
 	}
 
+	private void updateBadgeView() {
+		if (isOnBadge) {
+			badgeLayout.setVisibility(View.VISIBLE);
+			Badge badge = persistenceFactory.getBadge();
+			TextView badgeAmount = (TextView) findViewById(R.id.amount);
+			badgeAmount.setText(badge.getAmount() + " CHF");
+			TextView badgeLastUpdate = (TextView) findViewById(R.id.lastUpdate);
+			badgeLastUpdate.setText(badge.getLastUpdateString());
+
+		} else {
+			badgeLayout.setVisibility(View.GONE);
+		}
+	}
+
+	private void doUpdates() {
+		persistenceFactory.setMenuItem(refreshProgressItem);
+
+		// Check if Badge is on + Check if HSR Wifi, if no HSR Wifi then check
+		// Offer Update and Internet
+		if (isOnBadge) {
+			if (CheckRessources.isOnHSRwifi(this)) {
+				Log.d("MainActivity", "Is in HSR-LAN, begin with badge update!");
+				persistenceFactory.newUpdateTask(this, isOnOfferUpdate,
+						isOnBadge);
+			} else if (isOnOfferUpdate) {
+				if (CheckRessources.isOnline(this)) {
+					Log.d("MainActivity", "not in HSR-LAN, but online");
+					setAndShowErrorMsg(1, R.string.err_no_hsrwifi);
+					persistenceFactory.newUpdateTask(this, isOnOfferUpdate,
+							false);
+				} else {
+					Log.d("MainActivity", "not online");
+					setAndShowErrorMsg(2, R.string.err_no_internet);
+				}
+			} else {
+				setAndShowErrorMsg(1, R.string.err_no_hsrwifi);
+			}
+
+			// Check if Offer Update is needed when Badge is off + Check if
+			// Internet is on
+		} else if (isOnOfferUpdate) {
+			if (CheckRessources.isOnline(this)) {
+				Log.d("MainActivity", "Is online, begin with offer update!");
+				persistenceFactory.newUpdateTask(this, isOnOfferUpdate, false);
+			} else {
+				Log.d("MainActivity", "Is offline, can't update!");
+				setAndShowErrorMsg(2, R.string.err_no_internet);
+			}
+		}
+	}
+
 	/**
-	 * @param int errorType 0= Information, 1 = Warning, 3 = Error
+	 * Update the Views after UpdateTask
+	 */
+	public void notifyDataChanges() {
+
+		week = persistenceFactory.getWeek();
+		// TODO Wo wird evtl. selected Day erneuert?
+
+		updateBadgeView();
+		updateTabPageAdapterData();
+	}
+
+	/**
+	 * @param int errorType 0= Information, 1 = Warning, 2 = Error
 	 * 
 	 * @param int errorMsgId REsource id of String of the message that should be
-	 * displayed
+	 *        displayed
 	 */
 	public void setAndShowErrorMsg(int errorType, int errorMsgId) {
 
