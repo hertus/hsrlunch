@@ -6,22 +6,25 @@ import java.util.List;
 import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.SparseArray;
+import android.view.View;
 import ch.hsr.hsrlunch.R;
 import ch.hsr.hsrlunch.ui.OfferFragment;
 
-public class TabPageAdapter extends FragmentStatePagerAdapter{
+public class TabPageAdapter extends FragmentPagerAdapter{
 
 	private List<String> tabTitles;
 	
 
 
-	SparseArray<OfferFragment> fragmentList = new SparseArray<OfferFragment>();
+	SparseArray<OfferFragment> fragmentList;
 
 	public TabPageAdapter(Activity mainActivity,FragmentManager fm) {
 		
 		super(fm);
+		fragmentList = new SparseArray<OfferFragment>();
 		tabTitles = Arrays.asList(mainActivity.getResources()
 				.getStringArray(R.array.tabTitles));
 	}
@@ -41,6 +44,15 @@ public class TabPageAdapter extends FragmentStatePagerAdapter{
 		} else
 			return fragmentList.get(position);
 	}
+	@Override
+	public void destroyItem(View collection, int position, Object o) {
+	
+		
+	    OfferFragment fragment = (OfferFragment)o;
+		((ViewPager) collection).removeViewAt(position);
+	    fragmentList.remove(position);
+	    fragment = null;
+	}
 
 	@Override
 	public CharSequence getPageTitle(int position) {
@@ -52,11 +64,12 @@ public class TabPageAdapter extends FragmentStatePagerAdapter{
 	 */
 	@Override
 	public void notifyDataSetChanged() {
-		super.notifyDataSetChanged();
+		
 		System.out.println("fragmentlistsize: " + fragmentList.size());
 		for (int i = 0; i < fragmentList.size(); i++) {
 			fragmentList.get(i).updateValues();
 		}
+		//super.notifyDataSetChanged();	
 	}
 
 	public SparseArray<OfferFragment> getFragmentList() {

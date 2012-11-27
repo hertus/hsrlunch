@@ -100,6 +100,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 		errorMsgLayout = (LinearLayout) findViewById(R.id.error);
 
 		onCreateDataUpdate();
+		
+		
+		//Beispiel aufruf, Fehlernachricht anzeigen
+		//setAndShowErrorMsg(0,R.string.err_no_internet);
 	}
 
 	private void setPreferencesVersion() {
@@ -257,8 +261,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 					selectedOffer = selectedDay.getOfferList().get(position);
 
 					updateShareIntent();
-					provider.setShareIntent(shareIntent);
-					// provider.setShareIntent(getDefaultShareIntent());
+//					provider.setShareIntent(shareIntent);
 				}
 			}
 		};
