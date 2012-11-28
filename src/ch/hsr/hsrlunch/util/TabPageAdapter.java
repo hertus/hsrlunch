@@ -6,14 +6,14 @@ import java.util.List;
 import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.SparseArray;
 import android.view.View;
 import ch.hsr.hsrlunch.R;
 import ch.hsr.hsrlunch.ui.OfferFragment;
 
-public class TabPageAdapter extends FragmentPagerAdapter{
+public class TabPageAdapter extends FragmentStatePagerAdapter{
 
 	private List<String> tabTitles;
 	
