@@ -108,20 +108,21 @@ public class PersistenceFactory implements OfferConstants {
 			} catch (UpdateException e) {
 				Log.w("PersistenceFactory",
 						"Error on updating: " + e.getMessage());
-				mainActivity.setAndShowErrorMsg(3, R.string.err_update_failed);
-				return true;
+				return false;
 			} catch (ParserException e) {
 				Log.w("XMLParser", "Error on updating: " + e.getMessage());
-				mainActivity.setAndShowErrorMsg(3,
-						R.string.err_offer_not_parsable);
-				return true;
+				return false;
 			}
 		}
 
 		@Override
 		protected void onPostExecute(Boolean success) {
 			mainActivity.notifyDataChanges();
-			mainActivity.setAndShowErrorMsg(0, R.string.info_update_succes);
+			if (success) {
+				mainActivity.setAndShowErrorMsg(0, R.string.info_update_succes);
+			} else {
+				mainActivity.setAndShowErrorMsg(2, R.string.err_update_failed);
+			}
 			stopProgressRotate();
 			Log.d("PersistenceFactory", "End UpdateTask");
 		}

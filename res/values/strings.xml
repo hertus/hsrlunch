@@ -24,8 +24,7 @@
    <string name="err_no_internet">keine Internet Verbindung vorhanden</string>
    <string name="err_no_hsrwifi">Keine Verbindung zum Badge-Server</string>
    <string name="err_badge_not_parseable">Badge-Konto konnte nicht abgerufen werden.\nBitte später nochmals probieren</string>
-   <string name="err_update_failed">Updates konnten nicht durchgeführt werden.\nBitte versuchen Sie später noch einmal.</string>
-   <string name="err_offer_not_parsable">SV-Menu konnte nicht korrekt abgerufen werden.\nBitte versuchen Sie später noch einmal.</string>
+   <string name="err_update_failed">Update konnte nicht durchgeführt werden</string>
    <string name="info_update_succes">Update wurde erfolgreich durchgeführt</string>
         
 </resources>
