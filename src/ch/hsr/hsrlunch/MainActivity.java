@@ -98,6 +98,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		badgeLayout = (LinearLayout) findViewById(R.id.badge);
 		errorMsgLayout = (LinearLayout) findViewById(R.id.error);
+		errorMsgLayout.setOnClickListener(new View.OnClickListener() {
+	        @Override
+	        public void onClick(View v) {
+	           errorMsgLayout.setVisibility(View.GONE);
+	        }
+	    });
 
 		onCreateDataUpdate();
 		
