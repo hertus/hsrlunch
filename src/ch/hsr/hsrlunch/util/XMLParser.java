@@ -39,13 +39,13 @@ public class XMLParser implements OfferConstants {
 	 *         where is .first = OffertContent and .second = OfferPrice if
 	 *         Orderprice = empty then String is "EMPTY". SparsArray from Day 0
 	 *         - 4 and from Offers 0 - 3. Offer 0 = DAILY, 1 = VEGI, 2 = WEEK
-	 * @throws ParserException
+	 * @throws UpdateParserException
 	 * @throws IOException
 	 * @throws ClientProtocolException
 	 * @throws UnsupportedEncodingException
 	 */
 	public SparseArray<SparseArray<Pair<String, String>>> parseOffers()
-			throws ParserException {
+			throws UpdateParserException {
 		Log.d("System Encoding", System.getProperty("file.encoding").toString());
 
 		String menuUrl = getMenuUrl();
@@ -55,13 +55,13 @@ public class XMLParser implements OfferConstants {
 		if (doc != null) {
 			offerList = parseOfferContents(doc);
 		} else {
-			throw new ParserException("couldn't get DOM Document");
+			throw new UpdateParserException("couldn't get DOM Document");
 		}
 		return offerList;
 	}
 
 	private SparseArray<SparseArray<Pair<String, String>>> parseOfferContents(
-			Document domDoc) throws ParserException {
+			Document domDoc) throws UpdateParserException {
 
 		String offerContent;
 		String priceInt;
@@ -186,17 +186,17 @@ public class XMLParser implements OfferConstants {
 					}
 
 				} else {
-					throw new ParserException(
+					throw new UpdateParserException(
 							"parsing item in dayList was null");
 				}
 			}
 		} else {
-			throw new ParserException("parsing dayList was null");
+			throw new UpdateParserException("parsing dayList was null");
 		}
 		return offerList;
 	}
 
-	private String getMenuUrl() throws ParserException {
+	private String getMenuUrl() throws UpdateParserException {
 		String xml = getXMLfromURL(baseurl);
 		Document doc = getDomElement(xml);
 		if (doc != null) {
@@ -204,16 +204,16 @@ public class XMLParser implements OfferConstants {
 			if (nodeList.item(0) != null) {
 				return nodeList.item(0).getTextContent();
 			} else {
-				throw new ParserException(
+				throw new UpdateParserException(
 						"nodeList from exporturl was null - no exporturl available?");
 			}
 		} else {
-			throw new ParserException(
+			throw new UpdateParserException(
 					"no DOM Document");
 		}
 	}
 
-	public String getXMLfromURL(String url) throws ParserException {
+	public String getXMLfromURL(String url) throws UpdateParserException {
 		String xml = null;
 		try {
 			DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -223,17 +223,17 @@ public class XMLParser implements OfferConstants {
 			xml = EntityUtils.toString(httpEntity);
 
 		} catch (UnsupportedEncodingException e) {
-			throw new ParserException("UnsupportedEncoding: " + e.getMessage());
+			throw new UpdateParserException("UnsupportedEncoding: " + e.getMessage());
 		} catch (ClientProtocolException e) {
-			throw new ParserException("ClientProtocoll Error: "
+			throw new UpdateParserException("ClientProtocoll Error: "
 					+ e.getMessage());
 		} catch (IOException e) {
-			throw new ParserException("IOException: " + e.getMessage());
+			throw new UpdateParserException("IOException: " + e.getMessage());
 		}
 		return xml;
 	}
 
-	public Document getDomElement(String xml) throws ParserException {
+	public Document getDomElement(String xml) throws UpdateParserException {
 		Document doc = null;
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		try {
@@ -246,16 +246,16 @@ public class XMLParser implements OfferConstants {
 
 				doc = db.parse(is);
 			} else {
-				throw new ParserException(
+				throw new UpdateParserException(
 						"XML was null - could not get Data from HTTP");
 			}
 		} catch (ParserConfigurationException e) {
-			throw new ParserException("Error in ParserConfiguration: "
+			throw new UpdateParserException("Error in ParserConfiguration: "
 					+ e.getMessage());
 		} catch (SAXException e) {
-			throw new ParserException("Error in SAX: " + e.getMessage());
+			throw new UpdateParserException("Error in SAX: " + e.getMessage());
 		} catch (IOException e) {
-			throw new ParserException("IOException: " + e.getMessage());
+			throw new UpdateParserException("IOException: " + e.getMessage());
 		}
 		return doc;
 	}

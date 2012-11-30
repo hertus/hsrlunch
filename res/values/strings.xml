@@ -21,10 +21,10 @@
         <string name="pref_badge_username">Username</string><string name="pref_badge_username_long">Bitte hier den Usernamen mit führendem hsr\\ eingeben</string>
         <string name="pref_badge_password">Passwort</string>
         <string name="pref_badge_password_long">Bitte hier das Passwort der HSR eingeben</string>
-   <string name="err_no_internet">keine Internet Verbindung vorhanden</string>
-   <string name="err_no_hsrwifi">Keine Verbindung zum Badge-Server</string>
-   <string name="err_badge_not_parseable">Badge-Konto konnte nicht abgerufen werden.\nBitte später nochmals probieren</string>
+   <string name="pref_username_default">HSR\</string><string name="err_no_internet">Keine Internet Verbindung vorhanden</string>
+   <string name="err_no_hsrwifi">Nicht mit HSR-Secure verbunden</string>
+   <string name="err_badge_not_parseable">Badge-Kontostand konnte nicht abgerufen werden</string>
    <string name="err_update_failed">Update konnte nicht durchgeführt werden</string>
-   <string name="info_update_succes">Update wurde erfolgreich durchgeführt</string>
+   
         
 </resources>
