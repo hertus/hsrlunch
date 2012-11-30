@@ -15,9 +15,6 @@ public class SettingsFragment extends PreferenceFragment {
 	        // Load the preferences from an XML resource
 	        addPreferencesFromResource(R.xml.userpreference);
 	        SwitchPreference switchPreference = (SwitchPreference) findPreference("pref_badge");
-	        if(switchPreference.isChecked()) {
-	        	
-	        }
 	    }
 
 }
