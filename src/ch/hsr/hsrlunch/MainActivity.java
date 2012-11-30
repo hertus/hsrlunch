@@ -25,6 +25,7 @@ import ch.hsr.hsrlunch.ui.SettingsActivity;
 import ch.hsr.hsrlunch.util.CheckRessources;
 import ch.hsr.hsrlunch.util.DBOpenHelper;
 import ch.hsr.hsrlunch.util.DateHelper;
+import ch.hsr.hsrlunch.util.GoogleTranslate;
 import ch.hsr.hsrlunch.util.MenuViewAdapter;
 import ch.hsr.hsrlunch.util.TabPageAdapter;
 
@@ -100,17 +101,16 @@ public class MainActivity extends SherlockFragmentActivity implements
 		badgeLayout = (LinearLayout) findViewById(R.id.badge);
 		errorMsgLayout = (LinearLayout) findViewById(R.id.error);
 		errorMsgLayout.setOnClickListener(new View.OnClickListener() {
-	        @Override
-	        public void onClick(View v) {
-	           errorMsgLayout.setVisibility(View.GONE);
-	        }
-	    });
+			@Override
+			public void onClick(View v) {
+				errorMsgLayout.setVisibility(View.GONE);
+			}
+		});
 
 		onCreateDataUpdate();
-		
-		
-		//Beispiel aufruf, Fehlernachricht anzeigen
-		//setAndShowErrorMsg(0,R.string.err_no_internet);
+
+		// Beispiel aufruf, Fehlernachricht anzeigen
+		// setAndShowErrorMsg(0,R.string.err_no_internet);
 	}
 
 	private void setPreferencesVersion() {
@@ -226,6 +226,17 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		});
 
+		//TODO Translate Menu only when Locale is not German?
+		MenuItem translate = menu.findItem(R.id.menu_translate);
+		translate.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				openTranslateIntent();
+				return false;
+			}
+		});
+		
 		MenuItem settings = menu.findItem(R.id.menu_settings);
 		settings.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
@@ -242,12 +253,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void onCreateViewPager(Bundle savedInstanceState) {
-		mTabPageAdapter = new TabPageAdapter(this, getSupportFragmentManager(),selectedDay);
+		mTabPageAdapter = new TabPageAdapter(this, getSupportFragmentManager(),
+				selectedDay);
 		mViewPager = (ViewPager) findViewById(R.id.viewpager);
 		mViewPager.setAdapter(mTabPageAdapter);
 		if (savedInstanceState != null) {
-			indexOfSelectedDay = savedInstanceState
-					.getInt(DAY_INDEX);
+			indexOfSelectedDay = savedInstanceState.getInt(DAY_INDEX);
 		} else {
 			indexOfSelectedDay = favouriteMenu;
 		}
@@ -268,7 +279,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 					selectedOffer = selectedDay.getOfferList().get(position);
 
 					updateShareIntent();
-//					provider.setShareIntent(shareIntent);
+					// provider.setShareIntent(shareIntent);
 				}
 			}
 		};
@@ -286,28 +297,33 @@ public class MainActivity extends SherlockFragmentActivity implements
 		return super.onOptionsItemSelected(item);
 	}
 
+	private void openTranslateIntent() {
+		GoogleTranslate tr = new GoogleTranslate(this);
+		tr.startNewGoogleTranslateIntent(selectedOffer.getContent());
+	}
+
 	/**
 	 * Sets the selected Day for viewPager
 	 * 
 	 * @param int position 0-4, 0 = MO, ..., 4 = FR
 	 */
 	private void setSelectedDay(int position) {
-		//Methode anpassen, dass bei Tageswechsel aus Fyl-in-Menu das favouriteMenu angezeigt wird
+		// Methode anpassen, dass bei Tageswechsel aus Fyl-in-Menu das
+		// favouriteMenu angezeigt wird
 		selectedDay = week.getDayList().get(position);
 		selectedOffer = selectedDay.getOfferList().get(indexOfSelectedOffer);
 		updateTabPageAdapterData();
 	}
-
 
 	private void updateTabPageAdapterData() {
 		if (mTabPageAdapter != null) {
 			mTabPageAdapter.setDay(selectedDay);
 			mTabPageAdapter.notifyDataSetChanged();
 		}
-		if (mViewPager != null){
+		if (mViewPager != null) {
 			mViewPager.setCurrentItem(favouriteMenu, true);
 		}
-		if(indicator != null){
+		if (indicator != null) {
 			indicator.setCurrentItem(favouriteMenu);
 		}
 	}
@@ -358,14 +374,13 @@ public class MainActivity extends SherlockFragmentActivity implements
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
-		
+
 		indexOfSelectedDay = savedInstanceState.getInt(DAY_INDEX);
 		indexOfSelectedOffer = savedInstanceState.getInt(OFFER_INDEX);
-				
 
 		mViewPager.setCurrentItem(indexOfSelectedDay);
 		indicator.setCurrentItem(indexOfSelectedDay);
-		
+
 		setSelectedDay(indexOfSelectedDay);
 	}
 
@@ -427,7 +442,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		week = persistenceFactory.getWeek();
 		setSelectedDay(indexOfSelectedDay);
-		
+
 		updateBadgeView();
 		updateTabPageAdapterData();
 	}
