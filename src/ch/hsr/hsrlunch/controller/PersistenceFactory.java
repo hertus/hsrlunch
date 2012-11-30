@@ -31,8 +31,9 @@ import ch.hsr.hsrlunch.ui.SettingsActivity;
 import ch.hsr.hsrlunch.util.DBOpenHelper;
 import ch.hsr.hsrlunch.util.DateHelper;
 import ch.hsr.hsrlunch.util.MyHttpClient;
-import ch.hsr.hsrlunch.util.ParserException;
-import ch.hsr.hsrlunch.util.UpdateException;
+import ch.hsr.hsrlunch.util.UpdateBadgeException;
+import ch.hsr.hsrlunch.util.UpdateParserException;
+import ch.hsr.hsrlunch.util.UpdateOfferException;
 import ch.hsr.hsrlunch.util.XMLParser;
 
 import com.actionbarsherlock.view.MenuItem;
@@ -40,6 +41,8 @@ import com.actionbarsherlock.view.MenuItem;
 public class PersistenceFactory implements OfferConstants {
 
 	private MainActivity mainActivity;
+
+	private int errorCause;
 
 	private Week week;
 	private WorkDay workday;
@@ -99,7 +102,6 @@ public class PersistenceFactory implements OfferConstants {
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
-
 			try {
 				if (isOfferUpdate) {
 					updateAllOffers();
@@ -108,12 +110,14 @@ public class PersistenceFactory implements OfferConstants {
 					updateBadge();
 				}
 				return true;
-			} catch (UpdateException e) {
-				Log.w("PersistenceFactory",
-						"Error on updating: " + e.getMessage());
+			} catch (UpdateOfferException e) {
+				Log.w("Update", "Error on updating: " + e.getMessage());
 				return false;
-			} catch (ParserException e) {
-				Log.w("XMLParser", "Error on updating: " + e.getMessage());
+			} catch (UpdateParserException e) {
+				Log.w("Parser", "Error on updating: " + e.getMessage());
+				return false;
+			} catch (UpdateBadgeException e) {
+				Log.w("Badge", "Error on updating: " + e.getMessage());
 				return false;
 			}
 		}
@@ -121,10 +125,29 @@ public class PersistenceFactory implements OfferConstants {
 		@Override
 		protected void onPostExecute(Boolean success) {
 			mainActivity.notifyDataChanges();
-			if (success) {
-				mainActivity.setAndShowErrorMsg(0, R.string.info_update_succes);
-			} else {
-				mainActivity.setAndShowErrorMsg(2, R.string.err_update_failed);
+			if (!success) {
+				switch (errorCause) {
+				case 0:
+					mainActivity.setAndShowErrorMsg(2,
+							R.string.err_update_failed);
+					break;
+				case 1:
+					mainActivity.setAndShowErrorMsg(2,
+							R.string.err_update_failed);
+					break;
+				case 2:
+					mainActivity.setAndShowErrorMsg(2,
+							R.string.err_update_failed);
+					break;
+				case 3:
+					mainActivity.setAndShowErrorMsg(2,
+							R.string.err_badge_not_parseable);
+					break;
+				default:
+					mainActivity.setAndShowErrorMsg(2,
+							R.string.err_update_failed);
+					break;
+				}
 			}
 			stopProgressRotate();
 			Log.d("PersistenceFactory", "End UpdateTask");
@@ -170,7 +193,8 @@ public class PersistenceFactory implements OfferConstants {
 		weekDataSource.close();
 	}
 
-	private void updateAllOffers() throws UpdateException, ParserException {
+	private void updateAllOffers() throws UpdateOfferException,
+			UpdateParserException {
 		XMLParser parser = new XMLParser();
 		updatedOfferList = parser.parseOffers();
 
@@ -196,7 +220,7 @@ public class PersistenceFactory implements OfferConstants {
 						offerDataSource.setOfferPrice(price, nrOfferType,
 								nrWorkDay);
 					} else {
-						throw new UpdateException(
+						throw new UpdateOfferException(
 								"offerlist offer item type was null");
 					}
 				}
@@ -207,7 +231,8 @@ public class PersistenceFactory implements OfferConstants {
 				week.getDayList().get(nrWorkDay).setDate(updateWorkdayDate);
 				workDayDataSource.setWorkdayDate(nrWorkDay, updateWorkdayDate);
 			} else {
-				throw new UpdateException("offerlist workday item was null");
+				throw new UpdateOfferException(
+						"offerlist workday item was null");
 			}
 		}
 
@@ -221,8 +246,7 @@ public class PersistenceFactory implements OfferConstants {
 		weekDataSource.close();
 	}
 
-	private void updateBadge() {
-		Log.d("Persistence", "making updateBadge()");
+	private void updateBadge() throws UpdateBadgeException {
 		DefaultHttpClient client = new MyHttpClient().getMyHttpClient();
 
 		// client.getCredentialsProvider().setCredentials(
@@ -234,13 +258,17 @@ public class PersistenceFactory implements OfferConstants {
 
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(mainActivity);
+
 		client.getCredentialsProvider().setCredentials(
 				new AuthScope(null, -1),
 				new UsernamePasswordCredentials(prefs.getString(
 						SettingsActivity.PREF_BADGE_USERNAME, ""), prefs
 						.getString(SettingsActivity.PREF_BADGE_PASSWORD, "")));
-//		client.getCredentialsProvider().setCredentials(new AuthScope(null, -1),
-//				new UsernamePasswordCredentials("hsr\\c1buechi", ""));
+
+		// client.getCredentialsProvider().setCredentials(new AuthScope(null,
+		// -1),
+		// new UsernamePasswordCredentials("hsr\\c1buechi", ""));
+
 		HttpGet request = new HttpGet(
 				"https://152.96.21.52:4450/VerrechnungsportalService.svc/JSON/getBadgeSaldo");
 
@@ -267,16 +295,15 @@ public class PersistenceFactory implements OfferConstants {
 					new Date().getTime());
 
 		} catch (ClientProtocolException e) {
-			e.printStackTrace();
+			setErrorCause(2);
+			throw new UpdateBadgeException("Error in clientProtocol: "
+					+ e.getMessage());
 		} catch (IOException e) {
-			//mainActivity
-			//		.setAndShowErrorMsg(2, R.string.err_badge_not_parseable);
-			e.printStackTrace();
+			setErrorCause(2);
+			throw new UpdateBadgeException("IOException: " + e.getMessage());
 		} catch (JSONException e) {
-			// Handle falls der Wert nicht geparst werden kann
-			//mainActivity
-			//		.setAndShowErrorMsg(2, R.string.err_badge_not_parseable);
-			e.printStackTrace();
+			setErrorCause(3);
+			throw new UpdateBadgeException("JSONException: " + e.getMessage());
 		}
 	}
 
@@ -312,5 +339,15 @@ public class PersistenceFactory implements OfferConstants {
 
 	public void setMenuItem(MenuItem item) {
 		this.menuItem = item;
+	}
+
+	/**
+	 * 
+	 * @param errorCause
+	 *            is 0 = Update error, 1 = Parser Error, 2 = Connection Error, 3
+	 *            = Badge JSON Error
+	 */
+	private void setErrorCause(int errorCause) {
+		this.errorCause = errorCause;
 	}
 }
