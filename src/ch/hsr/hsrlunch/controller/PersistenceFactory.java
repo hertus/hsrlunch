@@ -261,9 +261,7 @@ public class PersistenceFactory implements OfferConstants {
 
 		client.getCredentialsProvider().setCredentials(
 				new AuthScope(null, -1),
-				new UsernamePasswordCredentials(prefs.getString(
-						SettingsActivity.PREF_BADGE_USERNAME, ""), prefs
-						.getString(SettingsActivity.PREF_BADGE_PASSWORD, "")));
+				new UsernamePasswordCredentials("hsr\\" + prefs.getString(SettingsActivity.PREF_BADGE_USERNAME, ""), prefs.getString(SettingsActivity.PREF_BADGE_PASSWORD, "")));
 
 		// client.getCredentialsProvider().setCredentials(new AuthScope(null,
 		// -1),

@@ -10,7 +10,7 @@
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="pref_fav_menu">bevorzugtes Menu</string>
     <string name="pref_badge">Badge-Konto</string>
-    <string name="pref_badge_long">Aktivierung des Badge-Konto Stand</string>
+    <string name="pref_badge_long">Aktivierung der Badgekontostand-Abfrage</string>
     <string name="pref_lang">Sprache wählen</string>
     <string name="pref_menu_default">Tagesteller</string>
     <string name="notAvailable">Es sind leider keine Informationen vorhanden</string>
@@ -19,8 +19,8 @@
     <string name="tagesauswahl">Tagesauswahl</string>
     <string name="menu_settings">Einstellungen</string>
     <string name="pref_badge_username">Username</string>
-    <string name="pref_badge_username_long">Bitte hier den Usernamen mit führendem hsr\\ eingeben</string>
-    <string name="pref_badge_username_default">hsr\\</string>
+    <string name="pref_badge_username_long">Bitte hier den HSR-Usernamen ohne führendes hsr\ eingeben</string>
+    <string name="pref_badge_username_default">username</string>
     <string name="pref_badge_password">Passwort</string>
     <string name="pref_badge_password_long">Bitte hier das Passwort der HSR eingeben</string>
     <string name="err_no_internet">Keine Internet Verbindung vorhanden</string>
