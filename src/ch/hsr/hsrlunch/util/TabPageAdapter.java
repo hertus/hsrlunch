@@ -6,27 +6,29 @@ import java.util.List;
 import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.util.SparseArray;
-import android.view.View;
 import ch.hsr.hsrlunch.R;
+import ch.hsr.hsrlunch.model.WorkDay;
 import ch.hsr.hsrlunch.ui.OfferFragment;
 
-public class TabPageAdapter extends FragmentStatePagerAdapter{
+public class TabPageAdapter extends FragmentPagerAdapter{
 
 	private List<String> tabTitles;
-	
-
+	private WorkDay day;
+	FragmentManager fm;
 
 	SparseArray<OfferFragment> fragmentList;
 
-	public TabPageAdapter(Activity mainActivity,FragmentManager fm) {
+	public TabPageAdapter(Activity mainActivity,FragmentManager fm, WorkDay day) {
 		
 		super(fm);
+		this.fm = fm;
 		fragmentList = new SparseArray<OfferFragment>();
 		tabTitles = Arrays.asList(mainActivity.getResources()
 				.getStringArray(R.array.tabTitles));
+		
+		this.day = day;
 	}
 
 	@Override
@@ -39,19 +41,12 @@ public class TabPageAdapter extends FragmentStatePagerAdapter{
 		if (fragmentList.get(position) == null) {
 
 			OfferFragment frag = OfferFragment.newInstance(position);
+			frag.setOffer(day.getOfferList().get(position));
+			
 			fragmentList.put(position, frag);
 			return frag;
 		} else
 			return fragmentList.get(position);
-	}
-	@Override
-	public void destroyItem(View collection, int position, Object o) {
-	
-		
-	    OfferFragment fragment = (OfferFragment)o;
-		((ViewPager) collection).removeViewAt(position);
-	    fragmentList.remove(position);
-	    fragment = null;
 	}
 
 	@Override
@@ -64,15 +59,27 @@ public class TabPageAdapter extends FragmentStatePagerAdapter{
 	 */
 	@Override
 	public void notifyDataSetChanged() {
+		super.notifyDataSetChanged();	
 		
-		System.out.println("fragmentlistsize: " + fragmentList.size());
 		for (int i = 0; i < fragmentList.size(); i++) {
-			fragmentList.get(i).updateValues();
+			OfferFragment frag = fragmentList.get(i);
+			frag.setOffer(day.getOfferList().get(i));
+			frag.updateValues();
 		}
-		//super.notifyDataSetChanged();	
+		
 	}
 
 	public SparseArray<OfferFragment> getFragmentList() {
 		return fragmentList;
 	}
+
+	public WorkDay getDay() {
+		return day;
+	}
+
+	public void setDay(WorkDay day) {
+		this.day = day;
+		notifyDataSetChanged();
+	}
+	
 }

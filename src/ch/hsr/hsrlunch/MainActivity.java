@@ -39,8 +39,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 		OnSharedPreferenceChangeListener {
 	private static final int SHOW_PREFERENCES = 1;
 
-	private static final String FRAG_INDEX = "FragmentPosition";
-	private static final String SEL_DAY_INDEX = "selectedDayIndex";
+	private static final String DAY_INDEX = "selectedOfferIndex";
+	private static final String OFFER_INDEX = "selectedDayIndex";
 
 	public static WorkDay selectedDay;
 	public static Offer selectedOffer;
@@ -71,7 +71,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private boolean isOnOfferUpdate = false;
 
 	private int favouriteMenu;
-	private int currentSelectedFragmentIndex;
+	private int indexOfSelectedDay;
+	private int indexOfSelectedOffer;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -138,7 +139,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 				return;
 			}
 		}
-		currentSelectedFragmentIndex = favouriteMenu;
+		indexOfSelectedDay = favouriteMenu;
 	}
 
 	private void onCreatePersistence() {
@@ -241,20 +242,20 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void onCreateViewPager(Bundle savedInstanceState) {
-		mTabPageAdapter = new TabPageAdapter(this, getSupportFragmentManager());
+		mTabPageAdapter = new TabPageAdapter(this, getSupportFragmentManager(),selectedDay);
 		mViewPager = (ViewPager) findViewById(R.id.viewpager);
 		mViewPager.setAdapter(mTabPageAdapter);
 		if (savedInstanceState != null) {
-			currentSelectedFragmentIndex = savedInstanceState
-					.getInt(FRAG_INDEX);
+			indexOfSelectedDay = savedInstanceState
+					.getInt(DAY_INDEX);
 		} else {
-			currentSelectedFragmentIndex = favouriteMenu;
+			indexOfSelectedDay = favouriteMenu;
 		}
-		mViewPager.setCurrentItem(currentSelectedFragmentIndex, true);
+		mViewPager.setCurrentItem(indexOfSelectedDay, true);
 
 		indicator = (TabPageIndicator) findViewById(R.id.indicator);
 		indicator.setViewPager(mViewPager);
-		indicator.setCurrentItem(currentSelectedFragmentIndex);
+		indicator.setCurrentItem(indexOfSelectedDay);
 
 		// Listener für "pageChange Event"
 		ViewPager.SimpleOnPageChangeListener pageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
@@ -291,20 +292,23 @@ public class MainActivity extends SherlockFragmentActivity implements
 	 * @param int position 0-4, 0 = MO, ..., 4 = FR
 	 */
 	private void setSelectedDay(int position) {
+		//Methode anpassen, dass bei Tageswechsel aus Fyl-in-Menu das favouriteMenu angezeigt wird
 		selectedDay = week.getDayList().get(position);
-		selectedOffer = selectedDay.getOfferList().get(favouriteMenu);
+		selectedOffer = selectedDay.getOfferList().get(indexOfSelectedOffer);
 		updateTabPageAdapterData();
-		updateViewPager();
 	}
 
-	private void updateViewPager() {
-		if (mViewPager != null)
-			mViewPager.setCurrentItem(favouriteMenu, true);
-	}
 
 	private void updateTabPageAdapterData() {
 		if (mTabPageAdapter != null) {
+			mTabPageAdapter.setDay(selectedDay);
 			mTabPageAdapter.notifyDataSetChanged();
+		}
+		if (mViewPager != null){
+			mViewPager.setCurrentItem(favouriteMenu, true);
+		}
+		if(indicator != null){
+			indicator.setCurrentItem(favouriteMenu);
 		}
 	}
 
@@ -332,7 +336,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		if (requestCode == SHOW_PREFERENCES) {
 			updatePreferences();
 			updateBadgeView();
-			updateViewPager();
+			updateTabPageAdapterData();
 		}
 	}
 
@@ -341,27 +345,28 @@ public class MainActivity extends SherlockFragmentActivity implements
 			String key) {
 		updatePreferences();
 		updateBadgeView();
-		updateViewPager();
+		updateTabPageAdapterData();
 	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putInt(FRAG_INDEX, mViewPager.getCurrentItem());
-		outState.putInt(SEL_DAY_INDEX, DateHelper.getSelectedDayDayOfWeek());
+		outState.putInt(DAY_INDEX, mViewPager.getCurrentItem());
+		outState.putInt(OFFER_INDEX, DateHelper.getSelectedDayDayOfWeek());
 	}
 
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
-		currentSelectedFragmentIndex = savedInstanceState.getInt(FRAG_INDEX);
-		int selDayIndex = savedInstanceState.getInt(SEL_DAY_INDEX);
+		
+		indexOfSelectedDay = savedInstanceState.getInt(DAY_INDEX);
+		indexOfSelectedOffer = savedInstanceState.getInt(OFFER_INDEX);
+				
 
-		mViewPager.setCurrentItem(currentSelectedFragmentIndex);
-		indicator.setCurrentItem(currentSelectedFragmentIndex);
-		selectedDay = week.getDayList().get(selDayIndex);
-		selectedOffer = week.getDayList().get(selDayIndex).getOfferList()
-				.get(currentSelectedFragmentIndex);
+		mViewPager.setCurrentItem(indexOfSelectedDay);
+		indicator.setCurrentItem(indexOfSelectedDay);
+		
+		setSelectedDay(indexOfSelectedDay);
 	}
 
 	private void updateBadgeView() {
@@ -421,8 +426,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 	public void notifyDataChanges() {
 
 		week = persistenceFactory.getWeek();
-		// TODO Wo wird evtl. selected Day erneuert?
-
+		setSelectedDay(indexOfSelectedDay);
+		
 		updateBadgeView();
 		updateTabPageAdapterData();
 	}

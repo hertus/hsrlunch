@@ -15,7 +15,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
@@ -25,6 +27,7 @@ import ch.hsr.hsrlunch.model.Badge;
 import ch.hsr.hsrlunch.model.Offer;
 import ch.hsr.hsrlunch.model.Week;
 import ch.hsr.hsrlunch.model.WorkDay;
+import ch.hsr.hsrlunch.ui.SettingsActivity;
 import ch.hsr.hsrlunch.util.DBOpenHelper;
 import ch.hsr.hsrlunch.util.DateHelper;
 import ch.hsr.hsrlunch.util.MyHttpClient;
@@ -222,25 +225,24 @@ public class PersistenceFactory implements OfferConstants {
 		Log.d("Persistence", "making updateBadge()");
 		DefaultHttpClient client = new MyHttpClient().getMyHttpClient();
 
-		client.getCredentialsProvider().setCredentials(
-				new AuthScope(null, -1),
-				new UsernamePasswordCredentials("SIFSV-80018\\ChallPUser",
-						"1q$2w$3e$4r$5t"));
-		HttpGet request = new HttpGet(
-				"https://152.96.80.18/VerrechnungsportalService.svc/json/getBadgeSaldo");
-
-		// SharedPreferences prefs = PreferenceManager
-		// .getDefaultSharedPreferences(maincontext);
 		// client.getCredentialsProvider().setCredentials(
 		// new AuthScope(null, -1),
-		// new UsernamePasswordCredentials(prefs.getString(
-		// SettingsActivity.PREF_BADGE_USERNAME, ""), prefs
-		// .getString(SettingsActivity.PREF_BADGE_PASSWORD, "")));
-		// client.getCredentialsProvider().setCredentials(new AuthScope(null,
-		// -1),
-		// new UsernamePasswordCredentials("hsr\\c1buechi", ""));
+		// new UsernamePasswordCredentials("SIFSV-80018\\ChallPUser",
+		// "1q$2w$3e$4r$5t"));
 		// HttpGet request = new HttpGet(
-		// "https://152.96.21.52:4450/VerrechnungsportalService.svc/JSON/getBadgeSaldo");
+		// "https://152.96.80.18/VerrechnungsportalService.svc/json/getBadgeSaldo");
+
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(mainActivity);
+		client.getCredentialsProvider().setCredentials(
+				new AuthScope(null, -1),
+				new UsernamePasswordCredentials(prefs.getString(
+						SettingsActivity.PREF_BADGE_USERNAME, ""), prefs
+						.getString(SettingsActivity.PREF_BADGE_PASSWORD, "")));
+//		client.getCredentialsProvider().setCredentials(new AuthScope(null, -1),
+//				new UsernamePasswordCredentials("hsr\\c1buechi", ""));
+		HttpGet request = new HttpGet(
+				"https://152.96.21.52:4450/VerrechnungsportalService.svc/JSON/getBadgeSaldo");
 
 		ByteArrayOutputStream content = new ByteArrayOutputStream();
 		try {
@@ -267,13 +269,13 @@ public class PersistenceFactory implements OfferConstants {
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			mainActivity
-					.setAndShowErrorMsg(2, R.string.err_badge_not_parseable);
+			//mainActivity
+			//		.setAndShowErrorMsg(2, R.string.err_badge_not_parseable);
 			e.printStackTrace();
 		} catch (JSONException e) {
 			// Handle falls der Wert nicht geparst werden kann
-			mainActivity
-					.setAndShowErrorMsg(2, R.string.err_badge_not_parseable);
+			//mainActivity
+			//		.setAndShowErrorMsg(2, R.string.err_badge_not_parseable);
 			e.printStackTrace();
 		}
 	}

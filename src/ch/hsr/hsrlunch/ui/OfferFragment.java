@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import ch.hsr.hsrlunch.MainActivity;
 import ch.hsr.hsrlunch.R;
+import ch.hsr.hsrlunch.model.Offer;
 
 public class OfferFragment extends Fragment {
 	private static final String MENU_DATA_EXTRA = "menuNum";
@@ -17,18 +18,20 @@ public class OfferFragment extends Fragment {
 	private TextView date;
 	private TextView content;
 	private TextView price;
+	private Offer offer;
 
 	
 	// Empty constructor, required as per Fragment docs
 	public OfferFragment() {
 	}
 	
-	public static OfferFragment newInstance(int menuNum) {
+	public static OfferFragment newInstance(int position) {
+		
 		
 		final OfferFragment f = new OfferFragment();
-		final Bundle args = new Bundle();
-		args.putInt(MENU_DATA_EXTRA, menuNum);
-		f.setArguments(args);
+//		final Bundle args = new Bundle();
+//		args.putInt(MENU_DATA_EXTRA, menuNum);
+//		f.setArguments(args);
 
 		return f;
 	}
@@ -37,7 +40,7 @@ public class OfferFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		menuNum = getArguments() != null ? getArguments().getInt(MENU_DATA_EXTRA) : -1;
+		//menuNum = getArguments() != null ? getArguments().getInt(MENU_DATA_EXTRA) : -1;
 	}
 	
 	@Override
@@ -59,7 +62,7 @@ public class OfferFragment extends Fragment {
 	}
 	   public void onSaveInstanceState(Bundle outState) {
 	        super.onSaveInstanceState(outState);
-	        getArguments().putInt(MENU_DATA_EXTRA, menuNum);
+//	        getArguments().putInt(MENU_DATA_EXTRA, menuNum);
 	    }
 
 	@Override
@@ -70,29 +73,19 @@ public class OfferFragment extends Fragment {
 	}
 
 	public void updateValues() {
-		if (menuNum < 0 || !MainActivity.dataAvailable) {
-			setEmptyText();
-			return;
-		} else {
-			if (menuNum >= 0) {
 				if (MainActivity.dataAvailable) {
-					if (MainActivity.selectedDay.getOfferList().get(menuNum)
-							.getContent().equals("EMPTY")) {
+					
+					if (offer.getContent().equals("EMPTY")) {
 						setEmptyText();
 					} else {
+						// titel noch über index holen
 						title.setText(getResources().getStringArray(
-								R.array.menu_title_entries)[menuNum]);
-						date.setText(MainActivity.selectedDay.getDateStringLong());
-						content.setText(MainActivity.selectedDay.getOfferList()
-								.get(menuNum).getContent());
-						price.setText(MainActivity.selectedDay.getOfferList()
-								.get(menuNum).getPrice());
+								R.array.menu_title_entries)[offer.getOfferType()]);
+						date.setText(offer.getContent());
+						price.setText(offer.getPrice());
 					}
 
 				}
-			}
-		}
-
 	}
 
 	private void setEmptyText() {
@@ -100,6 +93,11 @@ public class OfferFragment extends Fragment {
 		title.setText("");
 		date.setText("");
 		price.setText("");
+	}
+
+	public void setOffer(Offer offer2) {
+		offer= offer2;
+		
 	}
 
 }
