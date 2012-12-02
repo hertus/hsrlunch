@@ -72,7 +72,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private boolean isOnOfferUpdate = false;
 
 	private int favouriteMenu;
-	private int indexOfSelectedDay;
+	private int indexOfSelectedDay = -1;
 	private int indexOfSelectedOffer;
 
 	@Override
@@ -109,8 +109,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		onCreateDataUpdate();
 
-		// Beispiel aufruf, Fehlernachricht anzeigen
-		// setAndShowErrorMsg(0,R.string.err_no_internet);
 	}
 
 	private void setPreferencesVersion() {
@@ -139,7 +137,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 				return;
 			}
 		}
-		indexOfSelectedDay = favouriteMenu;
+		indexOfSelectedOffer = favouriteMenu;
 	}
 
 	private void onCreatePersistence() {
@@ -154,12 +152,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 	 */
 	private void onCreateDataUpdate() {
 		
-//		if (DateHelper.getDayOfWeek() == 1 || DateHelper.getDayOfWeek() == 7) {
-//			Log.d("MainActivity",
-//					"It's weekend! No Updates, no Data, go out and play!");
-//			dataAvailable = false;
-//			isOnOfferUpdate = false;
-//		} else {
+		if (DateHelper.getDayOfWeek() == 1 || DateHelper.getDayOfWeek() == 7) {
+			Log.d("MainActivity",
+					"It's weekend! No Updates, no Data, go out and play!");
+			dataAvailable = false;
+			isOnOfferUpdate = false;
+		} else {
 			// Initialize DB and check for Updates
 			if (!DateHelper.compareLastUpdateToMonday(week.getLastUpdate())) {
 				isOnOfferUpdate = true;
@@ -167,8 +165,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 				isOnOfferUpdate = false;
 			}
 			doUpdates();
-//		}
-		setSelectedDay(DateHelper.getSelectedDayDayOfWeek());
+		}
+		if(indexOfSelectedDay == -1){
+			setSelectedFragment(DateHelper.getSelectedDayDayOfWeek(),indexOfSelectedOffer);
+		}else {
+			setSelectedFragment(indexOfSelectedDay,indexOfSelectedOffer);
+		}
 		updateBadgeView();
 	}
 
@@ -191,7 +193,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 				mMenuDrawer.setActiveView(view, position); // falls vorig Zeit^^
 				mMenuDrawer.closeMenu();
 				if (position >= 1 && position <= 6) {
-					setSelectedDay(position - 1);
+					setSelectedFragment(position - 1,favouriteMenu);
 				} else {
 					// starte Settings-Activity
 					Intent i = new Intent(getApplicationContext(),
@@ -260,10 +262,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 		mViewPager.setAdapter(mTabPageAdapter);
 		if (savedInstanceState != null) {
 			indexOfSelectedDay = savedInstanceState.getInt(DAY_INDEX);
-		} else {
-			indexOfSelectedDay = favouriteMenu;
+			indexOfSelectedOffer = savedInstanceState.getInt(OFFER_INDEX);
 		}
-		//mViewPager.setCurrentItem(indexOfSelectedDay, true);
+		mViewPager.setCurrentItem(indexOfSelectedDay, true);
 
 		indicator = (TabPageIndicator) findViewById(R.id.indicator);
 		indicator.setViewPager(mViewPager);
@@ -307,13 +308,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 	/**
 	 * Sets the selected Day for viewPager
 	 * 
-	 * @param int position 0-4, 0 = MO, ..., 4 = FR
+	 * @param int day 0-4, 0 = MO, ..., 4 = FR
+	 * @param int offer 0-2
 	 */
-	private void setSelectedDay(int position) {
-		// Methode anpassen, dass bei Tageswechsel aus Fyl-in-Menu das
-		// favouriteMenu angezeigt wird
-		selectedDay = week.getDayList().get(position);
-		selectedOffer = selectedDay.getOfferList().get(indexOfSelectedOffer);
+	private void setSelectedFragment(int day, int offer) {
+		Log.d("MainActivity","setSelectedFragment wurde aufgerufen, day="+day+", offer="+offer);
+
+		
+		selectedDay = week.getDayList().get(day);		
+		selectedOffer = selectedDay.getOfferList().get(offer);
 		updateTabPageAdapterData();
 	}
 
@@ -384,7 +387,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		mViewPager.setCurrentItem(indexOfSelectedDay);
 		indicator.setCurrentItem(indexOfSelectedDay);
 
-		setSelectedDay(indexOfSelectedDay);
+		//setSelectedFragment(indexOfSelectedDay,indexOfSelectedOffer);
 	}
 
 	private void updateBadgeView() {
@@ -444,7 +447,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	public void notifyDataChanges() {
 
 		week = persistenceFactory.getWeek();
-		setSelectedDay(indexOfSelectedDay);
+		setSelectedFragment(indexOfSelectedDay, indexOfSelectedOffer);
 
 		updateBadgeView();
 		updateTabPageAdapterData();
@@ -453,7 +456,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	/**
 	 * @param int errorType 0= Information, 1 = Warning, 2 = Error
 	 * 
-	 * @param int errorMsgId REsource id of String of the message that should be
+	 * @param int errorMsgId Resource id of String of the message that should be
 	 *        displayed
 	 */
 	public void setAndShowErrorMsg(int errorType, int errorMsgId) {

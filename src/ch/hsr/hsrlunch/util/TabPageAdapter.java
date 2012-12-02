@@ -8,6 +8,7 @@ import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 import ch.hsr.hsrlunch.R;
 import ch.hsr.hsrlunch.model.WorkDay;
 import ch.hsr.hsrlunch.ui.OfferFragment;
@@ -53,7 +54,8 @@ public class TabPageAdapter extends FragmentPagerAdapter{
 	@Override
 	public void notifyDataSetChanged() {
 		super.notifyDataSetChanged();	
-		System.out.println("notify@PagerAdapter");
+
+		Log.d("TAbPageAdapter","notifyDataSetChanged");
 		for(int i = 0; i < getCount(); i++){
 			OfferFragment f = (OfferFragment) fm.findFragmentByTag(getFragmentTag(i));
 			if( f != null){
@@ -61,19 +63,7 @@ public class TabPageAdapter extends FragmentPagerAdapter{
 				f.setOffer(day.getOfferList().get(i));
 				f.updateValues();
 			}
-		}
-		
-		
-		
-//		for (int i = 0; i < fragmentList.size(); i++) {
-//			OfferFragment frag = fragmentList.get(i);
-//			frag.setDayString(day.getDateStringLong());
-//			System.out.println(day.getOfferList().get(i));
-//			frag.setOffer(day.getOfferList().get(i));
-//			frag.updateValues();
-//		}
-
-		
+		}		
 	}
 	private String getFragmentTag(int pos){
 	    return "android:switcher:"+R.id.viewpager+":"+pos;

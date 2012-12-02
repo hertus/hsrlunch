@@ -24,6 +24,9 @@ public class OfferFragment extends Fragment {
 	public OfferFragment() {
 	}
 	
+	/*
+	 * für christof entfernt, damit wir ja kein static haben xD
+	 */
 //	public static OfferFragment newInstance(int position) {
 //		
 //		
@@ -43,7 +46,6 @@ public class OfferFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		System.out.println("onCreateView OfferFragment");
 
 		final View v = inflater.inflate(R.layout.offer, container, false);
 
