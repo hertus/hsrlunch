@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import android.app.Activity;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.SparseArray;
 import ch.hsr.hsrlunch.R;
 import ch.hsr.hsrlunch.model.WorkDay;
 import ch.hsr.hsrlunch.ui.OfferFragment;
@@ -18,13 +18,10 @@ public class TabPageAdapter extends FragmentPagerAdapter{
 	private WorkDay day;
 	FragmentManager fm;
 
-	SparseArray<OfferFragment> fragmentList;
-
 	public TabPageAdapter(Activity mainActivity,FragmentManager fm, WorkDay day) {
 		
 		super(fm);
 		this.fm = fm;
-		fragmentList = new SparseArray<OfferFragment>();
 		tabTitles = Arrays.asList(mainActivity.getResources()
 				.getStringArray(R.array.tabTitles));
 		
@@ -35,18 +32,14 @@ public class TabPageAdapter extends FragmentPagerAdapter{
 	public int getCount() {
 		return tabTitles.size();
 	}
-
+	
 	@Override
 	public Fragment getItem(int position) {
-		if (fragmentList.get(position) == null) {
 
-			OfferFragment frag = OfferFragment.newInstance(position);
+			OfferFragment frag = new OfferFragment();
+			frag.setDayString(day.getDateStringLong());
 			frag.setOffer(day.getOfferList().get(position));
-			
-			fragmentList.put(position, frag);
 			return frag;
-		} else
-			return fragmentList.get(position);
 	}
 
 	@Override
@@ -60,26 +53,44 @@ public class TabPageAdapter extends FragmentPagerAdapter{
 	@Override
 	public void notifyDataSetChanged() {
 		super.notifyDataSetChanged();	
-		
-		for (int i = 0; i < fragmentList.size(); i++) {
-			OfferFragment frag = fragmentList.get(i);
-			frag.setOffer(day.getOfferList().get(i));
-			frag.updateValues();
+		System.out.println("notify@PagerAdapter");
+		for(int i = 0; i < getCount(); i++){
+			OfferFragment f = (OfferFragment) fm.findFragmentByTag(getFragmentTag(i));
+			if( f != null){
+				f.setDayString(day.getDateStringLong());
+				f.setOffer(day.getOfferList().get(i));
+				f.updateValues();
+			}
 		}
 		
-	}
+		
+		
+//		for (int i = 0; i < fragmentList.size(); i++) {
+//			OfferFragment frag = fragmentList.get(i);
+//			frag.setDayString(day.getDateStringLong());
+//			System.out.println(day.getOfferList().get(i));
+//			frag.setOffer(day.getOfferList().get(i));
+//			frag.updateValues();
+//		}
 
-	public SparseArray<OfferFragment> getFragmentList() {
-		return fragmentList;
+		
 	}
-
-	public WorkDay getDay() {
-		return day;
+	private String getFragmentTag(int pos){
+	    return "android:switcher:"+R.id.viewpager+":"+pos;
 	}
 
 	public void setDay(WorkDay day) {
 		this.day = day;
 		notifyDataSetChanged();
 	}
-	
+
+    @Override
+    public Parcelable saveState() {
+        return null;
+    }
+
+    @Override
+    public void restoreState(Parcelable arg0, ClassLoader arg1) {
+    }
+
 }

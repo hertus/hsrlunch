@@ -153,12 +153,13 @@ public class MainActivity extends SherlockFragmentActivity implements
 	 * is switched on and update it.
 	 */
 	private void onCreateDataUpdate() {
-		if (DateHelper.getDayOfWeek() == 1 || DateHelper.getDayOfWeek() == 7) {
-			Log.d("MainActivity",
-					"It's weekend! No Updates, no Data, go out and play!");
-			dataAvailable = false;
-			isOnOfferUpdate = false;
-		} else {
+		
+//		if (DateHelper.getDayOfWeek() == 1 || DateHelper.getDayOfWeek() == 7) {
+//			Log.d("MainActivity",
+//					"It's weekend! No Updates, no Data, go out and play!");
+//			dataAvailable = false;
+//			isOnOfferUpdate = false;
+//		} else {
 			// Initialize DB and check for Updates
 			if (!DateHelper.compareLastUpdateToMonday(week.getLastUpdate())) {
 				isOnOfferUpdate = true;
@@ -166,7 +167,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 				isOnOfferUpdate = false;
 			}
 			doUpdates();
-		}
+//		}
 		setSelectedDay(DateHelper.getSelectedDayDayOfWeek());
 		updateBadgeView();
 	}
@@ -262,7 +263,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		} else {
 			indexOfSelectedDay = favouriteMenu;
 		}
-		mViewPager.setCurrentItem(indexOfSelectedDay, true);
+		//mViewPager.setCurrentItem(indexOfSelectedDay, true);
 
 		indicator = (TabPageIndicator) findViewById(R.id.indicator);
 		indicator.setViewPager(mViewPager);
@@ -272,7 +273,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		ViewPager.SimpleOnPageChangeListener pageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
 			@Override
 			public void onPageSelected(int position) {
-				System.out.println("onPageSelected-position:" + position);
+
 				super.onPageSelected(position);
 				if (dataAvailable) {
 
@@ -284,6 +285,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			}
 		};
 		indicator.setOnPageChangeListener(pageChangeListener);
+		
 	}
 
 	@Override
@@ -316,15 +318,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void updateTabPageAdapterData() {
-		if (mTabPageAdapter != null) {
-			mTabPageAdapter.setDay(selectedDay);
-			mTabPageAdapter.notifyDataSetChanged();
-		}
+	
 		if (mViewPager != null) {
 			mViewPager.setCurrentItem(favouriteMenu, true);
 		}
 		if (indicator != null) {
 			indicator.setCurrentItem(favouriteMenu);
+		}
+		if (mTabPageAdapter != null) {
+			mTabPageAdapter.setDay(selectedDay);
 		}
 	}
 
@@ -377,6 +379,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		indexOfSelectedDay = savedInstanceState.getInt(DAY_INDEX);
 		indexOfSelectedOffer = savedInstanceState.getInt(OFFER_INDEX);
+		
 
 		mViewPager.setCurrentItem(indexOfSelectedDay);
 		indicator.setCurrentItem(indexOfSelectedDay);
