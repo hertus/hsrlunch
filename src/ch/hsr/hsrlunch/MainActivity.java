@@ -2,6 +2,7 @@ package ch.hsr.hsrlunch;
 
 import net.simonvt.widget.MenuDrawer;
 import net.simonvt.widget.MenuDrawerManager;
+import android.app.Fragment.SavedState;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -72,7 +73,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private boolean isOnOfferUpdate = false;
 
 	private int favouriteMenu;
-	private int indexOfSelectedDay = -1;
+	private int indexOfSelectedDay;
 	private int indexOfSelectedOffer;
 
 	@Override
@@ -165,12 +166,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 				isOnOfferUpdate = false;
 			}
 			doUpdates();
+			indexOfSelectedDay = DateHelper.getSelectedDayDayOfWeek();
 		}
-		if(indexOfSelectedDay == -1){
-			setSelectedFragment(DateHelper.getSelectedDayDayOfWeek(),indexOfSelectedOffer);
-		}else {
-			setSelectedFragment(indexOfSelectedDay,indexOfSelectedOffer);
-		}
+		setSelectedFragment(indexOfSelectedDay, indexOfSelectedOffer);
+
 		updateBadgeView();
 	}
 
@@ -372,8 +371,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putInt(DAY_INDEX, mViewPager.getCurrentItem());
-		outState.putInt(OFFER_INDEX, DateHelper.getSelectedDayDayOfWeek());
+		outState.putInt(OFFER_INDEX, mViewPager.getCurrentItem());
+		outState.putInt(DAY_INDEX, DateHelper.getSelectedDayDayOfWeek());
 	}
 
 	@Override
@@ -383,11 +382,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 		indexOfSelectedDay = savedInstanceState.getInt(DAY_INDEX);
 		indexOfSelectedOffer = savedInstanceState.getInt(OFFER_INDEX);
 		
-
-		mViewPager.setCurrentItem(indexOfSelectedDay);
-		indicator.setCurrentItem(indexOfSelectedDay);
-
-		//setSelectedFragment(indexOfSelectedDay,indexOfSelectedOffer);
 	}
 
 	private void updateBadgeView() {
