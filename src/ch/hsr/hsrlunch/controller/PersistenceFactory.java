@@ -124,7 +124,6 @@ public class PersistenceFactory implements OfferConstants {
 
 		@Override
 		protected void onPostExecute(Boolean success) {
-			mainActivity.notifyDataChanges();
 			if (!success) {
 				switch (errorCause) {
 				case 0:
@@ -151,6 +150,8 @@ public class PersistenceFactory implements OfferConstants {
 			}
 			stopProgressRotate();
 			Log.d("PersistenceFactory", "End UpdateTask");
+			
+			mainActivity.notifyDataChanges();
 		}
 
 	}
@@ -318,6 +319,8 @@ public class PersistenceFactory implements OfferConstants {
 	private void startProgressRotate() {
 		if (menuItem != null) {
 			menuItem.setActionView(R.layout.progress);
+		} else {
+			Log.w("Update", "menuItem was null");
 		}
 	}
 

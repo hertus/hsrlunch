@@ -3,14 +3,12 @@
     <string name="app_name">HSRlunch</string>
     <string name="title_activity_main">HSRlunch</string>
     <string name="kontoStand">Badge-Kontostand:</string>
-    <string name="OFFER_DAILY_TITLE">Tagesteller</string>
-    <string name="OFFER_VEGI_TITLE">Vegetarisch</string>
-    <string name="OFFER_WEEK_TITLE">Wochen-Hit</string>
     <string name="menu_settings">Settings</string>
-    <string name="menu_translate">Translate</string><string name="title_activity_settings">SettingsActivity</string>
-    <string name="pref_fav_menu">bevorzugtes Menu</string>
+    <string name="menu_translate">Übersetzen</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="pref_fav_menu">Bevorzugtes Menu</string>
     <string name="pref_badge">Badge-Konto</string>
-    <string name="pref_badge_long">Aktivierung der Badgekontostand-Abfrage</string>
+    <string name="pref_badge_long">HSR Badge-Konto aktivieren</string>
     <string name="pref_lang">Sprache wählen</string>
     <string name="pref_menu_default">Tagesteller</string>
     <string name="notAvailable">Es sind leider keine Informationen vorhanden</string>
@@ -18,8 +16,8 @@
     <string name="off">Badge Info deaktiviert</string>
     <string name="tagesauswahl">Tagesauswahl</string>
     <string name="menu_settings">Einstellungen</string>
-    <string name="pref_badge_username">Username</string>
-    <string name="pref_badge_username_long">Bitte hier den HSR-Usernamen ohne führendes hsr\ eingeben</string>
+    <string name="pref_badge_username"></string>
+    <string name="pref_badge_username_long">Bitte hier den HSR-Usernamen eingeben ohne führendes HSR\\</string>
     <string name="pref_badge_username_default">username</string>
     <string name="pref_badge_password">Passwort</string>
     <string name="pref_badge_password_long">Bitte hier das Passwort der HSR eingeben</string>

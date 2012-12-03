@@ -22,13 +22,16 @@ public class GoogleTranslate {
 
 	public void startNewGoogleTranslateIntent(String content) {
 		Locale locale = Locale.getDefault();
-
+		String languageTo = locale.getLanguage();
+		if (languageTo.equals("de")) {
+			languageTo = "en";
+		}
 		Intent intent = new Intent();
 		intent.setAction(Intent.ACTION_VIEW);
 		intent.putExtra("key_text_input", content);
 		intent.putExtra("key_text_output", "");
 		intent.putExtra("key_language_from", "de");
-		intent.putExtra("key_language_to", locale.getLanguage());
+		intent.putExtra("key_language_to", languageTo);
 		intent.putExtra("key_suggest_translation", "");
 		intent.putExtra("key_from_floating_window", false);
 		intent.setComponent(new ComponentName(appName, intentName));
