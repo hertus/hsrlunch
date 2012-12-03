@@ -136,7 +136,8 @@ public class XMLParser implements OfferConstants {
 						NodeList descList = menuElement
 								.getElementsByTagName("description");
 						if (descList.item(0) != null) {
-							offerContent = descList.item(0).getTextContent();
+							offerContent = descList.item(0).getTextContent()
+									.replaceAll("\n\n\n\n", "\n\n").replaceAll("\n\n\n", "\n\n");
 						}
 
 						NodeList priceList = menuElement
@@ -208,8 +209,7 @@ public class XMLParser implements OfferConstants {
 						"nodeList from exporturl was null - no exporturl available?");
 			}
 		} else {
-			throw new UpdateParserException(
-					"no DOM Document");
+			throw new UpdateParserException("no DOM Document");
 		}
 	}
 
@@ -223,7 +223,8 @@ public class XMLParser implements OfferConstants {
 			xml = EntityUtils.toString(httpEntity);
 
 		} catch (UnsupportedEncodingException e) {
-			throw new UpdateParserException("UnsupportedEncoding: " + e.getMessage());
+			throw new UpdateParserException("UnsupportedEncoding: "
+					+ e.getMessage());
 		} catch (ClientProtocolException e) {
 			throw new UpdateParserException("ClientProtocoll Error: "
 					+ e.getMessage());

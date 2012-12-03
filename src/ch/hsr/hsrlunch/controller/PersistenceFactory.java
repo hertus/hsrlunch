@@ -150,7 +150,7 @@ public class PersistenceFactory implements OfferConstants {
 			}
 			stopProgressRotate();
 			Log.d("PersistenceFactory", "End UpdateTask");
-			
+
 			mainActivity.notifyDataChanges();
 		}
 
@@ -210,14 +210,15 @@ public class PersistenceFactory implements OfferConstants {
 					if (updatedOfferList.get(nrWorkDay).get(nrOfferType).first != null) {
 						String content = updatedOfferList.get(nrWorkDay).get(
 								nrOfferType).first;
-						workday.getOfferList().get(nrOfferType)
-								.setContent(content);
+						week.getDayList().get(nrWorkDay).getOfferList()
+								.get(nrOfferType).setContent(content);
 						offerDataSource.setOfferContent(content, nrOfferType,
 								nrWorkDay);
 
 						String price = updatedOfferList.get(nrWorkDay).get(
 								nrOfferType).second;
-						workday.getOfferList().get(nrOfferType).setPrice(price);
+						week.getDayList().get(nrWorkDay).getOfferList()
+								.get(nrOfferType).setPrice(price);
 						offerDataSource.setOfferPrice(price, nrOfferType,
 								nrWorkDay);
 					} else {
@@ -262,7 +263,10 @@ public class PersistenceFactory implements OfferConstants {
 
 		client.getCredentialsProvider().setCredentials(
 				new AuthScope(null, -1),
-				new UsernamePasswordCredentials("hsr\\" + prefs.getString(SettingsActivity.PREF_BADGE_USERNAME, ""), prefs.getString(SettingsActivity.PREF_BADGE_PASSWORD, "")));
+				new UsernamePasswordCredentials("hsr\\"
+						+ prefs.getString(SettingsActivity.PREF_BADGE_USERNAME,
+								""), prefs.getString(
+						SettingsActivity.PREF_BADGE_PASSWORD, "")));
 
 		// client.getCredentialsProvider().setCredentials(new AuthScope(null,
 		// -1),
