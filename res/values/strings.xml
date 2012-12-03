@@ -25,6 +25,7 @@
     <string name="err_no_hsrwifi">Nicht mit HSR-Secure verbunden</string>
     <string name="err_badge_not_parseable">Badge-Kontostand konnte nicht abgerufen werden</string>
     <string name="err_update_failed">Update konnte nicht durchgeführt werden</string>
+    <string name="weekendText">Am Wochenende stehen keine Inforamtionen bereit</string>
     
 
 </resources>
