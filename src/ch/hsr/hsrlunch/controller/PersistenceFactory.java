@@ -75,7 +75,6 @@ public class PersistenceFactory implements OfferConstants {
 		workDayDataSource = new WorkDayDataSource(dbHelper);
 		offerDataSource = new OfferDataSource(dbHelper);
 		badgeDataSource = new BadgeDataSource(dbHelper);
-
 		createAndFillAllFromDB();
 	}
 
@@ -88,7 +87,7 @@ public class PersistenceFactory implements OfferConstants {
 	public void stopUpdateTaskIfRunning() {
 		if (updateTask != null) {
 			if (updateTask.getStatus().equals(AsyncTask.Status.RUNNING)) {
-				Log.d("PersistenceFactory", "UpdateTask is running, cancel it");
+				Log.d("PersistenceFactory", "Try to cancel UpdateTask");
 				updateTask.cancel(true);
 			}
 		}
@@ -134,6 +133,8 @@ public class PersistenceFactory implements OfferConstants {
 		@Override
 		protected void onPostExecute(Boolean success) {
 			if (!success) {
+				Log.d("PersistenceFactory", "End UpdateTask with error");
+				cancelCleaning();
 				switch (errorCause) {
 				case 0:
 					mainActivity.setAndShowErrorMsg(2,
@@ -156,16 +157,32 @@ public class PersistenceFactory implements OfferConstants {
 							R.string.err_update_failed);
 					break;
 				}
-			}
-			stopProgressRotate();
-			Log.d("PersistenceFactory", "End UpdateTask");
+			} else {
+				Log.d("PersistenceFactory", "End UpdateTask successfull");
+				stopProgressRotate();
 
-			mainActivity.notifyDataChanges();
+				mainActivity.notifyDataChanges();
+			}
+		}
+
+		@Override
+		protected void onCancelled() {
+			super.onCancelled();
+			cancelCleaning();
+		}
+
+		private void cancelCleaning() {
+			badgeDataSource.close();
+			offerDataSource.close();
+			workDayDataSource.close();
+			weekDataSource.close();
+
+			stopProgressRotate();
 		}
 
 	}
 
-	private void createAndFillAllFromDB() {
+	public void createAndFillAllFromDB() {
 
 		// Fill Badge
 		badgeDataSource.openRead();
@@ -260,12 +277,14 @@ public class PersistenceFactory implements OfferConstants {
 	private void updateBadge() throws UpdateBadgeException {
 		DefaultHttpClient client = new MyHttpClient().getMyHttpClient();
 
-		// client.getCredentialsProvider().setCredentials(
-		// new AuthScope(null, -1),
-		// new UsernamePasswordCredentials("SIFSV-80018\\ChallPUser",
-		// "1q$2w$3e$4r$5t"));
-		// HttpGet request = new HttpGet(
-		// "https://152.96.80.18/VerrechnungsportalService.svc/json/getBadgeSaldo");
+		/* TestUser */
+		/*
+		 * client.getCredentialsProvider().setCredentials( new AuthScope(null,
+		 * -1), new UsernamePasswordCredentials("SIFSV-80018\\ChallPUser",
+		 * "1q$2w$3e$4r$5t")); HttpGet request = new HttpGet(
+		 * "https://152.96.80.18/VerrechnungsportalService.svc/json/getBadgeSaldo"
+		 * );
+		 */
 
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(mainActivity);
@@ -276,10 +295,6 @@ public class PersistenceFactory implements OfferConstants {
 						+ prefs.getString(SettingsActivity.PREF_BADGE_USERNAME,
 								""), prefs.getString(
 						SettingsActivity.PREF_BADGE_PASSWORD, "")));
-
-		// client.getCredentialsProvider().setCredentials(new AuthScope(null,
-		// -1),
-		// new UsernamePasswordCredentials("hsr\\c1buechi", ""));
 
 		HttpGet request = new HttpGet(
 				"https://152.96.21.52:4450/VerrechnungsportalService.svc/JSON/getBadgeSaldo");

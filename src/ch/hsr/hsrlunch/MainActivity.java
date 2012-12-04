@@ -43,14 +43,14 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private static final String DAY_INDEX = "selectedOfferIndex";
 	private static final String OFFER_INDEX = "selectedDayIndex";
 
-	public static WorkDay selectedDay;
-	public static Offer selectedOffer;
-	private static Intent shareIntent;
+	private Intent shareIntent;
+	private Offer selectedOffer;
+	private WorkDay selectedDay;
 	private Week week;
 	private Badge badge;
 
-	public static String[] offertitles;
-	public String[] errorTypes;
+	private String[] offertitles;
+	private String[] errorTypes;
 
 	private ViewPager mViewPager;
 	private MenuDrawerManager mMenuDrawer;
@@ -63,10 +63,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private LinearLayout errorMsgLayout;
 	private CustomMenuView menuView;
 
+	private static DBOpenHelper dbHelperSaveInstance;
+	private static PersistenceFactory persistenceFactorySaveInstance;
 	private DBOpenHelper dbHelper;
 	private PersistenceFactory persistenceFactory;
 
-	public static boolean dataAvailable = true;
+	private boolean dataAvailable = true;
 	private boolean isOnBadge = false;
 	private boolean isOnOfferUpdate = false;
 	private boolean onStartUpdate = true;
@@ -81,6 +83,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		if (savedInstanceState != null) {
 			onStartUpdate = false;
+
+			dbHelper = dbHelperSaveInstance;
+			persistenceFactory = persistenceFactorySaveInstance;
+
 			indexOfSelectedDay = savedInstanceState.getInt(DAY_INDEX);
 			indexOfSelectedOffer = savedInstanceState.getInt(OFFER_INDEX);
 		}
@@ -148,8 +154,17 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void onCreatePersistence() {
-		dbHelper = new DBOpenHelper(this);
-		persistenceFactory = new PersistenceFactory(dbHelper);
+
+		if (dbHelper == null) {
+			Log.d("MainActivity", "dbHelper was null");
+			dbHelper = new DBOpenHelper(this);
+		}
+
+		if (persistenceFactory == null) {
+			Log.d("MainActivity", "persistenceFactory was null");
+			persistenceFactory = new PersistenceFactory(dbHelper);
+		}
+
 		week = persistenceFactory.getWeek();
 		badge = persistenceFactory.getBadge();
 	}
@@ -379,6 +394,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 		super.onSaveInstanceState(outState);
 
 		persistenceFactory.stopUpdateTaskIfRunning();
+
+		dbHelperSaveInstance = dbHelper;
+		persistenceFactorySaveInstance = persistenceFactory;
 
 		outState.putInt(OFFER_INDEX, indexOfSelectedOffer);
 		outState.putInt(DAY_INDEX, indexOfSelectedDay);
