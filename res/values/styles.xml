@@ -2,8 +2,8 @@
 
     <color name="black">#000000</color>
     <color name="title">#db1313</color>
-    <color name="date">#4e4949</color>
-    <color name="gray">#dddddd</color>
+    <color name="date">#767373</color>
+    <color name="grey">#dddddd</color>
     <color name="yellow">#fffcac</color>
     <color name="orange">#e9c69d</color>
     <color name="red">#e9a69d</color>
@@ -33,14 +33,14 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
-    <style name="dateTxt" parent="menuTxt">
+    <style name="dateTxt">
         <item name="android:paddingBottom">10dp</item>
         <item name="android:textColor">@color/date</item>
     </style>
 
     <!-- Style von Viewpager-Lib überschreiben, damit Tabs mit eigenen Text-Styles erscheinen -->
     <style name="TextAppearance.TabPageIndicator" parent="Widget">
-        <item name="android:textColor">@color/gray</item>
+        <item name="android:textColor">@color/grey</item>
       
     </style>
        <style name="Widget.TabPageIndicator" parent="Widget">
@@ -48,7 +48,7 @@
             </style>
 
     <style name="badgeStyle">
-        <item name="android:textColor">@color/gray</item>
+        <item name="android:textColor">@color/grey</item>
         <item name="android:textStyle">bold</item>
     </style>
     
@@ -59,7 +59,7 @@
 
     <style name="MenuDrawer.Widget.Category" parent="Widget">
         <item name="android:textAppearance">?android:attr/textAppearance</item>
-        <item name="android:textColor">@color/gray</item>
+        <item name="android:textColor">@color/grey</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:background">@drawable/tab_bg_selected</item>
         <item name="android:paddingLeft">22dip</item>
@@ -79,7 +79,7 @@
         <item name="android:paddingLeft">16dp</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:background">@color/gray</item>
+        <item name="android:background">@color/grey</item>
     </style>
 
 <!--     <style name="MenuDrawerStyle" parent="Widget.MenuDrawer">
