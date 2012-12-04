@@ -398,6 +398,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 			TextView badgeAmount = (TextView) findViewById(R.id.amount);
 			if(badge.getAmount() < 8.00){
 				badgeAmount.setTextColor(getResources().getColor(R.color.red));
+			}else{
+				badgeAmount.setTextColor(getResources().getColor(R.color.grey));
 			}
 			badgeAmount.setText(badge.getAmount() + " CHF");
 			TextView badgeLastUpdate = (TextView) findViewById(R.id.lastUpdate);
