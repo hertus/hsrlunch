@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:clickable="true"
-     android:background="@color/gray"
+     android:background="@color/grey"
     
     >
 
@@ -21,11 +21,19 @@
 
     <TextView
         android:id="@+id/errorMsg"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:paddingLeft="5dp" 
          />
+    
+    <ImageView 
+        android:id="@+id/closeBut"
+        android:contentDescription="close"
+           android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_close"
+        />
 
 </LinearLayout>

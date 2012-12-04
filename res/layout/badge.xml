@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp" 
          style="@style/badgeStyle"
+        android:textStyle="bold"
 
          />
 
