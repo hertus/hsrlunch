@@ -12,12 +12,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import ch.hsr.hsrlunch.controller.PersistenceFactory;
 import ch.hsr.hsrlunch.model.Badge;
@@ -43,11 +40,11 @@ import com.viewpagerindicator.TabPageIndicator;
 
 public class MainActivity extends SherlockFragmentActivity implements
 		OnSharedPreferenceChangeListener {
-	
+
 	private static final int SHOW_PREFERENCES = 1;
 	private static final String DAY_INDEX = "selectedOfferIndex";
 	private static final String OFFER_INDEX = "selectedDayIndex";
-	
+
 	private final String TAG = "MainActivity";
 
 	private Intent shareIntent;
@@ -87,8 +84,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private OfferFragment fragment1;
 	private OfferFragment fragment2;
 	private OfferFragment fragment3;
-	
-	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -102,13 +97,13 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 			indexOfSelectedDay = savedInstanceState.getInt(DAY_INDEX);
 			indexOfSelectedOffer = savedInstanceState.getInt(OFFER_INDEX);
-		}else{
+		} else {
 			indexOfSelectedDay = DateHelper.getSelectedDayDayOfWeek();
-			if(DateHelper.getDayOfWeek() == 0 
-					|| DateHelper.getDayOfWeek() == 7){
+			if (DateHelper.getDayOfWeek() == 0
+					|| DateHelper.getDayOfWeek() == 7) {
 				setAndShowErrorMsg(0, R.string.weekendText);
 			}
-			
+
 		}
 
 		onCreatePersistence();
@@ -120,22 +115,22 @@ public class MainActivity extends SherlockFragmentActivity implements
 		updatePreferences();
 
 		onCreateMenuDrawer();
-		
+
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		
+
 		shareIntent = new Intent(Intent.ACTION_SEND);
 		shareIntent.setType("text/plain");
-		
+
 		FragmentManager fm = getSupportFragmentManager();
-		if (fm.findFragmentById(R.id.fragment1) != null && fm.findFragmentById(R.id.fragment2) != null  && fm.findFragmentById(R.id.fragment3) !=null ) {
-			multiPane = true;			
+		if (fm.findFragmentById(R.id.fragment1) != null
+				&& fm.findFragmentById(R.id.fragment2) != null
+				&& fm.findFragmentById(R.id.fragment3) != null) {
+			multiPane = true;
 			onCreateTabletFragment(savedInstanceState);
 		} else {
 			multiPane = false;
 			onCreateViewPager(savedInstanceState);
 		}
-
-
 
 		badgeLayout = (LinearLayout) findViewById(R.id.badge);
 
@@ -341,12 +336,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 		fragment1.getView().setBackgroundResource(R.drawable.border);
 		fragment2.getView().setBackgroundResource(R.drawable.border);
 		fragment3.getView().setBackgroundResource(R.drawable.border);
-		
-		if(dataAvailable) {
+
+		if (dataAvailable) {
 			selectedDay = week.getDayList().get(indexOfSelectedDay);
 			updateShareIntent();
 		}
-		
+
 	}
 
 	@Override
@@ -373,34 +368,46 @@ public class MainActivity extends SherlockFragmentActivity implements
 	 */
 	private void setSelectedFragment() {
 		if (multiPane) {
-		Log.d(TAG, "setSelectedFragment wurde aufgerufen, day="
-			+ indexOfSelectedDay);
-		selectedDay = week.getDayList().get(indexOfSelectedDay);
-		updateTabletFragmentData();
-		
+			Log.d(TAG, "setSelectedFragment wurde aufgerufen, day="
+					+ indexOfSelectedDay);
+			selectedDay = week.getDayList().get(indexOfSelectedDay);
+			updateTabletFragmentData();
+
 		} else {
 
 			Log.d(TAG, "setSelectedFragment wurde aufgerufen, day="
-				+ indexOfSelectedDay + ", offer=" + indexOfSelectedOffer);
-		selectedDay = week.getDayList().get(indexOfSelectedDay);
-		selectedOffer = selectedDay.getOfferList().get(indexOfSelectedOffer);
-		updateTabPageAdapterData();
+					+ indexOfSelectedDay + ", offer=" + indexOfSelectedOffer);
+			selectedDay = week.getDayList().get(indexOfSelectedDay);
+			selectedOffer = selectedDay.getOfferList()
+					.get(indexOfSelectedOffer);
+			updateTabPageAdapterData();
 		}
 	}
 
 	private void updateTabletFragmentData() {
-		
-		if (fragment1 == null) { fragment1 = (OfferFragment) getSupportFragmentManager().findFragmentByTag("fragment1"); };
+
+		if (fragment1 == null) {
+			fragment1 = (OfferFragment) getSupportFragmentManager()
+					.findFragmentByTag("fragment1");
+		}
+		;
 		fragment1.setDayString(selectedDay.getDateStringLong());
 		fragment1.setOffer(selectedDay.getOfferList().get(0));
 		fragment1.updateValues();
-		
-		if (fragment2 == null) { fragment2 = (OfferFragment) getSupportFragmentManager().findFragmentByTag("fragment2"); };
+
+		if (fragment2 == null) {
+			fragment2 = (OfferFragment) getSupportFragmentManager()
+					.findFragmentByTag("fragment2");
+		}
+		;
 		fragment2.setDayString(selectedDay.getDateStringLong());
 		fragment2.setOffer(selectedDay.getOfferList().get(1));
 		fragment2.updateValues();
 
-		if (fragment3 == null) { fragment3 = (OfferFragment) getSupportFragmentManager().findFragmentByTag("fragment3"); }
+		if (fragment3 == null) {
+			fragment3 = (OfferFragment) getSupportFragmentManager()
+					.findFragmentByTag("fragment3");
+		}
 		fragment3.setDayString(selectedDay.getDateStringLong());
 		fragment3.setOffer(selectedDay.getOfferList().get(2));
 		fragment3.updateValues();
@@ -425,23 +432,28 @@ public class MainActivity extends SherlockFragmentActivity implements
 			shareIntent.removeExtra(android.content.Intent.EXTRA_SUBJECT);
 			shareIntent.removeExtra(android.content.Intent.EXTRA_TEXT);
 
-			shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
-					"HSR SV-Menu am: " + selectedDay.getDateStringMedium());
-			
+			shareIntent.putExtra(
+					android.content.Intent.EXTRA_SUBJECT,
+					getString(R.string.share_intent_text) + " "
+							+ selectedDay.getDateStringMedium());
+
 			if (multiPane) {
-				String offer = new String();	
-			for (int i=0; i < selectedDay.getOfferList().size(); i++) {
-					offer += (offertitles[i] + "\n"  + selectedDay.getOfferList().get(i).getOfferAndPrice() + "\n\n\n");
+				String offer = new String();
+				for (int i = 0; i < selectedDay.getOfferList().size(); i++) {
+					offer += (offertitles[i]
+							+ "\n"
+							+ selectedDay.getOfferList().get(i)
+									.getOfferAndPrice() + "\n\n\n");
 				}
 				shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, offer);
-			} else {				
-			shareIntent.putExtra(android.content.Intent.EXTRA_TEXT,
-					offertitles[selectedOffer.getOfferType()] + "\n\n"
-							+ selectedOffer.getOfferAndPrice());
+			} else {
+				shareIntent.putExtra(android.content.Intent.EXTRA_TEXT,
+						offertitles[selectedOffer.getOfferType()] + "\n\n"
+								+ selectedOffer.getOfferAndPrice());
 			}
 		} else {
 			shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
-					"HSR SV-Menu nicht vorhanden");
+					getString(R.string.notAvailable));
 		}
 
 	}
@@ -494,7 +506,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 			badgeLayout.setVisibility(View.VISIBLE);
 			TextView badgeAmount = (TextView) findViewById(R.id.amount);
 			if (badge.getAmount() < 8.00) {
-				badgeAmount.setTextColor(getResources().getColor(R.color.title));
+				badgeAmount
+						.setTextColor(getResources().getColor(R.color.title));
 			} else {
 				badgeAmount.setTextColor(getResources().getColor(R.color.grey));
 			}

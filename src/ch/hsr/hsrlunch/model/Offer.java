@@ -36,6 +36,6 @@ public class Offer {
 	}
 	
 	public String getOfferAndPrice(){
-		return content + "\n" + price;
+		return content + "\n\n" + price;
 	}
 }
