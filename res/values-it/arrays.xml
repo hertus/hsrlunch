@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="menu_title_entries">
-        <item>Daily Dish</item>
-        <item>Vegetarian</item>
-        <item>Weekly Special</item>
+        <item>Piatto del giorno</item>
+        <item>Vegetariano</item>
+        <item>Speciale settimanale</item>
     </string-array>
     <string-array name="tabTitles">
-        <item>Daily</item>
+        <item>Giorno</item>
         <item>Veg</item>
         <item>Week</item>
     </string-array>
             <string-array name="weekdays">
-            <item >Monday</item>
-            <item >Tuesday</item>
-            <item >Wednesday</item>
-            <item >Thursday</item>
-            <item >Friday</item>
+            <item >Lunedi</item>
+            <item >Martedì</item>
+            <item >Mercoledì</item>
+            <item >Giovedi</item>
+            <item >Venerdì</item>
         </string-array>
         <string-array name="errorTypes">
             <item>Info</item>
-            <item>Warning</item>
-            <item>Error</item>
+            <item>Attenzione</item>
+            <item>Errore</item>
         </string-array>
 </resources>

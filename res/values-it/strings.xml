@@ -1,0 +1,28 @@
+<resources>
+
+    <string name="app_name">HSRlunch</string>
+    <string name="title_activity_main">HSRlunch</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="kontoStand">Distintivo conto:</string>
+    <string name="menu_settings">Impostazioni</string>
+    <string name="menu_translate">Tradurre</string>
+    <string name="pref_fav_menu">Menu preferito</string>
+    <string name="pref_badge">Distintivo conto</string>
+    <string name="pref_badge_long">Attivare l\'account distintivo HSR</string>
+    <string name="pref_menu_default">Piatto del giorno</string>
+    <string name="notAvailable">Nessuna informazione disponibile</string>
+    <string name="on">Info Badge attivato</string>
+    <string name="off">Badge Info disattivato</string>
+    <string name="tagesauswahl">Giornata di selezione</string>
+    <string name="pref_badge_username">Nome utente</string>
+    <string name="pref_badge_username_long">Inserisci qui il tuo nome utente HSR-Account senza portare HSR\\</string>
+    <string name="pref_badge_password">Password</string>
+    <string name="pref_badge_password_long">Inserisci qui la password del tuo account HSR</string>
+    <string name="err_no_internet">Nessuna connessione disponibile</string>
+    <string name="err_no_hsrwifi">Nessuna connessione disponibile per HSR-Secure</string>
+    <string name="err_badge_not_parseable">Impossibile recuperare conto distintivo HSR</string>
+    <string name="err_update_failed">Impossibile recuperare gli aggiornamenti</string>
+    <string name="weekendText">Nei fine settimana non sono disponibili informazioni aggiornate</string>
+    <string name="share_intent_text">HSR SV-Menu alla: </string>
+
+</resources>
