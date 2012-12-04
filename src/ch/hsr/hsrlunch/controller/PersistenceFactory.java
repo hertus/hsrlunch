@@ -40,6 +40,7 @@ import com.actionbarsherlock.view.MenuItem;
 
 public class PersistenceFactory implements OfferConstants {
 
+	private final String HSR_BADGE_SERVER = "https://152.96.21.52:4450/VerrechnungsportalService.svc/JSON/getBadgeSaldo";
 	private MainActivity mainActivity;
 	private int errorCause;
 
@@ -119,12 +120,15 @@ public class PersistenceFactory implements OfferConstants {
 				}
 				return true;
 			} catch (UpdateOfferException e) {
+				setErrorCause(0);
 				Log.w("Update", "Error on updating: " + e.getMessage());
 				return false;
 			} catch (UpdateParserException e) {
+				setErrorCause(1);
 				Log.w("Parser", "Error on updating: " + e.getMessage());
 				return false;
 			} catch (UpdateBadgeException e) {
+				setErrorCause(2);
 				Log.w("Badge", "Error on updating: " + e.getMessage());
 				return false;
 			}
@@ -145,10 +149,6 @@ public class PersistenceFactory implements OfferConstants {
 							R.string.err_update_failed);
 					break;
 				case 2:
-					mainActivity.setAndShowErrorMsg(2,
-							R.string.err_update_failed);
-					break;
-				case 3:
 					mainActivity.setAndShowErrorMsg(2,
 							R.string.err_badge_not_parseable);
 					break;
@@ -296,8 +296,7 @@ public class PersistenceFactory implements OfferConstants {
 								""), prefs.getString(
 						SettingsActivity.PREF_BADGE_PASSWORD, "")));
 
-		HttpGet request = new HttpGet(
-				"https://152.96.21.52:4450/VerrechnungsportalService.svc/JSON/getBadgeSaldo");
+		HttpGet request = new HttpGet(HSR_BADGE_SERVER);
 
 		ByteArrayOutputStream content = new ByteArrayOutputStream();
 		try {
@@ -322,14 +321,11 @@ public class PersistenceFactory implements OfferConstants {
 					new Date().getTime());
 
 		} catch (ClientProtocolException e) {
-			setErrorCause(2);
 			throw new UpdateBadgeException("Error in clientProtocol: "
 					+ e.getMessage());
 		} catch (IOException e) {
-			setErrorCause(2);
 			throw new UpdateBadgeException("IOException: " + e.getMessage());
 		} catch (JSONException e) {
-			setErrorCause(3);
 			throw new UpdateBadgeException("JSONException: " + e.getMessage());
 		}
 	}
@@ -373,8 +369,7 @@ public class PersistenceFactory implements OfferConstants {
 	/**
 	 * 
 	 * @param errorCause
-	 *            is 0 = Update error, 1 = Parser Error, 2 = Connection Error, 3
-	 *            = Badge JSON Error
+	 *            is 0 = Update error, 1 = Parser Error, 2 = Connection Error
 	 */
 	private void setErrorCause(int errorCause) {
 		this.errorCause = errorCause;
