@@ -47,11 +47,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 	public static Offer selectedOffer;
 	private static Intent shareIntent;
 	private Week week;
+	private Badge badge;
 
 	public static String[] offertitles;
 	public String[] errorTypes;
-
-	private static MenuItem refreshProgressItem;
 
 	private ViewPager mViewPager;
 	private MenuDrawerManager mMenuDrawer;
@@ -70,6 +69,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	public static boolean dataAvailable = true;
 	private boolean isOnBadge = false;
 	private boolean isOnOfferUpdate = false;
+	private boolean onStartUpdate = true;
 
 	private int favouriteMenu;
 	private int indexOfSelectedDay;
@@ -80,6 +80,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		super.onCreate(savedInstanceState);
 
 		if (savedInstanceState != null) {
+			onStartUpdate = false;
 			indexOfSelectedDay = savedInstanceState.getInt(DAY_INDEX);
 			indexOfSelectedOffer = savedInstanceState.getInt(OFFER_INDEX);
 		}
@@ -93,8 +94,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 		updatePreferences();
 
 		onCreateMenuDrawer();
-		mMenuDrawer.setContentView(R.layout.activity_main);
-		mMenuDrawer.setMenuView(menuView);
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -104,6 +103,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		shareIntent.setType("text/plain");
 
 		badgeLayout = (LinearLayout) findViewById(R.id.badge);
+
 		errorMsgLayout = (LinearLayout) findViewById(R.id.error);
 		errorMsgLayout.setVisibility(View.GONE);
 		errorMsgLayout.setOnClickListener(new View.OnClickListener() {
@@ -113,7 +113,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 			}
 		});
 
-		onCreateDataUpdate();
+		setSelectedFragment();
+		updateBadgeView();
 
 	}
 
@@ -150,14 +151,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 		dbHelper = new DBOpenHelper(this);
 		persistenceFactory = new PersistenceFactory(dbHelper);
 		week = persistenceFactory.getWeek();
+		badge = persistenceFactory.getBadge();
 	}
 
 	/**
 	 * Checks if DB Update for Offers if needed and update them. Checks if Badge
 	 * is switched on and update it.
 	 */
-	private void onCreateDataUpdate() {
-
+	private void checkDataUpdate() {
+		Log.d("MainAcitivy", "Checking for Data Updates");
 		// Initialize DB and check for Updates
 		if (!DateHelper.compareLastUpdateToMonday(week.getLastUpdate())) {
 			isOnOfferUpdate = true;
@@ -165,9 +167,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 			isOnOfferUpdate = false;
 		}
 		doUpdates();
-		setSelectedFragment();
-
-		updateBadgeView();
 	}
 
 	private void onCreateMenuDrawer() {
@@ -201,6 +200,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 				}
 			}
 		});
+
+		mMenuDrawer.setContentView(R.layout.activity_main);
+		mMenuDrawer.setMenuView(menuView);
 	}
 
 	@Override
@@ -214,13 +216,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 		provider.setShareIntent(shareIntent);
 
 		MenuItem refresh = menu.findItem(R.id.menu_refresh);
-		refreshProgressItem = refresh;
+		persistenceFactory.setMenuItem(refresh);
 
 		refresh.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
-				// when click on Refresh, do always a OfferUpdate
 				isOnOfferUpdate = true;
 				doUpdates();
 				return false;
@@ -228,7 +229,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		});
 
-		// TODO Translate Menu only when Locale is not German?
 		MenuItem translate = menu.findItem(R.id.menu_translate);
 		translate.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
@@ -250,6 +250,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 				return true;
 			}
 		});
+
+		// Check for updates after Menu is created -> Progress Bar available
+		if (onStartUpdate) {
+			checkDataUpdate();
+		}
 
 		return true;
 	}
@@ -351,23 +356,30 @@ public class MainActivity extends SherlockFragmentActivity implements
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == SHOW_PREFERENCES) {
+			Log.d("MainActivity", "Coming from Preferences");
 			updatePreferences();
 			updateBadgeView();
 			updateTabPageAdapterData();
+			checkDataUpdate();
 		}
 	}
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
+		Log.d("MainActivity", "Pref changed");
 		updatePreferences();
 		updateBadgeView();
 		updateTabPageAdapterData();
+		checkDataUpdate();
 	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
+
+		persistenceFactory.stopUpdateTaskIfRunning();
+
 		outState.putInt(OFFER_INDEX, indexOfSelectedOffer);
 		outState.putInt(DAY_INDEX, indexOfSelectedDay);
 	}
@@ -383,7 +395,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private void updateBadgeView() {
 		if (isOnBadge) {
 			badgeLayout.setVisibility(View.VISIBLE);
-			Badge badge = persistenceFactory.getBadge();
 			TextView badgeAmount = (TextView) findViewById(R.id.amount);
 			badgeAmount.setText(badge.getAmount() + " CHF");
 			TextView badgeLastUpdate = (TextView) findViewById(R.id.lastUpdate);
@@ -395,8 +406,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void doUpdates() {
-		persistenceFactory.setMenuItem(refreshProgressItem);
-
 		// Check if Badge is on + Check if HSR Wifi, if no HSR Wifi then check
 		// Offer Update and Internet
 		if (isOnBadge) {
@@ -435,10 +444,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 	 * Update the Views after UpdateTask
 	 */
 	public void notifyDataChanges() {
-
 		week = persistenceFactory.getWeek();
-		setSelectedFragment();
+		badge = persistenceFactory.getBadge();
 
+		setSelectedFragment();
 		updateBadgeView();
 	}
 

@@ -32,8 +32,8 @@ import ch.hsr.hsrlunch.util.DBOpenHelper;
 import ch.hsr.hsrlunch.util.DateHelper;
 import ch.hsr.hsrlunch.util.MyHttpClient;
 import ch.hsr.hsrlunch.util.UpdateBadgeException;
-import ch.hsr.hsrlunch.util.UpdateParserException;
 import ch.hsr.hsrlunch.util.UpdateOfferException;
+import ch.hsr.hsrlunch.util.UpdateParserException;
 import ch.hsr.hsrlunch.util.XMLParser;
 
 import com.actionbarsherlock.view.MenuItem;
@@ -41,7 +41,6 @@ import com.actionbarsherlock.view.MenuItem;
 public class PersistenceFactory implements OfferConstants {
 
 	private MainActivity mainActivity;
-
 	private int errorCause;
 
 	private Week week;
@@ -60,6 +59,7 @@ public class PersistenceFactory implements OfferConstants {
 	private SparseArray<Offer> offerList;
 	private SparseArray<WorkDay> workdayList;
 	private SparseArray<SparseArray<Pair<String, String>>> updatedOfferList;
+	private AsyncTask<Void, Void, Boolean> updateTask;
 
 	private MenuItem menuItem;
 
@@ -82,7 +82,16 @@ public class PersistenceFactory implements OfferConstants {
 	public void newUpdateTask(MainActivity mainActivity, boolean isOfferUpdate,
 			boolean isBadgeUpdate) {
 		this.mainActivity = mainActivity;
-		new UpdateTask(isOfferUpdate, isBadgeUpdate).execute();
+		updateTask = new UpdateTask(isOfferUpdate, isBadgeUpdate).execute();
+	}
+
+	public void stopUpdateTaskIfRunning() {
+		if (updateTask != null) {
+			if (updateTask.getStatus().equals(AsyncTask.Status.RUNNING)) {
+				Log.d("PersistenceFactory", "UpdateTask is running, cancel it");
+				updateTask.cancel(true);
+			}
+		}
 	}
 
 	private class UpdateTask extends AsyncTask<Void, Void, Boolean> {
