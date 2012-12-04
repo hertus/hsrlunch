@@ -42,6 +42,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	private static final String DAY_INDEX = "selectedOfferIndex";
 	private static final String OFFER_INDEX = "selectedDayIndex";
+	
+	private final String TAG = "MainActivity";
 
 	private Intent shareIntent;
 	private Offer selectedOffer;
@@ -156,12 +158,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private void onCreatePersistence() {
 
 		if (dbHelper == null) {
-			Log.d("MainActivity", "dbHelper was null");
+			Log.d(TAG, "dbHelper was null, create new");
 			dbHelper = new DBOpenHelper(this);
 		}
 
 		if (persistenceFactory == null) {
-			Log.d("MainActivity", "persistenceFactory was null");
+			Log.d(TAG, "persistenceFactory was null, create new");
 			persistenceFactory = new PersistenceFactory(dbHelper);
 		}
 
@@ -174,7 +176,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	 * is switched on and update it.
 	 */
 	private void checkDataUpdate() {
-		Log.d("MainAcitivy", "Checking for Data Updates");
+		Log.d(TAG, "Checking for Data Updates");
 		// Initialize DB and check for Updates
 		if (!DateHelper.compareLastUpdateToMonday(week.getLastUpdate())) {
 			isOnOfferUpdate = true;
@@ -328,7 +330,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	 * @param int offer 0-2
 	 */
 	private void setSelectedFragment() {
-		Log.d("MainActivity", "setSelectedFragment wurde aufgerufen, day="
+		Log.d(TAG, "setSelectedFragment wurde aufgerufen, day="
 				+ indexOfSelectedDay + ", offer=" + indexOfSelectedOffer);
 
 		selectedDay = week.getDayList().get(indexOfSelectedDay);
@@ -371,7 +373,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == SHOW_PREFERENCES) {
-			Log.d("MainActivity", "Coming from Preferences");
+			Log.d(TAG, "Coming from Preferences");
 			updatePreferences();
 			updateBadgeView();
 			updateTabPageAdapterData();
@@ -382,7 +384,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		Log.d("MainActivity", "Pref changed");
+		Log.d(TAG, "Pref changed");
 		updatePreferences();
 		updateBadgeView();
 		updateTabPageAdapterData();
@@ -433,17 +435,17 @@ public class MainActivity extends SherlockFragmentActivity implements
 		// Offer Update and Internet
 		if (isOnBadge) {
 			if (CheckRessources.isOnHSRwifi(this)) {
-				Log.d("MainActivity", "Is in HSR-LAN, begin with badge update!");
+				Log.d(TAG, "Is in HSR-LAN, begin with badge update!");
 				persistenceFactory.newUpdateTask(this, isOnOfferUpdate,
 						isOnBadge);
 			} else if (isOnOfferUpdate) {
 				if (CheckRessources.isOnline(this)) {
-					Log.d("MainActivity", "not in HSR-LAN, but online");
+					Log.d(TAG, "not in HSR-LAN, but online");
 					setAndShowErrorMsg(1, R.string.err_no_hsrwifi);
 					persistenceFactory.newUpdateTask(this, isOnOfferUpdate,
 							false);
 				} else {
-					Log.d("MainActivity", "not online");
+					Log.d(TAG, "not online");
 					setAndShowErrorMsg(2, R.string.err_no_internet);
 				}
 			} else {
@@ -454,10 +456,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// Internet is on
 		} else if (isOnOfferUpdate) {
 			if (CheckRessources.isOnline(this)) {
-				Log.d("MainActivity", "Is online, begin with offer update!");
+				Log.d(TAG, "Is online, begin with offer update!");
 				persistenceFactory.newUpdateTask(this, isOnOfferUpdate, false);
 			} else {
-				Log.d("MainActivity", "Is offline, can't update!");
+				Log.d(TAG, "Is offline, can't update!");
 				setAndShowErrorMsg(2, R.string.err_no_internet);
 			}
 		}
