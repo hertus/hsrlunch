@@ -38,8 +38,8 @@ import com.viewpagerindicator.TabPageIndicator;
 
 public class MainActivity extends SherlockFragmentActivity implements
 		OnSharedPreferenceChangeListener {
+	
 	private static final int SHOW_PREFERENCES = 1;
-
 	private static final String DAY_INDEX = "selectedOfferIndex";
 	private static final String OFFER_INDEX = "selectedDayIndex";
 	
@@ -91,6 +91,13 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 			indexOfSelectedDay = savedInstanceState.getInt(DAY_INDEX);
 			indexOfSelectedOffer = savedInstanceState.getInt(OFFER_INDEX);
+		}else{
+			indexOfSelectedDay = DateHelper.getSelectedDayDayOfWeek();
+			if(DateHelper.getDayOfWeek() == 0 
+					|| DateHelper.getDayOfWeek() == 7){
+				setAndShowErrorMsg(0, R.string.weekendText);
+			}
+			
 		}
 
 		onCreatePersistence();
@@ -299,7 +306,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 					indexOfSelectedOffer = position;
 
 					updateShareIntent();
-					// provider.setShareIntent(shareIntent);
 				}
 			}
 		};
