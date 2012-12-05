@@ -1,19 +1,6 @@
 package ch.hsr.hsrlunch.controller;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Date;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -27,10 +14,9 @@ import ch.hsr.hsrlunch.model.Badge;
 import ch.hsr.hsrlunch.model.Offer;
 import ch.hsr.hsrlunch.model.Week;
 import ch.hsr.hsrlunch.model.WorkDay;
-import ch.hsr.hsrlunch.ui.SettingsActivity;
+import ch.hsr.hsrlunch.util.BadgeParser;
 import ch.hsr.hsrlunch.util.DBOpenHelper;
 import ch.hsr.hsrlunch.util.DateHelper;
-import ch.hsr.hsrlunch.util.MyHttpClient;
 import ch.hsr.hsrlunch.util.UpdateBadgeException;
 import ch.hsr.hsrlunch.util.UpdateOfferException;
 import ch.hsr.hsrlunch.util.UpdateParserException;
@@ -40,7 +26,6 @@ import com.actionbarsherlock.view.MenuItem;
 
 public class PersistenceFactory implements OfferConstants {
 
-	private final String HSR_BADGE_SERVER = "https://152.96.21.52:4450/VerrechnungsportalService.svc/JSON/getBadgeSaldo";
 	private MainActivity mainActivity;
 	private int errorCause;
 
@@ -48,9 +33,6 @@ public class PersistenceFactory implements OfferConstants {
 	private WorkDay workday;
 	private Offer offer;
 	private Badge badge;
-
-	private HttpResponse response;
-	private InputStream inputStream;
 
 	private WeekDataSource weekDataSource;
 	private WorkDayDataSource workDayDataSource;
@@ -275,59 +257,13 @@ public class PersistenceFactory implements OfferConstants {
 	}
 
 	private void updateBadge() throws UpdateBadgeException {
-		DefaultHttpClient client = new MyHttpClient().getMyHttpClient();
-
-		/* TestUser */
-		/*
-		 * client.getCredentialsProvider().setCredentials( new AuthScope(null,
-		 * -1), new UsernamePasswordCredentials("SIFSV-80018\\ChallPUser",
-		 * "1q$2w$3e$4r$5t")); HttpGet request = new HttpGet(
-		 * "https://152.96.80.18/VerrechnungsportalService.svc/json/getBadgeSaldo"
-		 * );
-		 */
-
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(mainActivity);
 
-		client.getCredentialsProvider().setCredentials(
-				new AuthScope(null, -1),
-				new UsernamePasswordCredentials("hsr\\"
-						+ prefs.getString(SettingsActivity.PREF_BADGE_USERNAME,
-								""), prefs.getString(
-						SettingsActivity.PREF_BADGE_PASSWORD, "")));
+		BadgeParser badgeParser = new BadgeParser(prefs);
+		double badgeAmount = badgeParser.parseBadge();
 
-		HttpGet request = new HttpGet(HSR_BADGE_SERVER);
-
-		ByteArrayOutputStream content = new ByteArrayOutputStream();
-		try {
-			response = client.execute(request);
-			HttpEntity entity = response.getEntity();
-			inputStream = entity.getContent();
-
-			// Read response into a buffered stream
-			int readBytes = 0;
-			byte[] sBuffer = new byte[512];
-			while ((readBytes = inputStream.read(sBuffer)) != -1) {
-				content.write(sBuffer, 0, readBytes);
-			}
-
-			JSONObject object = new JSONObject(
-					new String(content.toByteArray()));
-
-			Log.d("PersistenceFactory",
-					"BadgeAmount: " + object.getDouble("badgeSaldo"));
-
-			updateBadgeEntry(object.getDouble("badgeSaldo"),
-					new Date().getTime());
-
-		} catch (ClientProtocolException e) {
-			throw new UpdateBadgeException("Error in clientProtocol: "
-					+ e.getMessage());
-		} catch (IOException e) {
-			throw new UpdateBadgeException("IOException: " + e.getMessage());
-		} catch (JSONException e) {
-			throw new UpdateBadgeException("JSONException: " + e.getMessage());
-		}
+		updateBadgeEntry(badgeAmount, new Date().getTime());
 	}
 
 	public void updateBadgeEntry(double amount, long date) {

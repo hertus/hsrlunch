@@ -19,7 +19,7 @@
         android:key="pref_username"
         android:summary="@string/pref_badge_username_long"
         android:title="@string/pref_badge_username" />
-    <EditTextPreference
+    <ch.hsr.hsrlunch.ui.CheapEditTextPreference
         android:dependency="pref_badge"
         android:inputType="textPassword"
         android:key="pref_password"
