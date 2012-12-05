@@ -1,5 +1,7 @@
 package ch.hsr.hsrlunch;
 
+import java.util.Locale;
+
 import net.simonvt.widget.MenuDrawer;
 import net.simonvt.widget.MenuDrawerManager;
 import android.content.Intent;
@@ -44,8 +46,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private static final int SHOW_PREFERENCES = 1;
 	private static final String DAY_INDEX = "selectedOfferIndex";
 	private static final String OFFER_INDEX = "selectedDayIndex";
-
 	private final String TAG = "MainActivity";
+	
+	private static DBOpenHelper dbHelperSaveInstance;
+	private static PersistenceFactory persistenceFactorySaveInstance;
 
 	private Intent shareIntent;
 	private Offer selectedOffer;
@@ -67,12 +71,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private LinearLayout errorMsgLayout;
 	private CustomMenuView menuView;
 
-	private static DBOpenHelper dbHelperSaveInstance;
-	private static PersistenceFactory persistenceFactorySaveInstance;
 	private DBOpenHelper dbHelper;
 	private PersistenceFactory persistenceFactory;
 
-	private boolean dataAvailable = true;
+	private boolean dataAvailable = false;
 	private boolean isOnBadge = false;
 	private boolean isOnOfferUpdate = false;
 	private boolean onStartUpdate = true;
@@ -84,6 +86,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private OfferFragment fragment1;
 	private OfferFragment fragment2;
 	private OfferFragment fragment3;
+	private MenuItem shareMenuItem;
+	private MenuItem translateMenuItem;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -91,19 +95,16 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		if (savedInstanceState != null) {
 			onStartUpdate = false;
+			//dataAvailable = false;
 
 			dbHelper = dbHelperSaveInstance;
 			persistenceFactory = persistenceFactorySaveInstance;
 
 			indexOfSelectedDay = savedInstanceState.getInt(DAY_INDEX);
 			indexOfSelectedOffer = savedInstanceState.getInt(OFFER_INDEX);
+			
 		} else {
 			indexOfSelectedDay = DateHelper.getSelectedDayDayOfWeek();
-			if (DateHelper.getDayOfWeek() == 0
-					|| DateHelper.getDayOfWeek() == 7) {
-				setAndShowErrorMsg(0, R.string.weekendText);
-			}
-
 		}
 
 		onCreatePersistence();
@@ -145,6 +146,13 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		setSelectedFragment();
 		updateBadgeView();
+		if(onStartUpdate){
+			if (DateHelper.getDayOfWeek() == 0
+					|| DateHelper.getDayOfWeek() == 7) {
+				setAndShowErrorMsg(1, R.string.weekendText);
+			}
+
+		}
 
 	}
 
@@ -248,10 +256,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.actionbar_menu, menu);
 
-		MenuItem item = menu.findItem(R.id.menu_share);
-		provider = (ShareActionProvider) item.getActionProvider();
+		shareMenuItem = menu.findItem(R.id.menu_share);
+		provider = (ShareActionProvider) shareMenuItem.getActionProvider();
 		provider.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
-		updateShareIntent();
+			updateShareIntent();
 		provider.setShareIntent(shareIntent);
 
 		MenuItem refresh = menu.findItem(R.id.menu_refresh);
@@ -268,15 +276,23 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		});
 
-		MenuItem translate = menu.findItem(R.id.menu_translate);
-		translate.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+		translateMenuItem = menu.findItem(R.id.menu_translate);
+		translateMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
-				openTranslateIntent();
+				if(dataAvailable){
+					openTranslateIntent();
+				}
 				return false;
 			}
 		});
+		
+		if(!Locale.getDefault().getISO3Language().equals("deu") && dataAvailable){
+			translateMenuItem.setVisible(true);
+		}else{
+			translateMenuItem.setVisible(false);
+		}
 
 		MenuItem settings = menu.findItem(R.id.menu_settings);
 		settings.setOnMenuItemClickListener(new OnMenuItemClickListener() {
@@ -454,6 +470,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 		} else {
 			shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
 					getString(R.string.notAvailable));
+			shareIntent.putExtra(android.content.Intent.EXTRA_TEXT,
+					getString(R.string.notAvailable));
+			
 		}
 
 	}
@@ -559,6 +578,13 @@ public class MainActivity extends SherlockFragmentActivity implements
 	 * Update the Views after UpdateTask
 	 */
 	public void notifyDataChanges() {
+		dataAvailable = true;
+		shareMenuItem.setVisible(true);
+		if(!Locale.getDefault().getISO3Language().equals("deu") ){
+			translateMenuItem.setVisible(true);
+		}else{
+			translateMenuItem.setVisible(false);
+		}
 		week = persistenceFactory.getWeek();
 		badge = persistenceFactory.getBadge();
 
