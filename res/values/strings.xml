@@ -26,6 +26,10 @@
     <string name="share_intent_text">HSR SV-Menu am: </string>
     <string name="menu_credits">Über</string>
     <string name="title_activity_credits">Credits</string>
-        <string name="version">Version</string>
+    <string name="version">Version</string>
+    <string name="copyright">©Reto Schelbert, Susanne Mathys, Christof Büchi</string>
+    <string name="project">HSR Challenge Projekt</string>
+    <string name="appRating"><u>Applikation bewerten</u></string>
+    <string name="librarytitel">Verwendete Libraries:</string>
 
 </resources>

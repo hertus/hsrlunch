@@ -24,5 +24,11 @@
     <string name="err_update_failed">Impossibile recuperare gli aggiornamenti</string>
     <string name="weekendText">Nei fine settimana non sono disponibili informazioni aggiornate</string>
     <string name="share_intent_text">HSR SV-Menu alla: </string>
-
+    <string name="menu_credits">Creatori</string>
+    <string name="title_activity_credits">ringraziamento</string>
+    <string name="version">versione</string>
+    <string name="copyright">©Reto Schelbert, Susanne Mathys, Christof Büchi</string>
+    <string name="project">HSR sfida progetto</string>
+    <string name="appRating"><u>applicazione valutare</u></string>
+    <string name="librarytitel">dlibrerie usate:</string>
 </resources>

@@ -24,5 +24,12 @@
     <string name="err_update_failed">Could not retrieve updates</string>
     <string name="weekendText">No information available on weekends</string>
     <string name="share_intent_text">HSR SV-Menu at: </string>
+    <string name="menu_credits">About</string>
+    <string name="title_activity_credits">Credits</string>
+    <string name="version">Version</string>
+    <string name="copyright">©Reto Schelbert, Susanne Mathys, Christof Büchi</string>
+    <string name="project">HSR challenge project</string>
+    <string name="appRating"><u>Rate application</u></string>
+    <string name="librarytitel">Used Libraries:</string>
 
 </resources>

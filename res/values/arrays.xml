@@ -22,4 +22,9 @@
             <item>Warnung</item>
             <item>Fehler</item>
         </string-array>
+        <string-array name="libraries">
+            <item >MenuDrawer</item>
+            <item >ActionBarSherlock</item>
+            <item >ViewPagerIndicator</item>
+        </string-array>
 </resources>
