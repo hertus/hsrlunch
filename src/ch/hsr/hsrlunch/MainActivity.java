@@ -261,6 +261,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 		provider.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
 			updateShareIntent();
 		provider.setShareIntent(shareIntent);
+		if(dataAvailable){
+			shareMenuItem.setVisible(true);
+		}else{
+			shareMenuItem.setVisible(false);
+		}
 
 		MenuItem refresh = menu.findItem(R.id.menu_refresh);
 		persistenceFactory.setMenuItem(refresh);
