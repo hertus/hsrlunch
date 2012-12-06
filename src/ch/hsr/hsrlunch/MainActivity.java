@@ -23,6 +23,7 @@ import ch.hsr.hsrlunch.model.Badge;
 import ch.hsr.hsrlunch.model.Offer;
 import ch.hsr.hsrlunch.model.Week;
 import ch.hsr.hsrlunch.model.WorkDay;
+import ch.hsr.hsrlunch.ui.CreditActivity;
 import ch.hsr.hsrlunch.ui.CustomMenuView;
 import ch.hsr.hsrlunch.ui.OfferFragment;
 import ch.hsr.hsrlunch.ui.SettingsActivity;
@@ -246,11 +247,16 @@ public class MainActivity extends SherlockFragmentActivity implements
 					indexOfSelectedDay = position - 1;
 					indexOfSelectedOffer = favouriteMenu;
 					setSelectedFragment();
-				} else {
+				} else if(position == 7 ){
 					// starte Settings-Activity
 					Intent i = new Intent(getApplicationContext(),
 							SettingsActivity.class);
 					startActivityForResult(i, SHOW_PREFERENCES);
+				} else {
+					// starte Settings-Activity
+					Intent i = new Intent(getApplicationContext(),
+							CreditActivity.class);
+					startActivity(i);
 				}
 			}
 		});

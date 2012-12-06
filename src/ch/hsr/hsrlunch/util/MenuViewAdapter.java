@@ -52,6 +52,8 @@ public class MenuViewAdapter extends BaseAdapter {
 				R.string.menu_settings)));
 		mItems.add(new Item(main.getResources().getString(
 				R.string.menu_settings)));
+		mItems.add(new Item(main.getResources().getString(
+				R.string.menu_credits)));
 
 	}
 

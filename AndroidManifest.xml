@@ -35,6 +35,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="SettingsActivity" />
         </activity>
+        <activity android:name=".ui.CreditActivity" android:label="@string/title_activity_credits"></activity>
     </application>
 
 </manifest>

@@ -24,5 +24,8 @@
     <string name="err_update_failed">Update konnte nicht durchgeführt werden</string>
     <string name="weekendText">Am Wochenende stehen keine aktuellen Informationen bereit</string>
     <string name="share_intent_text">HSR SV-Menu am: </string>
+    <string name="menu_credits">Über</string>
+    <string name="title_activity_credits">Credits</string>
+        <string name="version">Version</string>
 
 </resources>
