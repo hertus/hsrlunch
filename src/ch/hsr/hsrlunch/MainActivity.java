@@ -46,6 +46,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private static final int SHOW_PREFERENCES = 1;
 	private static final String DAY_INDEX = "selectedOfferIndex";
 	private static final String OFFER_INDEX = "selectedDayIndex";
+	private static final String DATA_AVAIL = "dataAvailable";
 	private final String TAG = "MainActivity";
 	
 	private static DBOpenHelper dbHelperSaveInstance;
@@ -95,16 +96,17 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		if (savedInstanceState != null) {
 			onStartUpdate = false;
-			//dataAvailable = false;
 
 			dbHelper = dbHelperSaveInstance;
 			persistenceFactory = persistenceFactorySaveInstance;
 
 			indexOfSelectedDay = savedInstanceState.getInt(DAY_INDEX);
 			indexOfSelectedOffer = savedInstanceState.getInt(OFFER_INDEX);
+			dataAvailable = savedInstanceState.getBoolean(DATA_AVAIL);
 			
 		} else {
 			indexOfSelectedDay = DateHelper.getSelectedDayDayOfWeek();
+			indexOfSelectedOffer = favouriteMenu;
 		}
 
 		onCreatePersistence();
@@ -212,6 +214,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			isOnOfferUpdate = true;
 		} else {
 			isOnOfferUpdate = false;
+			dataAvailable = true;
 		}
 		doUpdates();
 	}
@@ -293,14 +296,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 			}
 		});
 		
+
 		if(!Locale.getDefault().getISO3Language().equals("deu") && dataAvailable){
 			translateMenuItem.setVisible(true);
 		}else{
 			translateMenuItem.setVisible(false);
 		}
 
-		MenuItem settings = menu.findItem(R.id.menu_settings);
-		settings.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+		MenuItem settingsMenuItem = menu.findItem(R.id.menu_settings);
+		settingsMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
@@ -310,6 +314,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 				return true;
 			}
 		});
+		
+		if(multiPane){
+			settingsMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		}else{
+			settingsMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+		}
 
 		// Check for updates after Menu is created -> Progress Bar available
 		if (onStartUpdate) {
@@ -354,9 +364,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 		fragment1 = (OfferFragment) fm.findFragmentById(R.id.fragment1);
 		fragment2 = (OfferFragment) fm.findFragmentById(R.id.fragment2);
 		fragment3 = (OfferFragment) fm.findFragmentById(R.id.fragment3);
-		fragment1.getView().setBackgroundResource(R.drawable.border);
-		fragment2.getView().setBackgroundResource(R.drawable.border);
-		fragment3.getView().setBackgroundResource(R.drawable.border);
 
 		if (dataAvailable) {
 			selectedDay = week.getDayList().get(indexOfSelectedDay);
@@ -515,6 +522,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		outState.putInt(OFFER_INDEX, indexOfSelectedOffer);
 		outState.putInt(DAY_INDEX, indexOfSelectedDay);
+		outState.putBoolean(DATA_AVAIL, dataAvailable);
 	}
 
 	@Override
@@ -523,6 +531,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		indexOfSelectedDay = savedInstanceState.getInt(DAY_INDEX);
 		indexOfSelectedOffer = savedInstanceState.getInt(OFFER_INDEX);
+		dataAvailable = savedInstanceState.getBoolean(DATA_AVAIL);
 	}
 
 	private void updateBadgeView() {
@@ -585,6 +594,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	public void notifyDataChanges() {
 		dataAvailable = true;
 		shareMenuItem.setVisible(true);
+		
 		if(!Locale.getDefault().getISO3Language().equals("deu") ){
 			translateMenuItem.setVisible(true);
 		}else{
