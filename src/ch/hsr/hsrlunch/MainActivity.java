@@ -48,7 +48,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private static final String OFFER_INDEX = "selectedDayIndex";
 	private static final String DATA_AVAIL = "dataAvailable";
 	private final String TAG = "MainActivity";
-	
+
 	private static DBOpenHelper dbHelperSaveInstance;
 	private static PersistenceFactory persistenceFactorySaveInstance;
 
@@ -81,14 +81,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private boolean onStartUpdate = true;
 	private boolean multiPane = false;
 
-	private int favouriteMenu;
-	private int indexOfSelectedDay;
-	private int indexOfSelectedOffer;
+	private int favouriteMenu = 0;
+	private int indexOfSelectedDay = 0;
+	private int indexOfSelectedOffer = 0;
 	private OfferFragment fragment1;
 	private OfferFragment fragment2;
 	private OfferFragment fragment3;
 	private MenuItem shareMenuItem;
 	private MenuItem translateMenuItem;
+	private FragmentManager fm;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -103,7 +104,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			indexOfSelectedDay = savedInstanceState.getInt(DAY_INDEX);
 			indexOfSelectedOffer = savedInstanceState.getInt(OFFER_INDEX);
 			dataAvailable = savedInstanceState.getBoolean(DATA_AVAIL);
-			
+
 		} else {
 			indexOfSelectedDay = DateHelper.getSelectedDayDayOfWeek();
 			indexOfSelectedOffer = favouriteMenu;
@@ -124,10 +125,13 @@ public class MainActivity extends SherlockFragmentActivity implements
 		shareIntent = new Intent(Intent.ACTION_SEND);
 		shareIntent.setType("text/plain");
 
-		FragmentManager fm = getSupportFragmentManager();
+		fm = getSupportFragmentManager();
 		if (fm.findFragmentById(R.id.fragment1) != null
 				&& fm.findFragmentById(R.id.fragment2) != null
-				&& fm.findFragmentById(R.id.fragment3) != null) {
+				&& fm.findFragmentById(R.id.fragment3) != null
+				&& fm.findFragmentById(R.id.fragment1).isAdded()
+				&& fm.findFragmentById(R.id.fragment2).isAdded()
+				&& fm.findFragmentById(R.id.fragment3).isAdded()) {
 			multiPane = true;
 			onCreateTabletFragment(savedInstanceState);
 		} else {
@@ -148,7 +152,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		setSelectedFragment();
 		updateBadgeView();
-		if(onStartUpdate){
+		if (onStartUpdate) {
 			if (DateHelper.getDayOfWeek() == 0
 					|| DateHelper.getDayOfWeek() == 7) {
 				setAndShowErrorMsg(1, R.string.weekendText);
@@ -262,11 +266,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 		shareMenuItem = menu.findItem(R.id.menu_share);
 		provider = (ShareActionProvider) shareMenuItem.getActionProvider();
 		provider.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
-			updateShareIntent();
+		updateShareIntent();
 		provider.setShareIntent(shareIntent);
-		if(dataAvailable){
+		if (dataAvailable) {
 			shareMenuItem.setVisible(true);
-		}else{
+		} else {
 			shareMenuItem.setVisible(false);
 		}
 
@@ -285,39 +289,41 @@ public class MainActivity extends SherlockFragmentActivity implements
 		});
 
 		translateMenuItem = menu.findItem(R.id.menu_translate);
-		translateMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+		translateMenuItem
+				.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
-			@Override
-			public boolean onMenuItemClick(MenuItem item) {
-				if(dataAvailable){
-					openTranslateIntent();
-				}
-				return false;
-			}
-		});
-		
+					@Override
+					public boolean onMenuItemClick(MenuItem item) {
+						if (dataAvailable) {
+							openTranslateIntent();
+						}
+						return false;
+					}
+				});
 
-		if(!Locale.getDefault().getISO3Language().equals("deu") && dataAvailable){
+		if (!Locale.getDefault().getISO3Language().equals("deu")
+				&& dataAvailable) {
 			translateMenuItem.setVisible(true);
-		}else{
+		} else {
 			translateMenuItem.setVisible(false);
 		}
 
 		MenuItem settingsMenuItem = menu.findItem(R.id.menu_settings);
-		settingsMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+		settingsMenuItem
+				.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 
-			@Override
-			public boolean onMenuItemClick(MenuItem item) {
-				Intent i = new Intent(getApplicationContext(),
-						SettingsActivity.class);
-				startActivityForResult(i, SHOW_PREFERENCES);
-				return true;
-			}
-		});
-		
-		if(multiPane){
+					@Override
+					public boolean onMenuItemClick(MenuItem item) {
+						Intent i = new Intent(getApplicationContext(),
+								SettingsActivity.class);
+						startActivityForResult(i, SHOW_PREFERENCES);
+						return true;
+					}
+				});
+
+		if (multiPane) {
 			settingsMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		}else{
+		} else {
 			settingsMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 		}
 
@@ -360,7 +366,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void onCreateTabletFragment(Bundle savedInstanceState) {
-		FragmentManager fm = getSupportFragmentManager();
 		fragment1 = (OfferFragment) fm.findFragmentById(R.id.fragment1);
 		fragment2 = (OfferFragment) fm.findFragmentById(R.id.fragment2);
 		fragment3 = (OfferFragment) fm.findFragmentById(R.id.fragment3);
@@ -413,29 +418,20 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void updateTabletFragmentData() {
-
-		if (fragment1 == null) {
-			fragment1 = (OfferFragment) getSupportFragmentManager()
-					.findFragmentByTag("fragment1");
-		}
-		;
+		if (fragment1 == null)
+			fragment1 = (OfferFragment) fm.findFragmentByTag("fragment1");
 		fragment1.setDayString(selectedDay.getDateStringLong());
 		fragment1.setOffer(selectedDay.getOfferList().get(0));
 		fragment1.updateValues();
 
-		if (fragment2 == null) {
-			fragment2 = (OfferFragment) getSupportFragmentManager()
-					.findFragmentByTag("fragment2");
-		}
-		;
+		if (fragment2 == null)
+			fragment2 = (OfferFragment) fm.findFragmentByTag("fragment2");
 		fragment2.setDayString(selectedDay.getDateStringLong());
 		fragment2.setOffer(selectedDay.getOfferList().get(1));
 		fragment2.updateValues();
 
-		if (fragment3 == null) {
-			fragment3 = (OfferFragment) getSupportFragmentManager()
-					.findFragmentByTag("fragment3");
-		}
+		if (fragment3 == null)
+			fragment3 = (OfferFragment) fm.findFragmentByTag("fragment3");
 		fragment3.setDayString(selectedDay.getDateStringLong());
 		fragment3.setOffer(selectedDay.getOfferList().get(2));
 		fragment3.updateValues();
@@ -484,7 +480,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 					getString(R.string.notAvailable));
 			shareIntent.putExtra(android.content.Intent.EXTRA_TEXT,
 					getString(R.string.notAvailable));
-			
+
 		}
 
 	}
@@ -594,10 +590,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 	public void notifyDataChanges() {
 		dataAvailable = true;
 		shareMenuItem.setVisible(true);
-		
-		if(!Locale.getDefault().getISO3Language().equals("deu") ){
+
+		if (!Locale.getDefault().getISO3Language().equals("deu")) {
 			translateMenuItem.setVisible(true);
-		}else{
+		} else {
 			translateMenuItem.setVisible(false);
 		}
 		week = persistenceFactory.getWeek();
