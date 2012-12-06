@@ -248,12 +248,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 					indexOfSelectedOffer = favouriteMenu;
 					setSelectedFragment();
 				} else if(position == 7 ){
-					// starte Settings-Activity
 					Intent i = new Intent(getApplicationContext(),
 							SettingsActivity.class);
 					startActivityForResult(i, SHOW_PREFERENCES);
 				} else {
-					// starte Settings-Activity
 					Intent i = new Intent(getApplicationContext(),
 							CreditActivity.class);
 					startActivity(i);
