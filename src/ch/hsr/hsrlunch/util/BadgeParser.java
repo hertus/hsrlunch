@@ -39,13 +39,14 @@ public class BadgeParser {
 		 * "https://152.96.80.18/VerrechnungsportalService.svc/json/getBadgeSaldo"
 		 * );
 		 */
+		String pw = CheapEncoder.cheapDecode(prefs.getString(
+				SettingsActivity.PREF_BADGE_PASSWORD, ""));
 
 		client.getCredentialsProvider().setCredentials(
 				new AuthScope(null, -1),
 				new UsernamePasswordCredentials("hsr\\"
 						+ prefs.getString(SettingsActivity.PREF_BADGE_USERNAME,
-								""), prefs.getString(
-						SettingsActivity.PREF_BADGE_PASSWORD, "")));
+								""), pw));
 
 		HttpGet request = new HttpGet(HSR_BADGE_SERVER);
 
