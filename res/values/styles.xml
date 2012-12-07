@@ -1,16 +1,12 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <color name="black">#000000</color>
-    <color name="title">#db1313</color>
-    <color name="date">#767373</color>
-    <color name="grey">#dddddd</color>
+    <color name="black" >#000000</color>
+    <color name="title" >#db1313</color>
+    <color name="date"  >#767373</color>
+    <color name="grey"  >#dddddd</color>
     <color name="yellow">#fffcac</color>
     <color name="orange">#e9c69d</color>
-    <color name="red">#e9a69d</color>
-    
-    <style name="titleTextSize">
-         <item name="android:textSize">16sp</item>
-    </style>
+    <color name="red"   >#e9a69d</color>  
 
     <style name="myTheme" parent="@style/Theme.Sherlock.Light">
 
@@ -42,16 +38,19 @@
     <!-- Style von Viewpager-Lib überschreiben, damit Tabs mit eigenen Text-Styles erscheinen -->
     <style name="TextAppearance.TabPageIndicator" parent="Widget">
         <item name="android:textColor">@color/grey</item>
-      
     </style>
-       <style name="Widget.TabPageIndicator" parent="Widget">
-             <item name="android:textSize">16sp</item>
-            </style>
+
+    <style name="Widget.TabPageIndicator" parent="Widget">
+        <item name="android:textSize">16sp</item>
+    </style>
 
     <style name="badgeStyle">
         <item name="android:textColor">@color/grey</item>
     </style>
-    
+
+    <style name="separator">
+        <item name="android:background">@color/date</item>
+    </style>
 
     <style name="MenuDrawer" />
 
@@ -81,11 +80,4 @@
         <item name="android:ellipsize">end</item>
         <item name="android:background">@color/grey</item>
     </style>
-
-<!--     <style name="MenuDrawerStyle" parent="Widget.MenuDrawer">
-        <item name="mdArrowDrawable">@drawable/menu_arrow</item>
-        <item name="mdMenuWidth">200dp</item>
-    </style>
-    -->
-
 </resources>

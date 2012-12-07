@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import ch.hsr.hsrlunch.R;
 import ch.hsr.hsrlunch.model.Offer;
-import ch.hsr.hsrlunch.util.DateHelper;
 
 public class OfferFragment extends Fragment {
 
