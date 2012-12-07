@@ -51,5 +51,15 @@ public class CreditActivity extends SherlockFragmentActivity{
 		tvLibrary.setText(str);
 		
 	}
-
+    @Override
+    public boolean onOptionsItemSelected(
+                    com.actionbarsherlock.view.MenuItem item) {
+        switch (item.getItemId()) {
+        case android.R.id.home:
+            finish();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }
 }
