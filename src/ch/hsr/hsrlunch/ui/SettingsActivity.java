@@ -19,6 +19,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
         // We use addPreferencesFromResource as we need sdk-7 compatibility
         // but build with sdk 15
         
+		@SuppressWarnings("deprecation")
 		@Override
 		@SuppressLint("NewApi")
         protected void onCreate(Bundle savedInstanceState) {

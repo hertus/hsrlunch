@@ -22,20 +22,6 @@ public class OfferFragment extends Fragment {
 	public OfferFragment() {
 	}
 
-	/*
-	 * für christof entfernt, damit wir ja kein static haben xD
-	 */
-	// public static OfferFragment newInstance(int position) {
-	//
-	//
-	// final OfferFragment f = new OfferFragment();
-	// // final Bundle args = new Bundle();
-	// // args.putInt(MENU_DATA_EXTRA, menuNum);
-	// // f.setArguments(args);
-	//
-	// return f;
-	// }
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -83,18 +69,10 @@ public class OfferFragment extends Fragment {
 				}
 
 			}
-//		}
 	}
 
 	private void setEmptyText() {
 		content.setText(R.string.notAvailable);
-		title.setText("");
-		date.setText("");
-		price.setText("");
-	}
-
-	private void setWeekendText() {
-		content.setText(R.string.weekendText);
 		title.setText("");
 		date.setText("");
 		price.setText("");

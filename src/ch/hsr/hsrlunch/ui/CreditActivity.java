@@ -1,19 +1,15 @@
 package ch.hsr.hsrlunch.ui;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-
-import ch.hsr.hsrlunch.R;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.TextUtils;
-import android.text.style.BulletSpan;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+import ch.hsr.hsrlunch.R;
+
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 public class CreditActivity extends SherlockFragmentActivity{
 	@Override
