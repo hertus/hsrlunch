@@ -22,6 +22,7 @@
     <string name="err_no_hsrwifi">Nessuna connessione disponibile per HSR-Secure</string>
     <string name="err_badge_not_parseable">Impossibile recuperare conto distintivo HSR</string>
     <string name="err_update_failed">Impossibile recuperare gli aggiornamenti</string>
+    <string name="err_translate_failed">Pas de Google Translate disponible</string>
     <string name="weekendText">Nei fine settimana non sono disponibili informazioni aggiornate</string>
     <string name="share_intent_text">HSR SV-Menu alla: </string>
     <string name="menu_credits">Creatori</string>
@@ -31,4 +32,5 @@
     <string name="project">HSR sfida progetto</string>
     <string name="appRating"><u>applicazione valutare</u></string>
     <string name="librarytitel">dlibrerie usate:</string>
+
 </resources>

@@ -22,6 +22,7 @@
     <string name="err_no_hsrwifi">Pas de connexion au réseau de HSR-Secure</string>
     <string name="err_badge_not_parseable">Impossible de récupérer compte insigne HSR</string>
     <string name="err_update_failed">Impossible de récupérer les mises à jour</string>
+    <string name="err_translate_failed">Nessun Google Translate disponibile</string>
     <string name="weekendText">Pas d\'information disponible le week-end</string>
     <string name="share_intent_text">HSR SV-Menu suis: </string>
     <string name="menu_credits">sur</string>

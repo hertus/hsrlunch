@@ -22,6 +22,7 @@
     <string name="err_no_hsrwifi">Nicht mit HSR-Secure verbunden</string>
     <string name="err_badge_not_parseable">Badge-Kontostand konnte nicht abgerufen werden</string>
     <string name="err_update_failed">Update konnte nicht durchgeführt werden</string>
+    <string name="err_translate_failed">Kein Google Translate vorhanden</string>
     <string name="weekendText">Am Wochenende stehen keine aktuellen Informationen bereit</string>
     <string name="share_intent_text">HSR SV-Menu am: </string>
     <string name="menu_credits">Über</string>

@@ -4,19 +4,20 @@ import java.util.List;
 import java.util.Locale;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import ch.hsr.hsrlunch.MainActivity;
+import ch.hsr.hsrlunch.R;
 
 public class GoogleTranslate {
-	private Context mainActivity;
+	private MainActivity mainActivity;
 
 	private final String appName = "com.google.android.apps.translate";
 	private final String intentName = "com.google.android.apps.translate.translation.TranslateActivity";
 
-	public GoogleTranslate(Context mainActivity) {
+	public GoogleTranslate(MainActivity mainActivity) {
 		this.mainActivity = mainActivity;
 	}
 
@@ -26,27 +27,36 @@ public class GoogleTranslate {
 		if (languageTo.equals("de")) {
 			languageTo = "en";
 		}
-		Intent intent = new Intent();
-		intent.setAction(Intent.ACTION_VIEW);
-		intent.putExtra("key_text_input", content);
-		intent.putExtra("key_text_output", "");
-		intent.putExtra("key_language_from", "de");
-		intent.putExtra("key_language_to", languageTo);
-		intent.putExtra("key_suggest_translation", "");
-		intent.putExtra("key_from_floating_window", false);
-		intent.setComponent(new ComponentName(appName, intentName));
+		Intent intentTranslate = new Intent();
+		intentTranslate.setAction(Intent.ACTION_VIEW);
+		intentTranslate.putExtra("key_text_input", content);
+		intentTranslate.putExtra("key_text_output", "");
+		intentTranslate.putExtra("key_language_from", "de");
+		intentTranslate.putExtra("key_language_to", languageTo);
+		intentTranslate.putExtra("key_suggest_translation", "");
+		intentTranslate.putExtra("key_from_floating_window", false);
+		intentTranslate.setComponent(new ComponentName(appName, intentName));
+
+		if (isIntentAvailable(intentTranslate)) {
+			mainActivity.startActivity(intentTranslate);
+		} else {
+			Uri uri = Uri.parse("market://search?q=" + appName);
+			Intent intentMarket = new Intent(Intent.ACTION_VIEW, uri);
+			if (isIntentAvailable(intentMarket)) {
+				mainActivity.startActivity(intentMarket);
+			} else {
+				mainActivity.setAndShowErrorMsg(1,
+						R.string.err_translate_failed);
+			}
+		}
+
+	}
+
+	private boolean isIntentAvailable(Intent intent) {
 
 		List<ResolveInfo> list = mainActivity.getPackageManager()
 				.queryIntentActivities(intent,
 						PackageManager.MATCH_DEFAULT_ONLY);
-
-		if (list.size() > 0) {
-			mainActivity.startActivity(intent);
-		} else {
-			Uri uri = Uri.parse("market://search?q=" + appName);
-			Intent it = new Intent(Intent.ACTION_VIEW, uri);
-			mainActivity.startActivity(it);
-		}
-
+		return (list.size() > 0);
 	}
 }
