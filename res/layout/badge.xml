@@ -6,34 +6,36 @@
     android:orientation="horizontal"
     android:background="@drawable/tab_bg_selected"
     >
-
+	<!--  float left with gravity attribut-->
     <TextView
         android:id="@+id/kontoStand"
+        android:layout_weight="1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
         android:text="@string/kontoStand" 
+        android:gravity="left"   
+        android:paddingLeft="5dp"
         style="@style/badgeStyle"
-        
          />
-
+	<!--  float center with gravity attribut-->
     <TextView
         android:id="@+id/amount"
+        android:layout_weight="1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp" 
-         style="@style/badgeStyle"
         android:textStyle="bold"
-
+        android:gravity="center"
+        style="@style/badgeStyle"
          />
-
+	<!--  float right with gravity attribut-->
     <TextView
         android:id="@+id/lastUpdate"
+        android:layout_weight="1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-         style="@style/badgeStyle"
-
+        android:gravity="right" 
+        android:paddingRight="5dp"
+        style="@style/badgeStyle"
           />
 
 </LinearLayout>
