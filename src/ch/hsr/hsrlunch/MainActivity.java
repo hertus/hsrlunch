@@ -220,6 +220,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 		} else {
 			isOnOfferUpdate = false;
 			dataAvailable = true;
+			updateActionBarItems();
+			
 		}
 		doUpdates();
 	}
@@ -272,11 +274,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 		provider.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
 		updateShareIntent();
 		provider.setShareIntent(shareIntent);
-		if (dataAvailable) {
-			shareMenuItem.setVisible(true);
-		} else {
-			shareMenuItem.setVisible(false);
-		}
 
 		MenuItem refresh = menu.findItem(R.id.menu_refresh);
 		persistenceFactory.setMenuItem(refresh);
@@ -305,13 +302,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 					}
 				});
 
-		if (!Locale.getDefault().getISO3Language().equals("deu")
-				&& dataAvailable) {
-			translateMenuItem.setVisible(true);
-		} else {
-			translateMenuItem.setVisible(false);
-		}
-
 		MenuItem settingsMenuItem = menu.findItem(R.id.menu_settings);
 		settingsMenuItem
 				.setOnMenuItemClickListener(new OnMenuItemClickListener() {
@@ -330,13 +320,30 @@ public class MainActivity extends SherlockFragmentActivity implements
 		} else {
 			settingsMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 		}
-
+		
+		updateActionBarItems();
+		
 		// Check for updates after Menu is created -> Progress Bar available
 		if (onStartUpdate) {
 			checkDataUpdate();
 		}
 
 		return true;
+	}
+
+	private void updateActionBarItems() {
+		if(dataAvailable){
+			shareMenuItem.setVisible(true);
+			if (!Locale.getDefault().getISO3Language().equals("deu")) {
+				translateMenuItem.setVisible(true);
+			} else {
+				translateMenuItem.setVisible(false);
+			}
+			
+		}else {
+			shareMenuItem.setVisible(false);
+			translateMenuItem.setVisible(false);
+		}
 	}
 
 	private void onCreateViewPager(Bundle savedInstanceState) {
@@ -593,13 +600,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 	 */
 	public void notifyDataChanges() {
 		dataAvailable = true;
-		shareMenuItem.setVisible(true);
+		
+		updateActionBarItems();
 
-		if (!Locale.getDefault().getISO3Language().equals("deu")) {
-			translateMenuItem.setVisible(true);
-		} else {
-			translateMenuItem.setVisible(false);
-		}
 		week = persistenceFactory.getWeek();
 		badge = persistenceFactory.getBadge();
 
