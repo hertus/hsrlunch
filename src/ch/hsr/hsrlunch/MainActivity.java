@@ -71,6 +71,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	private LinearLayout badgeLayout;
 	private LinearLayout errorMsgLayout;
+	private TextView weekendInfo;
 	private CustomMenuView menuView;
 
 	private DBOpenHelper dbHelper;
@@ -141,8 +142,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 		}
 
 		badgeLayout = (LinearLayout) findViewById(R.id.badge);
+		weekendInfo = (TextView) findViewById(R.id.weekendInfo);
 
-		errorMsgLayout = (LinearLayout) findViewById(R.id.error);
+		errorMsgLayout = (LinearLayout) findViewById(R.id.errorPanel);
 		errorMsgLayout.setVisibility(View.GONE);
 		errorMsgLayout.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -153,11 +155,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		setSelectedFragment();
 		updateBadgeView();
-		if (onStartUpdate) {
-			if (DateHelper.getDayOfWeek() == 0
-					|| DateHelper.getDayOfWeek() == 7) {
-				setAndShowErrorMsg(1, R.string.weekendText);
-			}
+		if (DateHelper.getDayOfWeek() == 0 || DateHelper.getDayOfWeek() == 7) {
+			weekendInfo.setVisibility(View.VISIBLE);
 
 		}
 
@@ -221,7 +220,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			isOnOfferUpdate = false;
 			dataAvailable = true;
 			updateActionBarItems();
-			
+
 		}
 		doUpdates();
 	}
@@ -249,7 +248,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 					indexOfSelectedDay = position - 1;
 					indexOfSelectedOffer = favouriteMenu;
 					setSelectedFragment();
-				} else if(position == 7 ){
+				} else if (position == 7) {
 					Intent i = new Intent(getApplicationContext(),
 							SettingsActivity.class);
 					startActivityForResult(i, SHOW_PREFERENCES);
@@ -320,9 +319,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 		} else {
 			settingsMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 		}
-		
+
 		updateActionBarItems();
-		
+
 		// Check for updates after Menu is created -> Progress Bar available
 		if (onStartUpdate) {
 			checkDataUpdate();
@@ -332,15 +331,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void updateActionBarItems() {
-		if(dataAvailable){
+		if (dataAvailable) {
 			shareMenuItem.setVisible(true);
 			if (!Locale.getDefault().getISO3Language().equals("deu")) {
 				translateMenuItem.setVisible(true);
 			} else {
 				translateMenuItem.setVisible(false);
 			}
-			
-		}else {
+
+		} else {
 			shareMenuItem.setVisible(false);
 			translateMenuItem.setVisible(false);
 		}
@@ -600,7 +599,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	 */
 	public void notifyDataChanges() {
 		dataAvailable = true;
-		
+
 		updateActionBarItems();
 
 		week = persistenceFactory.getWeek();

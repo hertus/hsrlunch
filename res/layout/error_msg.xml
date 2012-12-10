@@ -3,36 +3,55 @@
     android:id="@+id/error"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:clickable="true"
     android:background="@color/grey"
+    >
+	<TextView 
+	    android:id="@+id/weekendInfo"
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:clickable="true"
+    	android:background="@color/yellow"
+    	android:visibility="gone"
+    	android:text="@string/weekendText"
+    	android:padding="5dp"
+	/>
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    	android:id="@+id/errorPanel"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+    	android:orientation="horizontal"
+    	android:clickable="true"
+    	android:background="@color/grey"
     
     >
 
-    <TextView
-        android:id="@+id/errorType"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="left"
-        android:padding="5dp"
-  
+    	<TextView
+   	     android:id="@+id/errorType"
+        	android:layout_width="wrap_content"
+        	android:layout_height="match_parent"
+        	android:gravity="left"
+        	android:padding="5dp"
+	  
           />
 
-    <TextView
-        android:id="@+id/errorMsg"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-         android:layout_weight="1"
-        android:gravity="left"
-        android:padding="5dp"
+    	<TextView
+	        android:id="@+id/errorMsg"
+        	android:layout_width="wrap_content"
+        	android:layout_height="match_parent"
+	        android:layout_weight="1"
+    	    android:gravity="left"
+        	android:padding="5dp"
          />
     
-    <ImageView 
-        android:id="@+id/closeBut"
-           android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="right"
-        android:src="@drawable/ic_close"
+    	<ImageView 
+      		android:id="@+id/closeBut"
+        	android:layout_width="wrap_content"
+        	android:layout_height="match_parent"
+        	android:gravity="right"
+        	android:src="@drawable/ic_close"
         />
+    </LinearLayout>
 
 </LinearLayout>
