@@ -16,13 +16,13 @@
 
     <EditTextPreference
         android:dependency="pref_badge"
-        android:key="pref_username"
+        android:key="pref_badge_username"
         android:summary="@string/pref_badge_username_long"
         android:title="@string/pref_badge_username" />
     <ch.hsr.hsrlunch.ui.CheapEditTextPreference
         android:dependency="pref_badge"
         android:inputType="textPassword"
-        android:key="pref_password"
+        android:key="pref_badge_password"
         android:summary="@string/pref_badge_password_long"
         android:title="@string/pref_badge_password" />
 
