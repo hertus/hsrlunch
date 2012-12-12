@@ -3,7 +3,7 @@
     <string-array name="menu_title_entries">
         <item>Piatto del giorno</item>
         <item>Vegetariano</item>
-        <item>Speciale settimanale</item>
+        <item>Specialita settimanale</item>
     </string-array>
     <string-array name="tabTitles">
         <item>Giorno</item>
@@ -19,7 +19,7 @@
         </string-array>
         <string-array name="errorTypes">
             <item>Info</item>
-            <item>Attenzione</item>
+            <item>Avvertimento</item>
             <item>Errore</item>
         </string-array>
 </resources>
