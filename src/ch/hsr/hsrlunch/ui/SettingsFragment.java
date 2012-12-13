@@ -1,10 +1,9 @@
 package ch.hsr.hsrlunch.ui;
 
-import ch.hsr.hsrlunch.R;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
-import android.preference.SwitchPreference;
+import ch.hsr.hsrlunch.R;
 
 @SuppressLint("NewApi")
 public class SettingsFragment extends PreferenceFragment {
@@ -14,7 +13,6 @@ public class SettingsFragment extends PreferenceFragment {
 
 	        // Load the preferences from an XML resource
 	        addPreferencesFromResource(R.xml.userpreference);
-	        SwitchPreference switchPreference = (SwitchPreference) findPreference("pref_badge");
 	    }
 
 }

@@ -45,8 +45,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 		OnSharedPreferenceChangeListener {
 
 	private static final int SHOW_PREFERENCES = 1;
-	private static final String DAY_INDEX = "selectedOfferIndex";
-	private static final String OFFER_INDEX = "selectedDayIndex";
+	private static final String DAY_INDEX = "selectedDayIndex";
+	private static final String OFFER_INDEX = "selectedOfferIndex";
 	private static final String DATA_AVAIL = "dataAvailable";
 	private final String TAG = "MainActivity";
 
@@ -158,7 +158,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 		updateBadgeView();
 		if (DateHelper.getDayOfWeek() == 0 || DateHelper.getDayOfWeek() == 7) {
 			weekendInfo.setVisibility(View.VISIBLE);
-
 		}
 
 	}
@@ -186,7 +185,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		for (int i = 0; i < offertitles.length; i++) {
 			if (temp.equals(offertitles[i])) {
 				favouriteMenu = i;
-				return;
+				break;
 			}
 		}
 		indexOfSelectedOffer = favouriteMenu;
@@ -453,6 +452,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void updateTabPageAdapterData() {
+		
+		if (mTabPageAdapter != null) {
+			mTabPageAdapter.setDay(selectedDay);
+		}
 
 		if (mViewPager != null) {
 			mViewPager.setCurrentItem(indexOfSelectedOffer, true);
@@ -460,9 +463,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		if (indicator != null) {
 			indicator.setCurrentItem(indexOfSelectedOffer);
 		}
-		if (mTabPageAdapter != null) {
-			mTabPageAdapter.setDay(selectedDay);
-		}
+
 	}
 
 	private void updateShareIntent() {

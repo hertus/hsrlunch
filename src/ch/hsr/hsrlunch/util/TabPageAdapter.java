@@ -8,7 +8,6 @@ import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.Log;
 import ch.hsr.hsrlunch.R;
 import ch.hsr.hsrlunch.model.WorkDay;
 import ch.hsr.hsrlunch.ui.OfferFragment;
@@ -55,7 +54,6 @@ public class TabPageAdapter extends FragmentPagerAdapter{
 	public void notifyDataSetChanged() {
 		super.notifyDataSetChanged();	
 
-		Log.d("TAbPageAdapter","notifyDataSetChanged");
 		for(int i = 0; i < getCount(); i++){
 			OfferFragment f = (OfferFragment) fm.findFragmentByTag(getFragmentTag(i));
 			if( f != null){
@@ -65,6 +63,14 @@ public class TabPageAdapter extends FragmentPagerAdapter{
 			}
 		}		
 	}
+
+	/**
+	 * TabPageAdaper und ViewPager erstellen folgende Fragment-Tags
+	 * android:switcher:"viewpagerID"+pos
+	 * diese Tags benötig man um das Fragment zu identifizieren
+	 * @param pos
+	 * @return tag of Fragment
+	 */
 	private String getFragmentTag(int pos){
 	    return "android:switcher:"+R.id.viewpager+":"+pos;
 	}
