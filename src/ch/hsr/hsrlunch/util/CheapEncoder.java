@@ -1,7 +1,7 @@
 package ch.hsr.hsrlunch.util;
 
 public class CheapEncoder {
-	private static final String WHATEVER = "QuyAV(RbzW)p}Z-lC94T";
+	private static final String WHATEVER = "LuQmksn09978$1M+hs65asf";
 
 	/**
 	 * 
@@ -13,12 +13,12 @@ public class CheapEncoder {
 		inputString = inputString + WHATEVER;
 		for (int i = 0; i < inputString.length(); i++) {
 			char c = inputString.charAt(i);
-			if ((c < 32) || (c > 126)) {
+			if ((c < 45) || (c > 123)) {
 				output.append(c);
 			} else {
-				c += 13;
-				if (c > 126) {
-					c -= ((126 - 32) + 1);
+				c += 42;
+				if (c > 123) {
+					c -= ((123 - 45) + 1);
 				}
 				output.append(c);
 			}
@@ -40,12 +40,12 @@ public class CheapEncoder {
 		StringBuilder output = new StringBuilder();
 		for (int i = 0; i < inputString.length(); i++) {
 			char c = inputString.charAt(i);
-			if ((c < 32) || (c > 126)) {
+			if ((c < 45) || (c > 123)) {
 				output.append(c);
 			} else {
-				c -= 13;
-				if (c < 32) {
-					c += ((126 - 32) + 1);
+				c -= 42;
+				if (c < 45) {
+					c += ((123 - 45) + 1);
 				}
 				output.append(c);
 			}
