@@ -154,6 +154,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		});
 
 		setSelectedFragment();
+		updateShareIntent();
 		updateBadgeView();
 		if (DateHelper.getDayOfWeek() == 0 || DateHelper.getDayOfWeek() == 7) {
 			weekendInfo.setVisibility(View.VISIBLE);
@@ -219,6 +220,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		} else {
 			isOnOfferUpdate = false;
 			dataAvailable = true;
+			updateShareIntent();
 			updateActionBarItems();
 
 		}
@@ -271,7 +273,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		shareMenuItem = menu.findItem(R.id.menu_share);
 		provider = (ShareActionProvider) shareMenuItem.getActionProvider();
 		provider.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
-		updateShareIntent();
+		//updateShareIntent();
 		provider.setShareIntent(shareIntent);
 
 		MenuItem refresh = menu.findItem(R.id.menu_refresh);
@@ -325,6 +327,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 		// Check for updates after Menu is created -> Progress Bar available
 		if (onStartUpdate) {
 			checkDataUpdate();
+		}else{
+			dataAvailable = true;
+			updateShareIntent();
 		}
 
 		return true;
@@ -461,7 +466,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void updateShareIntent() {
-
 		if (dataAvailable) {
 			shareIntent.removeExtra(android.content.Intent.EXTRA_SUBJECT);
 			shareIntent.removeExtra(android.content.Intent.EXTRA_TEXT);
@@ -607,6 +611,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		setSelectedFragment();
 		updateBadgeView();
+		updateShareIntent();
 	}
 
 	/**
