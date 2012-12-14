@@ -5,53 +5,42 @@ import android.util.AttributeSet;
 import android.widget.ListView;
 
 public class CustomMenuView extends ListView {
-	
-    public interface OnScrollChangedListener {
-    void onScrollChanged();
-}
-    /*
-     * mAdapter = new MenuAdapter(items);
-        mList.setAdapter(mAdapter);
-        mList.setOnItemClickListener(mItemClickListener);
-        mList.setOnScrollChangedListener(new MenuListView.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                mMenuDrawer.getMenuDrawer().invalidate();
-            }
-        });
-     */
 
-private OnScrollChangedListener mOnScrollChangedListener;
+	public interface OnScrollChangedListener {
+		void onScrollChanged();
+	}
 
-public CustomMenuView(Context context) {
-    super(context);
-//    this.setAdapter(new MenuAdapter(context.getResources().getStringArray(ch.hsr.hsrlunch.R.array.weekdays)));
-    this.setOnScrollChangedListener(new CustomMenuView.OnScrollChangedListener() {
+	private OnScrollChangedListener mOnScrollChangedListener;
 
-		@Override
-		public void onScrollChanged() {
-			invalidate();
-		}
-    	
-    });
-}
+	public CustomMenuView(Context context) {
+		super(context);
+		this.setOnScrollChangedListener(new CustomMenuView.OnScrollChangedListener() {
 
-public CustomMenuView(Context context, AttributeSet attrs) {
-    super(context, attrs);
-}
+			@Override
+			public void onScrollChanged() {
+				invalidate();
+			}
 
-public CustomMenuView(Context context, AttributeSet attrs, int defStyle) {
-    super(context, attrs, defStyle);
-}
+		});
+	}
 
-@Override
-protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-    super.onScrollChanged(l, t, oldl, oldt);
+	public CustomMenuView(Context context, AttributeSet attrs) {
+		super(context, attrs);
+	}
 
-    if (mOnScrollChangedListener != null) mOnScrollChangedListener.onScrollChanged();
-}
+	public CustomMenuView(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+	}
 
-public void setOnScrollChangedListener(OnScrollChangedListener listener) {
-    mOnScrollChangedListener = listener;
-}
+	@Override
+	protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+		super.onScrollChanged(l, t, oldl, oldt);
+
+		if (mOnScrollChangedListener != null)
+			mOnScrollChangedListener.onScrollChanged();
+	}
+
+	public void setOnScrollChangedListener(OnScrollChangedListener listener) {
+		mOnScrollChangedListener = listener;
+	}
 }

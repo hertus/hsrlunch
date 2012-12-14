@@ -7,12 +7,12 @@ import ch.hsr.hsrlunch.R;
 
 @SuppressLint("NewApi")
 public class SettingsFragment extends PreferenceFragment {
-	 @Override
-	    public void onCreate(Bundle savedInstanceState) {
-	        super.onCreate(savedInstanceState);
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
-	        // Load the preferences from an XML resource
-	        addPreferencesFromResource(R.xml.userpreference);
-	    }
+		// Load the preferences from an XML resource
+		addPreferencesFromResource(R.xml.userpreference);
+	}
 
 }

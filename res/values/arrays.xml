@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string-array name="menu_title_entries">
         <item>Tagesteller</item>
         <item>Vegetarisch</item>
@@ -10,21 +11,22 @@
         <item>Vegi</item>
         <item>Woche</item>
     </string-array>
-            <string-array name="weekdays">
-            <item >Montag</item>
-            <item >Dienstag</item>
-            <item >Mittwoch</item>
-            <item >Donnerstag</item>
-            <item >Freitag</item>
-        </string-array>
-        <string-array name="errorTypes">
-            <item>Info</item>
-            <item>Warnung</item>
-            <item>Fehler</item>
-        </string-array>
-        <string-array name="libraries">
-            <item >MenuDrawer</item>
-            <item >ActionBarSherlock</item>
-            <item >ViewPagerIndicator</item>
-        </string-array>
+    <string-array name="weekdays">
+        <item>Montag</item>
+        <item>Dienstag</item>
+        <item>Mittwoch</item>
+        <item>Donnerstag</item>
+        <item>Freitag</item>
+    </string-array>
+    <string-array name="errorTypes">
+        <item>Info</item>
+        <item>Warnung</item>
+        <item>Fehler</item>
+    </string-array>
+    <string-array name="libraries">
+        <item>MenuDrawer</item>
+        <item>ActionBarSherlock</item>
+        <item>ViewPagerIndicator</item>
+    </string-array>
+
 </resources>

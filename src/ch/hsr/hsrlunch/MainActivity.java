@@ -127,6 +127,35 @@ public class MainActivity extends SherlockFragmentActivity implements
 		shareIntent = new Intent(Intent.ACTION_SEND);
 		shareIntent.setType("text/plain");
 
+		setTabletMultiPaneLayout(savedInstanceState);
+
+		badgeLayout = (LinearLayout) findViewById(R.id.badge);
+		weekendInfo = (TextView) findViewById(R.id.weekendInfo);
+
+		setErrorMsgLayout();
+
+		setSelectedFragment();
+		updateShareIntent();
+		updateBadgeView();
+		
+		if (DateHelper.getDayOfWeek() == 0 || DateHelper.getDayOfWeek() == 7) {
+			weekendInfo.setVisibility(View.VISIBLE);
+		}
+
+	}
+
+	private void setErrorMsgLayout() {
+		errorMsgLayout = (LinearLayout) findViewById(R.id.errorPanel);
+		errorMsgLayout.setVisibility(View.GONE);
+		errorMsgLayout.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				errorMsgLayout.setVisibility(View.GONE);
+			}
+		});
+	}
+
+	private void setTabletMultiPaneLayout(Bundle savedInstanceState) {
 		fm = getSupportFragmentManager();
 		if (fm.findFragmentById(R.id.fragment1) != null
 				&& fm.findFragmentById(R.id.fragment2) != null
@@ -140,26 +169,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 			multiPane = false;
 			onCreateViewPager(savedInstanceState);
 		}
-
-		badgeLayout = (LinearLayout) findViewById(R.id.badge);
-		weekendInfo = (TextView) findViewById(R.id.weekendInfo);
-
-		errorMsgLayout = (LinearLayout) findViewById(R.id.errorPanel);
-		errorMsgLayout.setVisibility(View.GONE);
-		errorMsgLayout.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				errorMsgLayout.setVisibility(View.GONE);
-			}
-		});
-
-		setSelectedFragment();
-		updateShareIntent();
-		updateBadgeView();
-		if (DateHelper.getDayOfWeek() == 0 || DateHelper.getDayOfWeek() == 7) {
-			weekendInfo.setVisibility(View.VISIBLE);
-		}
-
 	}
 
 	private void setPreferencesVersion() {
@@ -181,7 +190,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 		String temp = prefs.getString(SettingsActivity.PREF_FAV_MENU,
 				offertitles[0]);
 
-		// update index favourite menu
 		for (int i = 0; i < offertitles.length; i++) {
 			if (temp.equals(offertitles[i])) {
 				favouriteMenu = i;
@@ -194,12 +202,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private void onCreatePersistence() {
 
 		if (dbHelper == null) {
-			Log.d(TAG, "dbHelper was null, create new");
 			dbHelper = new DBOpenHelper(this);
 		}
 
 		if (persistenceFactory == null) {
-			Log.d(TAG, "persistenceFactory was null, create new");
 			persistenceFactory = new PersistenceFactory(dbHelper);
 		}
 
@@ -212,8 +218,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 	 * is switched on and update it.
 	 */
 	private void checkDataUpdate() {
-		Log.d(TAG, "Checking for Data Updates");
-		// Initialize DB and check for Updates
 		if (!DateHelper.compareLastUpdateToMonday(week.getLastUpdate())) {
 			isOnOfferUpdate = true;
 		} else {
@@ -221,7 +225,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 			dataAvailable = true;
 			updateShareIntent();
 			updateActionBarItems();
-
 		}
 		doUpdates();
 	}
@@ -243,7 +246,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				mvAdapter.setActiveEntry(position);
-				mMenuDrawer.setActiveView(view, position); // falls vorig Zeit^^
+				mMenuDrawer.setActiveView(view, position);
 				mMenuDrawer.closeMenu();
 				if (position >= 1 && position <= 6) {
 					indexOfSelectedDay = position - 1;
@@ -272,7 +275,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 		shareMenuItem = menu.findItem(R.id.menu_share);
 		provider = (ShareActionProvider) shareMenuItem.getActionProvider();
 		provider.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
-		//updateShareIntent();
 		provider.setShareIntent(shareIntent);
 
 		MenuItem refresh = menu.findItem(R.id.menu_refresh);
@@ -326,7 +328,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		// Check for updates after Menu is created -> Progress Bar available
 		if (onStartUpdate) {
 			checkDataUpdate();
-		}else{
+		} else {
 			dataAvailable = true;
 			updateShareIntent();
 		}
@@ -360,7 +362,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		indicator.setViewPager(mViewPager);
 		indicator.setCurrentItem(indexOfSelectedDay);
 
-		// Listener für "pageChange Event"
+		// Listener for "pageChange Event"
 		ViewPager.SimpleOnPageChangeListener pageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
 			@Override
 			public void onPageSelected(int position) {
@@ -415,15 +417,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 	 */
 	private void setSelectedFragment() {
 		if (multiPane) {
-			Log.d(TAG, "setSelectedFragment wurde aufgerufen, day="
-					+ indexOfSelectedDay);
 			selectedDay = week.getDayList().get(indexOfSelectedDay);
 			updateTabletFragmentData();
 
 		} else {
-
-			Log.d(TAG, "setSelectedFragment wurde aufgerufen, day="
-					+ indexOfSelectedDay + ", offer=" + indexOfSelectedOffer);
 			selectedDay = week.getDayList().get(indexOfSelectedDay);
 			selectedOffer = selectedDay.getOfferList()
 					.get(indexOfSelectedOffer);
@@ -452,7 +449,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 
 	private void updateTabPageAdapterData() {
-		
+
 		if (mTabPageAdapter != null) {
 			mTabPageAdapter.setDay(selectedDay);
 		}
@@ -504,7 +501,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == SHOW_PREFERENCES) {
-			Log.d(TAG, "Coming from Preferences");
 			updatePreferences();
 			updateBadgeView();
 			updateTabPageAdapterData();
@@ -515,7 +511,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		Log.d(TAG, "Pref changed");
 		updatePreferences();
 		updateBadgeView();
 		updateTabPageAdapterData();

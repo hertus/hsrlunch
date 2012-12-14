@@ -31,14 +31,6 @@ public class BadgeParser {
 	public double parseBadge() throws UpdateBadgeException {
 		DefaultHttpClient client = new MyHttpClient().getMyHttpClient();
 
-		/* TestUser */
-		/*
-		 * client.getCredentialsProvider().setCredentials( new AuthScope(null,
-		 * -1), new UsernamePasswordCredentials("SIFSV-80018\\ChallPUser",
-		 * "1q$2w$3e$4r$5t")); HttpGet request = new HttpGet(
-		 * "https://152.96.80.18/VerrechnungsportalService.svc/json/getBadgeSaldo"
-		 * );
-		 */
 		String pw = CheapEncoder.cheapDecode(prefs.getString(
 				SettingsActivity.PREF_BADGE_PASSWORD, ""));
 
@@ -56,7 +48,6 @@ public class BadgeParser {
 			HttpEntity entity = response.getEntity();
 			inputStream = entity.getContent();
 
-			// Read response into a buffered stream
 			int readBytes = 0;
 			byte[] sBuffer = new byte[512];
 			while ((readBytes = inputStream.read(sBuffer)) != -1) {

@@ -12,19 +12,19 @@ import ch.hsr.hsrlunch.R;
 import ch.hsr.hsrlunch.model.WorkDay;
 import ch.hsr.hsrlunch.ui.OfferFragment;
 
-public class TabPageAdapter extends FragmentPagerAdapter{
+public class TabPageAdapter extends FragmentPagerAdapter {
 
 	private List<String> tabTitles;
 	private WorkDay day;
 	FragmentManager fm;
 
-	public TabPageAdapter(Activity mainActivity,FragmentManager fm, WorkDay day) {
-		
+	public TabPageAdapter(Activity mainActivity, FragmentManager fm, WorkDay day) {
+
 		super(fm);
 		this.fm = fm;
-		tabTitles = Arrays.asList(mainActivity.getResources()
-				.getStringArray(R.array.tabTitles));
-		
+		tabTitles = Arrays.asList(mainActivity.getResources().getStringArray(
+				R.array.tabTitles));
+
 		this.day = day;
 	}
 
@@ -32,14 +32,14 @@ public class TabPageAdapter extends FragmentPagerAdapter{
 	public int getCount() {
 		return tabTitles.size();
 	}
-	
+
 	@Override
 	public Fragment getItem(int position) {
 
-			OfferFragment frag = new OfferFragment();
-			frag.setDayString(day.getDateStringLong());
-			frag.setOffer(day.getOfferList().get(position));
-			return frag;
+		OfferFragment frag = new OfferFragment();
+		frag.setDayString(day.getDateStringLong());
+		frag.setOffer(day.getOfferList().get(position));
+		return frag;
 	}
 
 	@Override
@@ -47,32 +47,31 @@ public class TabPageAdapter extends FragmentPagerAdapter{
 		return tabTitles.get(position);
 	}
 
-	/*
-	 * hier werden die Fragments mit den aktuellen werten aktualisiert
-	 */
 	@Override
 	public void notifyDataSetChanged() {
-		super.notifyDataSetChanged();	
+		super.notifyDataSetChanged();
 
-		for(int i = 0; i < getCount(); i++){
-			OfferFragment f = (OfferFragment) fm.findFragmentByTag(getFragmentTag(i));
-			if( f != null){
+		for (int i = 0; i < getCount(); i++) {
+			OfferFragment f = (OfferFragment) fm
+					.findFragmentByTag(getFragmentTag(i));
+			if (f != null) {
 				f.setDayString(day.getDateStringLong());
 				f.setOffer(day.getOfferList().get(i));
 				f.updateValues();
 			}
-		}		
+		}
 	}
 
 	/**
 	 * TabPageAdaper und ViewPager erstellen folgende Fragment-Tags
-	 * android:switcher:"viewpagerID"+pos
-	 * diese Tags benötig man um das Fragment zu identifizieren
+	 * android:switcher:"viewpagerID"+pos diese Tags benoetigt man um das
+	 * Fragment zu identifizieren
+	 * 
 	 * @param pos
 	 * @return tag of Fragment
 	 */
-	private String getFragmentTag(int pos){
-	    return "android:switcher:"+R.id.viewpager+":"+pos;
+	private String getFragmentTag(int pos) {
+		return "android:switcher:" + R.id.viewpager + ":" + pos;
 	}
 
 	public void setDay(WorkDay day) {
@@ -80,13 +79,13 @@ public class TabPageAdapter extends FragmentPagerAdapter{
 		notifyDataSetChanged();
 	}
 
-    @Override
-    public Parcelable saveState() {
-        return null;
-    }
+	@Override
+	public Parcelable saveState() {
+		return null;
+	}
 
-    @Override
-    public void restoreState(Parcelable arg0, ClassLoader arg1) {
-    }
+	@Override
+	public void restoreState(Parcelable arg0, ClassLoader arg1) {
+	}
 
 }

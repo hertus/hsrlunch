@@ -18,7 +18,6 @@ public class OfferFragment extends Fragment {
 	private Offer offer;
 	private String dayText;
 
-	// Empty constructor, required as per Fragment docs
 	public OfferFragment() {
 	}
 
@@ -38,7 +37,7 @@ public class OfferFragment extends Fragment {
 			date = (TextView) v.findViewById(R.id.date);
 			content = (TextView) v.findViewById(R.id.content);
 			price = (TextView) v.findViewById(R.id.price);
-			
+
 			updateValues();
 		}
 
@@ -56,19 +55,19 @@ public class OfferFragment extends Fragment {
 	}
 
 	public void updateValues() {
-			if (offer != null && title != null) {
-				if (offer.getContent().equals("EMPTY")) {
-					setEmptyText();
-				} else {
+		if (offer != null && title != null) {
+			if (offer.getContent().equals("EMPTY")) {
+				setEmptyText();
+			} else {
 
-					title.setText(getResources().getStringArray(
-							R.array.menu_title_entries)[offer.getOfferType()]);
-					date.setText(dayText);
-					content.setText(offer.getContent());
-					price.setText(offer.getPrice());
-				}
-
+				title.setText(getResources().getStringArray(
+						R.array.menu_title_entries)[offer.getOfferType()]);
+				date.setText(dayText);
+				content.setText(offer.getContent());
+				price.setText(offer.getPrice());
 			}
+
+		}
 	}
 
 	private void setEmptyText() {

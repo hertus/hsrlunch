@@ -11,51 +11,53 @@ import ch.hsr.hsrlunch.R;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
-public class CreditActivity extends SherlockFragmentActivity{
+public class CreditActivity extends SherlockFragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.credits);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		
-		TextView tvVersion= (TextView) findViewById(R.id.TextViewVersion);
+
+		TextView tvVersion = (TextView) findViewById(R.id.TextViewVersion);
 		try {
-			tvVersion.setText(getResources().getString(R.string.version) + " : " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+			tvVersion
+					.setText(getResources().getString(R.string.version)
+							+ " : "
+							+ getPackageManager().getPackageInfo(
+									getPackageName(), 0).versionName);
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();
 		}
-		
+
 		TextView rating = (TextView) findViewById(R.id.rating);
 		rating.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(Intent.ACTION_VIEW);
-				intent.setData(Uri.parse("market://details?id=ch.christofbuechi.tuningeventsschweiz"));
-				startActivity(intent);				
+				intent.setData(Uri.parse("market://details?id=ch.hsr.hsrlunch"));
+				startActivity(intent);
 			}
 		});
-		
-		
-		
+
 		TextView tvLibrary = (TextView) findViewById(R.id.library);
 		String[] Arraylibary = getResources().getStringArray(R.array.libraries);
 		String str = new String();
-		for (int i=0; i < Arraylibary.length; i++) {
-			str +=(Arraylibary[i] + "\n");
+		for (int i = 0; i < Arraylibary.length; i++) {
+			str += (Arraylibary[i] + "\n");
 		}
 		tvLibrary.setText(str);
-		
+
 	}
-    @Override
-    public boolean onOptionsItemSelected(
-                    com.actionbarsherlock.view.MenuItem item) {
-        switch (item.getItemId()) {
-        case android.R.id.home:
-            finish();
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
-        }
-    }
+
+	@Override
+	public boolean onOptionsItemSelected(
+			com.actionbarsherlock.view.MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
 }

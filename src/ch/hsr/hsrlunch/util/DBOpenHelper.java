@@ -9,10 +9,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-public class DBOpenHelper extends SQLiteOpenHelper implements DBConstants, OfferConstants{
+public class DBOpenHelper extends SQLiteOpenHelper implements DBConstants,
+		OfferConstants {
 	private static final long INIT_DATE = 1351344627652L; // something last year
 	private static final String DATABASE_NAME = "hsrlunch.db";
-	private static final int DATABASE_VERSION = 41;
+	private static final int DATABASE_VERSION = 42;
 
 	public DBOpenHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -48,18 +49,15 @@ public class DBOpenHelper extends SQLiteOpenHelper implements DBConstants, Offer
 		Log.w(DBOpenHelper.class.getName(),
 				"Initialize HSRLunch Table Data for first usage!");
 
-		// There will be only 2 Weeks, so only ID = 1-2 exists for Weeks
 		db.execSQL("INSERT INTO " + TABLE_WEEK + "(" + COLUMN_WEEK_ID + ", "
 				+ COLUMN_WEEK_LASTUPDATE + ")VALUES(1," + INIT_DATE + ");");
 
-		// 1 Week will have 5 Workdays, so only ID = 1-5 exist for Workday
 		for (int i = OFFER_MONDAY; i <= OFFER_FRIDAY; i++) {
 			db.execSQL("INSERT INTO " + TABLE_WORKDAY + "(" + COLUMN_WORKDAY_ID
 					+ ", " + COLUMN_WORKDAY_DATE + ", " + COLUMN_WORKDAY_WEEKID
 					+ ")VALUES(" + i + "," + INIT_DATE + ",1);");
 		}
 
-		// Every Workday has 3 OfferTypes
 		for (int i = OFFER_DAILY; i <= OFFER_WEEK; i++) {
 			for (int j = OFFER_MONDAY; j <= OFFER_FRIDAY; j++) {
 				db.execSQL("INSERT INTO " + TABLE_OFFER + "("
@@ -70,7 +68,6 @@ public class DBOpenHelper extends SQLiteOpenHelper implements DBConstants, Offer
 			}
 		}
 
-		// Badge placeholders
 		double amountInit = 00.00;
 		db.execSQL("INSERT INTO " + TABLE_BADGE + "(" + COLUMN_BADGE_ID + ", "
 				+ COLUMN_BADGE_AMOUNT + ", " + COLUMN_BADGE_LASTUPDATE
