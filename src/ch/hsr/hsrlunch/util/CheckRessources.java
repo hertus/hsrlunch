@@ -31,7 +31,7 @@ public class CheckRessources {
 			if (ssid == null) {
 				return false;
 			}
-			if (ssid.equals("HSR-Secure")) {
+			if (ssid.contains("HSR-Secure")) {
 				return true;
 			}
 		}
